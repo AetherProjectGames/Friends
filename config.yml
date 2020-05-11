@@ -1,0 +1,462 @@
+#################################################################################################################################
+#																																#
+#	FriendsRELOADED	MC1.13 - 1.15																								#
+#	Version 1.1.2	Made by: HyChrod (Flocrafter77)																				#
+#																																#
+#################################################################################################################################
+Friends:
+  Prefix: "&bFriends &7|"
+  CheckForUpdates: true
+  
+  # Here you can put aliases to alternatively perform /friends
+  CommandAliases:
+  - f
+  - friend
+  - freund
+  - freunde
+  
+  # This is the standard limit of friends a player can have
+  FriendLimit: 20
+  # Player with a additional permission can have an extended amount of friends
+  # Permission: - Friends.FriendLimit.Extended
+  FriendLimitExtended: 50
+  
+  # This changes the format of every date used in friends (e.g. 'friends since', 'last online')
+  # Year: 'yyyy', Month: 'MM', Day: 'dd', Hour: 'hh', Minute: 'mm', Second: 'ss'
+  DateFormat: "MM/dd/yyyy"
+  
+  # To use friends with BungeeCord, you need to install die BungeeAddon aswell!
+  # https://www.spigotmc.org/resources/friends-mc1-8-x-1-15-x-bungeecord-addon.28909/
+  BungeeMode: false
+  
+  JoinQuitMessages: true
+  
+  Status:
+    # You can toggle wether the status should be checked for abusive language phrases (defined in forbidden_phrases.txt)
+    EnableFilter: true
+    # This is the total lenght that is possible for setting a status
+    MaxLenght: 30
+    # This is the time players have to wait between changing their status
+    # Permission to avoid this timer: '- Friends.Status.ChangeLimit.ByPass'
+    ChangeDuration: 600
+    # Toggle wether you want players to use farbcodes in order to set a colored status!
+    AllowFarbcodes: false
+  
+  # Friends have the possibility to send global messages to all their friends
+  FriendChat:
+    # Toggle wether the friendchat should be activated
+    Enable: true
+    # This defines the beginning of a messages to trigger the friendchat (e.g. '@friends hey')
+    Format: "@friends"
+    # You can check the messages send in the friendchat and block abusive phrases (defined in forbidden_phrases.txt)
+    CheckForAbusiveWords: true
+    
+  FriendMSG:
+    # Toggle wether you want friends to send eachother private messages
+    Enable: true
+    # You can check the messages send in the private messages and block abusive phrases (defined in forbidden_phrases.txt)
+    CheckForAbusiveWords: true
+    # If enabled you can use msg with /msg <Name> <Message>. Is disabled you can only write private messages with /friends msg <Name> <Message>
+    UseMSGCommand: true
+  
+  # Some commands have additional arguments
+  Commands:
+    # If you enable this options, players will get messages to interact with to directly accept/deny friendrequests
+    EnableClickableMessages: true
+    # While adding a player you can send him a personal note (e.g. /friends add HyChrod I'm your biggest fan)
+    AddMessage:
+      Enable: true
+      # This defines the total lenght of the additional message
+      CharacterLimit: 40
+    # When you block a player you can save a note to remember why you blocked him (e.g. /friends block HyChrod Too good in programming)
+    BlockNote:
+      Enable: true
+      # This defines the total lenght of the additional note for blocked players
+      CharacterLimit: 40
+  
+  # This is the item which opens the friend-inventory on a rightclick!
+  FriendItem:
+    # If you disable the friend-item, the inventory can only be opend by using /friends
+    Enable: true
+    Name: "&aFriends &7(Rightclick)"
+    Material: "player_head"
+    # You can split the lines by using '//'
+    Lore: "//&7Rightclick this item to open the//&7friend-inventory!"
+    InventorySlot: 4
+    # If you haveing trouble getting the Friend-Item even tho you enabled it above, try enabling DelayedInventorySet to 
+    # add a slight delay before placing the item in the players inventory
+    DelayedInventorySet: false
+
+#####################################################################################################################################
+#																																	#
+#	When editing the inventory, please make sure you set every '"' and only used valid material names!								#
+#	Material-List: https://www.digminecraft.com/lists/item_id_list_pc.php															#									
+#																																	#
+#	Minor changes can already cause the plugin to not work!																			#
+#																																	#
+#####################################################################################################################################
+
+  # Decide wether you want players to use /friends to open up the GUI!
+  OpenGUIWithCommand: true
+  
+  FriendInventory:
+    InventoryTitle: "&aYour friends: (Page %PAGE%)"
+    # Available sizes are multiples of 9 up to 54
+    # [ 9, 18, 27, 36, 45, 54 ]
+    InventorySize: 54
+    # If you enable this option, the Next-/PreviousPageItem will only be shown, if you have more friends than can fit on one page
+    HidePageItemsWhenNotNeeded: false
+    FriendsItem:
+      OnlineStatus: "&a(Online)"
+      OfflineStatus: "&7(Offline)"
+      Name: "&a%NAME% %ONLINE_STATUS%"
+      # You can split the lines by using '//'
+      # Use %SERVER% to show the current server a player is on. Only available for bungeemode!
+      # Use %WORLD% to show the current world a player is on. Only available without bungeemode!
+      LoreOnline: "&7Status: //&r&o%STATUS%// //&7Friends since: %DATE%"
+      LoreOffline: "&7Status: //&r&o%STATUS%// //&7Last online: %LAST_ONLINE% o'clock//&7Friends since: %DATE%"
+      ChangeSkullWhenOffline: true
+      NoStatusReplacement: "-"
+      LastOnlineFormat: "MM/dd/yyyy - HH:mm"
+      UseDisplaynames: false
+    RequestsItem:
+      Name: "&aRequests"
+      Material: "emerald"
+      # You can split the lines by using '//'
+      Lore: "&7Currently: (%REQUESTS_COUNT%)"
+      InventorySlot: 46
+    BlockedItem:
+      Name: "&cBlocked Players"
+      Material: "tnt"
+      # You can split the lines by using '//'
+      Lore: "&7Currently: (%BLOCKED_COUNT%)"
+      InventorySlot: 47
+    OptionsItem:
+      Name: "&3Options"
+      Material: "comparator"
+      # You can split the lines by using '//'
+      Lore: ""
+      InventorySlot: 49
+    SortItem:
+      ShowItem: true
+      Name: "&3Sorting:"
+      Material: "nether_star"
+      # You can split the lines by using '//'
+      Lore: "&r%SORTING%"
+      InventorySlot: 51
+      OnOffSorting: "&rOnline/Offline"
+      FavoriteSorting: "&rFavorites first"
+      LongFriendSorting: "&rLongest friends first"
+      Alphabetic: "&rAlphabetic"
+    NextPageItem:
+      ShowItem: true
+      Name: "&bNext Page"
+      Material: "arrow"
+      # You can split the lines by using '//'
+      Lore: ""
+      InventorySlot: 54
+    PreviousPageItem:
+      ShowItem: true
+      Name: "&bPrevious Page"
+      Material: "arrow"
+      # You can split the lines by using '//'
+      Lore: ""
+      InventorySlot: 53
+    Placeholders:
+      Material: "gray_stained_glass_pane"
+      InventorySlots:
+      - 48
+      - 50
+      - 52
+      
+  FriendEditInventory:
+    InventoryTitle: "&3%NAME%"
+    # Available sizes are multiples of 9 up to 54
+    # [ 9, 18, 27, 36, 45, 54 ]
+    InventorySize: 9
+    FavoriteItem:
+      ShowItem: true
+      Name: "&6Favorite"
+      Material: "golden_apple"
+      # You can split the lines by using '//'
+      Lore: "&7Currently: %FAVORITE_STATUS%"
+      InventorySlot: 6
+      FavoriteStatusOn: "&aOn"
+      FavoriteStatusOff: "&cOff"
+    CanSendMessagesItem:
+      ShowItem: true
+      Name: "&6%NAME% can send you messages"
+      Material: "paper"
+      # You can split the lines by using '//'
+      Lore: "&7Currently: %SENDMESSAGES_STATUS%// //&7This includes the friendchat, private//&7messages and join/quit notifications!"
+      InventorySlot: 5
+      SendMessagesStatusOn: "&aOn"
+      SendMessagesStatusOff: "&cOff"
+    NicknameItem:
+      ShowItem: true
+      Name: "&6Give your friend a nickname!"
+      Material: "name_tag"
+      # You can split the lines by using '//'
+      Lore: "&7Currently: %NICKNAME%"
+      InventorySlot: 3
+      NoNicknameReplacement: "-"
+    RemoveItem:
+      Name: "&cRemove %NAME% from your friends"
+      Material: "red_wool"
+      # You can split the lines by using '//'
+      Lore: ""
+      InventorySlot: 9
+    BackItem:
+      Name: "&7Back to your friends"
+      Material: "iron_door"
+      # You can split the lines by using '//'
+      Lore: ""
+      InventorySlot: 1
+    JumpItem:
+      ShowItem: true
+      Name: "&9Jump to %NAME%"
+      Material: "firework_rocket"
+      # You can split the lines by using '//'
+      Lore: ""
+      InventorySlot: 4
+    Placeholders:
+      Material: "gray_stained_glass_pane"
+      InventorySlots:
+      - 2
+      - 4
+      - 7
+      - 8
+      
+  RequestsInventory:
+    InventoryTitle: "&aYour requests: (Page %PAGE%)"
+    # Available sizes are multiples of 9 up to 54
+    # [ 9, 18, 27, 36, 45, 54 ]
+    InventorySize: 54
+    # If you enable this option, the Next-/PreviousPageItem will only be shown, if you have more friends than can fit on one page
+    HidePageItemsWhenNotNeeded: false
+    RequestItem:
+      Name: "&a%NAME%"
+      # You can split the lines by using '//'
+      Lore: "&7Requested: %DATE%//&7Message: //&r&o%MESSAGE%"
+      NoMessageReplacement: "-"
+    AcceptAllItem:
+      ShowItem: true
+      Name: "&aAccept all"
+      Material: "lime_wool"
+      # You can split the lines by using '//'
+      Lore: "&7Currently: %REQUESTS_COUNT%"
+      InventorySlot: 49
+    DenyAllItem:
+      ShowItem: true
+      Name: "&cDeny all"
+      Material: "red_wool"
+      # You can split the lines by using '//'
+      Lore: "&7Currently: %REQUESTS_COUNT%"
+      InventorySlot: 51
+    BackItem:
+      Name: "&7Back to friends"
+      Material: "iron_door"
+      # You can split the lines by using '//'
+      Lore: ""
+      InventorySlot: 46
+    PreviousPageItem:
+      ShowItem: true
+      Name: "&bPrevious Page"
+      Material: "arrow"
+      # You can split the lines by using '//'
+      Lore: ""
+      InventorySlot: 53
+    NextPageItem:
+      ShowItem: true
+      Name: "&bNext Page"
+      Material: "arrow"
+      # You can split the lines by using '//'
+      Lore: ""
+      InventorySlot: 54
+    Placeholders:
+      Material: "gray_stained_glass_pane"
+      InventorySlots:
+      - 47
+      - 48
+      - 50
+      - 52
+    
+  RequestEditInventory:
+    InventoryTitle: "&a%NAME% request:"
+    # Available sizes are multiples of 9 up to 54
+    # [ 9, 18, 27, 36, 45, 54 ]
+    InventorySize: 9
+    MessageItem:
+      ShowItem: true
+      Name: "&7%NAME%'s message:"
+      Material: "paper"
+      # You can split the lines by using '//'
+      Lore: "&r&o%MESSAGE%"
+      InventorySlot: 5
+      NoMessageReplacement: "-"
+    AcceptItem:
+      Name: "&aAccept %NAME%'s request"
+      Material: "lime_wool"
+      # You can split the lines by using '//'
+      Lore: ""
+      InventorySlot: 4
+    DenyItem:
+      Name: "&cDeny %NAME%'s request"
+      Material: "red_wool"
+      # You can split the lines by using '//'
+      Lore: ""
+      InventorySlot: 6
+    BackItem:
+      Name: "&7Back to your requests"
+      Material: "iron_door"
+      # You can split the lines by using '//'
+      Lore: ""
+      InventorySlot: 1
+    Placeholders:
+      Material: "gray_stained_glass_pane"
+      InventorySlots:
+      - 2
+      - 3
+      - 7
+      - 8
+      - 9
+      
+  BlockedInventory:
+    InventoryTitle: "&cBlocked players: (Page %PAGE%)"
+    # Available sizes are multiples of 9 up to 54
+    # [ 9, 18, 27, 36, 45, 54 ]
+    InventorySize: 54
+    # If you enable this option, the Next-/PreviousPageItem will only be shown, if you have more friends than can fit on one page
+    HidePageItemsWhenNotNeeded: false
+    BlockedItem:
+      Name: "&c%NAME%"
+      # You can split the lines by using '//'
+      Lore: "&7Blocked: %DATE%//&7Note: //&r&o%NOTE%"
+      NoNoteReplacement: "-"
+    UnblockAllItem:
+      ShowItem: true
+      Name: "&aUnblock All"
+      Material: "lime_wool"
+      # You can split the lines by using '//'
+      Lore: "&7Currently: %BLOCKED_COUNT%"
+      InventorySlot: 50
+    NextPageItem:
+      ShowItem: true
+      Name: "&bNext Page"
+      Material: "arrow"
+      # You can split the lines by using '//'
+      Lore: ""
+      InventorySlot: 54
+    PreviousPageItem:
+      ShowItem: true
+      Name: "&bPrevious Page"
+      Material: "arrow"
+      # You can split the lines by using '//'
+      Lore: ""
+      InventorySlot: 53
+    BackItem:
+      Name: "&7Back to friends"
+      Material: "iron_door"
+      # You can split the lines by using '//'
+      Lore: ""
+      InventorySlot: 46
+    Placeholders:
+      Material: "gray_stained_glass_pane"
+      InventorySlots:
+      - 47
+      - 48
+      - 49
+      - 51
+      - 52
+      
+  BlockedEditInventory:
+    InventoryTitle: "&c%NAME%"
+    # Available sizes are multiples of 9 up to 54
+    # [ 9, 18, 27, 36, 45, 54 ]
+    InventorySize: 9
+    BackItem:
+      Name: "&7Back to your blocked players"
+      Material: "iron_door"
+      # You can split the lines by using '//'
+      Lore: ""
+      InventorySlot: 1
+    UnblockItem:
+      Name: "&aUnblock %NAME%"
+      Material: "lime_wool"
+      # You can split the lines by using '//'
+      Lore: ""
+      InventorySlot: 5
+    NoteItem:
+      ShowItem: true
+      Name: "&7Note:"
+      Material: "paper"
+      # You can split the lines by using '//'
+      Lore: "&r&o%NOTE%"
+      InventorySlot: 6
+      NoNoteReplacement: "-"
+    Placeholders:
+      Material: "gray_stained_glass_pane"
+      InventorySlots:
+      - 2
+      - 3
+      - 4
+      - 7
+      - 8
+      - 9
+      
+  OptionsInventory:
+    InventoryTitle: "&3Options:"
+    # Available sizes are multiples of 9 up to 54
+    # [ 9, 18, 27, 36, 45, 54 ]
+    InventorySize: 9
+    OptionStatusOn: "&aOn"
+    OptionStatusOff: "&cOff"
+    BackItem:
+      Name: "&7Back to your friends"
+      Material: "iron_door"
+      # You can split the lines by using '//'
+      Lore: ""
+      InventorySlot: 1
+    ReceiveMessagesItem:
+      ShowItem: true
+      Name: "&6Receive Messages"
+      Material: "paper"
+      # You can split the lines by using '//'
+      Lore: "&7Currently: %OPTION_MESSAGES_STATUS%// //&7Toggle receiving messages of all kind//&7Includes private messages aswell as//&7the friendchat and join/quit notifications"
+      InventorySlot: 3
+      OnlyFavoritesStatus: "&eOnly Favorites"
+    ReceiveRequestsItem:
+      ShowItem: true
+      Name: "&6Receive Requests"
+      Material: "player_head"
+      # You can split the lines by using '//'
+      Lore: "&7Currently: %OPTION_REQUESTS_STATUS%// //&7Toggle wether you want to receive//&7friendrequests from other players"
+      InventorySlot: 5
+    OfflinemodeItem:
+      ShowItem: true
+      Name: "&6Offlinemode"
+      Material: "red_bed"
+      # You can split the lines by using '//'
+      Lore: "&7Currently: %OPTION_OFFLINEMODE_STATUS%// //&7If enabled, you will be shown//&7as offline to all your friends"
+      InventorySlot: 7
+    StatusItem:
+      ShowItem: true
+      Name: "&6Change your status"
+      Material: "name_tag"
+      # You can split the lines by using '//'
+      Lore: "&7Your current status://&r&o%STATUS%"
+      InventorySlot: 9
+    JumpItem:
+      ShowItem: true
+      Name: "&9Jumping"
+      Material: "firework_rocket"
+      # You can split the lines by using '//'
+      Lore: "&7Currently: %OPTION_JUMPING_STATUS%// //&7If enabled, friends can jump to//&7your current location!"
+      InventorySlot: 4
+    Placeholders:
+      Material: "gray_stained_glass_pane"
+      InventorySlots:
+      - 2
+      - 4
+      - 6
+      - 8

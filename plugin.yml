@@ -1,0 +1,8 @@
+author: HyChrod
+name: FriendsRELOADED
+version: 1.1.2
+main: de.HyChrod.Friends.Friends
+api-version: 1.13
+softdepend: [PlaceholderAPI]
+commands:
+  friendsgui:

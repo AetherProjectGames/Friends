@@ -1,0 +1,7 @@
+Enable: false
+Data:
+  Host: 'yourHostAdress'
+  Port: '3306'
+  Database: 'nameOfYourDatabase'
+  Username: 'yourUsername'
+  Password: 'yourPassword'

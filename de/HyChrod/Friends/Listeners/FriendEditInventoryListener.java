@@ -2,6 +2,7 @@ package de.HyChrod.Friends.Listeners;
 
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.function.BiFunction;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -10,6 +11,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import de.HyChrod.Friends.Friends;
 import de.HyChrod.Friends.Commands.SubCommands.Jump_Command;
@@ -20,6 +23,8 @@ import de.HyChrod.Friends.SQL.AsyncSQLQueueUpdater;
 import de.HyChrod.Friends.Utilities.Configs;
 import de.HyChrod.Friends.Utilities.InventoryBuilder;
 import de.HyChrod.Friends.Utilities.ItemStacks;
+import de.HyChrod.Friends.Utilities.Messages;
+import net.wesjd.anvilgui.AnvilGUI;
 
 public class FriendEditInventoryListener implements Listener {
 	
@@ -49,25 +54,61 @@ public class FriendEditInventoryListener implements Listener {
 			if(currentlyEditing.containsKey(p.getUniqueId())) {
 				Friendship fs = currentlyEditing.get(p.getUniqueId());
 				if(e.getView() != null)
-					if(e.getView().getTitle() != null && e.getView().getTitle().equals(InventoryBuilder.FRIENDEDIT_INVENTORY.getTitle(p).replace("%NAME%", FriendHash.getName(fs.getFriend())))) {
+					if(e.getView().getTitle() != null && e.getView().getTitle().equals(InventoryBuilder.FRIENDEDIT_INVENTORY.getTitle(p).replace("%NAME%", fs.hasNickname() ? fs.getNickname() : FriendHash.getName(fs.getFriend())))) {
 						e.setCancelled(true);
 						
 						OfflinePlayer inEdit = Bukkit.getOfflinePlayer(fs.getFriend());
 						if(e.getCurrentItem() != null)
 							if(e.getCurrentItem().hasItemMeta())
 								if(e.getCurrentItem().getItemMeta().hasDisplayName()) {
-									String name = FriendHash.getName(fs.getFriend());
+									String orig_name = FriendHash.getName(fs.getFriend());
+									String name = fs.hasNickname() ? fs.getNickname() : orig_name;
 									if(e.getCurrentItem().getItemMeta().getDisplayName().equals(ItemStacks.INV_FRIENDEDIT_BACK.getItem(inEdit).getItemMeta().getDisplayName())) {
 										InventoryBuilder.openFriendInventory(p, p.getUniqueId(), FriendInventoryListener.getPage(p.getUniqueId()), false);
 										return;
 									}
 									if(e.getCurrentItem().getItemMeta().getDisplayName().equals(ItemStacks.INV_FRIENDEDIT_REMOVE.getItem(inEdit).getItemMeta().getDisplayName().replace("%NAME%", name))) {
-										new Remove_Command(Friends.getInstance(), p, new String[] {"remove",name});
+										new Remove_Command(Friends.getInstance(), p, new String[] {"remove",orig_name});
 										InventoryBuilder.openFriendInventory(p, p.getUniqueId(), FriendInventoryListener.getPage(p.getUniqueId()), false);
 										return;
 									}
 									if(e.getCurrentItem().getItemMeta().getDisplayName().equals(ItemStacks.INV_FRIENDEDIT_NICKNAME.getItem(inEdit).getItemMeta().getDisplayName().replace("%NAME%", name))) {
-										p.sendMessage(Friends.getPrefix() + " §cNicknames can currently only be set by chat! -> /friends nickname <Player> <Nickname>");
+										if(!p.hasPermission("Friends.Commands.Nickname")) {
+											p.sendMessage(Messages.NO_PERMISSIONS.getMessage(p));
+											return;
+										}
+										
+										ItemStack item = new ItemStack(ItemStacks.INV_OPTIONS_STATUS.getItem(p).getType());
+										ItemMeta meta = item.getItemMeta();
+										String current = (!fs.hasNickname() ? Configs.ITEM_FRIEND_NO_NICK_REPLACEMENT.getText() : fs.getNickname());
+										meta.setDisplayName(current);
+										item.setItemMeta(meta);
+										
+										float expt = p.getExp();
+										int lvl = p.getLevel();
+										new AnvilGUI.Builder().onComplete((BiFunction<Player, String, AnvilGUI.Response>)(player,text) -> {
+											if(Configs.NICK_CHECK_FOR_ABUSIVE_WORDS.getBoolean()) {
+												for(String phrases : Configs.getForbiddenPhrases())
+													if(text.toLowerCase().contains(phrases.toLowerCase())) {
+														p.sendMessage(Messages.CMD_NICKNAME_ABUSIVE_PHRASE.getMessage(p).replace("%PHRASE%", phrases));
+														return AnvilGUI.Response.close();
+													}
+												
+											}
+											
+											fs.setNickname(text);
+											p.sendMessage(Messages.CMD_NICKNAME_SET_NICK.getMessage(p).replace("%NAME%", orig_name).replace("%NICKNAME%", text));
+											if(Configs.BUNGEEMODE.getBoolean())
+												AsyncSQLQueueUpdater.addToQueue("update friends_frienddata set nickname='" + text + "' where uuid='" + p.getUniqueId().toString() + "' and uuid2 = '" + fs.getFriend().toString() + "'");
+											
+											if(p.getExp() != expt || p.getLevel() != lvl) {
+												p.setExp(expt);
+												p.setLevel(lvl);
+											}
+											InventoryBuilder.openFriendEditInventory(p, fs);
+											return AnvilGUI.Response.close();
+											
+										}).title("§aNickname:").item(item).text(current).plugin(Friends.getInstance()).open(p);
 										return;
 									}
 									if(e.getCurrentItem().getItemMeta().getDisplayName().equals(ItemStacks.INV_FRIENDEDIT_CANSENDMESSAGES.getItem(inEdit).getItemMeta().getDisplayName()
@@ -82,9 +123,17 @@ public class FriendEditInventoryListener implements Listener {
 										return;
 									}
 									if(e.getCurrentItem().getItemMeta().getDisplayName().equals(ItemStacks.INV_FRIENDEDIT_JUMP.getItem(inEdit).getItemMeta().getDisplayName().replace("%NAME%", name))) {
-										new Jump_Command(Friends.getInstance(), p, new String[] {"jump",name});
+										new Jump_Command(Friends.getInstance(), p, new String[] {"jump",orig_name});
 										return;
 									}
+									
+									String invName = "FriendEditInventory";
+									for(int customIndex = 0; customIndex < ItemStacks.getItemCount(invName); customIndex++)
+										if(e.getCurrentItem().getItemMeta().getDisplayName().contentEquals(ItemStacks.getCutomItem(invName, customIndex, p).getItemMeta().getDisplayName())) {
+											String cmd = ItemStacks.getCustomCommand(invName, customIndex);
+											if(cmd.length() > 0) p.performCommand(cmd.replace("%NAME%", p.getName()));
+											return;
+										}
 									
 								}
 						

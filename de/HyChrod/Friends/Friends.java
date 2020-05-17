@@ -47,6 +47,7 @@ import de.HyChrod.Friends.Utilities.UpdateChecker;
  * - Friends.FriendLimit.Extended
  * - Friends.Status.ChangeLimit.ByPass
  * - Friends.Commands.Msg
+ * - Friends.Commands.Nickname
  *
  */
 
@@ -77,6 +78,7 @@ public class Friends extends JavaPlugin {
 			new AsyncMySQlReconnctor();
 			Bukkit.getConsoleSender().sendMessage(prefix + " §aConnected to MySQL!");
 		}
+		this.getCommand("friendsgui").setExecutor(new FriendsGUICommand());
 		if(!Configs.BUNGEEMODE.getBoolean()) registerCommands();
 		registerListeners();
 		loadHashes();
@@ -90,7 +92,6 @@ public class Friends extends JavaPlugin {
 	}
 	
 	private void registerCommands() {
-		this.getCommand("friendsgui").setExecutor(new FriendsGUICommand());
 		try {
 			Field commandMapField = Bukkit.getServer().getClass().getDeclaredField("commandMap");
 			commandMapField.setAccessible(true);
@@ -117,6 +118,7 @@ public class Friends extends JavaPlugin {
 		if(Configs.BUNGEEMODE.getBoolean()) {
 			this.getServer().getMessenger().registerIncomingPluginChannel(this, "friends:openinv", new PluginMessageListeners());
 			this.getServer().getMessenger().registerIncomingPluginChannel(this, "friends:version", new PluginMessageListeners());
+			this.getServer().getMessenger().registerIncomingPluginChannel(this, "friends:reload", new PluginMessageListeners());
 			this.getServer().getMessenger().registerOutgoingPluginChannel(this, "friends:connect");
 			this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 		}

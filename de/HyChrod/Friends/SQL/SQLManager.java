@@ -250,11 +250,11 @@ public class SQLManager {
 		ResultSet rs = null;
 		PreparedStatement ps = null;
 		try {
-			ps = getCon().prepareStatement("select distinct f.uuid2,f.favorite,f.timestamp,f.cansendmessages,o.status,p.lastOnline from friends_frienddata f, friends_options o, friends_playerdata p where o.uuid = f.uuid2 and f.uuid = '" + uuid.toString() + "' and p.uuid=f.uuid2;");
+			ps = getCon().prepareStatement("select distinct f.uuid2,f.favorite,f.timestamp,f.cansendmessages,f.nickname,o.status,p.lastOnline from friends_frienddata f, friends_options o, friends_playerdata p where o.uuid = f.uuid2 and f.uuid = '" + uuid.toString() + "' and p.uuid=f.uuid2;");
 			rs = ps.executeQuery();
 			while(rs.next()) {
 				friendships.add(new Friendship(uuid, UUID.fromString(rs.getString("f.uuid2")), rs.getLong("f.timestamp"), rs.getInt("f.favorite") == 0 ? false : true, 
-						rs.getInt("f.cansendmessages") == 0 ? false : true, rs.getString("o.status"), rs.getLong("p.lastOnline")));
+						rs.getInt("f.cansendmessages") == 0 ? false : true, rs.getString("o.status"), rs.getLong("p.lastOnline"), rs.getString("f.nickname")));
 			}
 		} catch (Exception ex) {ex.printStackTrace();} finally {
 			close(rs, ps);

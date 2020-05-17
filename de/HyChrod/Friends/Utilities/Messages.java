@@ -89,7 +89,11 @@ public enum Messages {
 	CMD_ADD_CLICK_BUTTON_ACCEPT_HOVER("Messages.Commands.AddCommand.ClickableMessage.AcceptButton.Hover"),
 	CMD_ADD_CLICK_BUTTON_DENY_TEXT("Messages.Commands.AddCommand.ClickableMessage.DenyButton.Text"),
 	CMD_ADD_CLICK_BUTTON_DENY_HOVER("Messages.Commands.AddCommand.ClickableMessage.DenyButton.Hover"),
-	CMD_DENY_NO_REQUEST("Messages.Commands.DenyCommand.NoRequest");
+	CMD_DENY_NO_REQUEST("Messages.Commands.DenyCommand.NoRequest"),
+	CMD_NICKNAME_NOFRIENDS("Messages.Commands.NicknameCommand.NoFriends"),
+	CMD_NICKNAME_SAME_NICK("Messages.Commands.NicknameCommand.SameNickname"),
+	CMD_NICKNAME_SET_NICK("Messages.Commands.NicknameCommand.SetNick"),
+	CMD_NICKNAME_ABUSIVE_PHRASE("Messages.Commands.NicknameCommand.AbusivePhrase");
 	
 	private String path;
 	private String message;

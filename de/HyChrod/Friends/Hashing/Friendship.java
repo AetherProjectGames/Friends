@@ -17,16 +17,17 @@ public class Friendship {
 	private boolean canSendMessages = true;
 	private boolean updated = false;
 	
-	public Friendship(UUID player, UUID friend, long timestamp, boolean favorite, boolean canSendMessages, String status) {
+	public Friendship(UUID player, UUID friend, long timestamp, boolean favorite, boolean canSendMessages, String status, String nickname) {
 		this.player = player;
 		this.friend = friend;
 		this.timestamp = timestamp;
 		this.favorite = favorite;
 		this.canSendMessages = canSendMessages;
 		this.status = status;
+		this.nickname = nickname;
 	}
 	
-	public Friendship(UUID player, UUID friend, long timestamp, boolean favorite, boolean canSendMessages, String status, long lastOnline) {
+	public Friendship(UUID player, UUID friend, long timestamp, boolean favorite, boolean canSendMessages, String status, long lastOnline, String nickname) {
 		this.player = player;
 		this.friend = friend;
 		this.timestamp = timestamp;
@@ -34,6 +35,7 @@ public class Friendship {
 		this.canSendMessages = canSendMessages;
 		this.status = status;
 		this.friendLastOnline = lastOnline;
+		this.nickname = nickname;
 	}
 	
 	public long getLastOnline() {
@@ -46,6 +48,15 @@ public class Friendship {
 	
 	public UUID getFriend() {
 		return friend;
+	}
+	
+	public void setNickname(String nick) {
+		this.nickname = nick;
+		updated = true;
+	}
+	
+	public boolean hasNickname() {
+		return nickname.equals(ChatColor.translateAlternateColorCodes('&', Configs.ITEM_FRIEND_NO_NICK_REPLACEMENT.getText())) ? false : nickname == null ? false : nickname.length() < 1 ? false : true;
 	}
 	
 	public String getNickname() {

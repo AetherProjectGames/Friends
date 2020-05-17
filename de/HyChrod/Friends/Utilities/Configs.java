@@ -80,7 +80,9 @@ public enum Configs {
 	CLICKABLE_MESSAGES("Friends.Commands.EnableClickableMessages"),
 	INV_FRIEND_HIDEPAGES("Friends.FriendInventory.HidePageItemsWhenNotNeeded"),
 	INV_REQUEST_HIDEPAGES("Friends.RequestsInventory.HidePageItemsWhenNotNeeded"),
-	INV_BLOCKED_HIDEPAGES("Friends.BlockedInventory.HidePageItemsWhenNotNeeded");
+	INV_BLOCKED_HIDEPAGES("Friends.BlockedInventory.HidePageItemsWhenNotNeeded"),
+	NICK_ENABLE("Friends.Nicknames.Enable"),
+	NICK_CHECK_FOR_ABUSIVE_WORDS("Friends.Nicknames.CheckForAbusiveWords");
 	
 	private Object value;
 	private String path;

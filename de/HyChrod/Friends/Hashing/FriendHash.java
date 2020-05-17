@@ -243,13 +243,13 @@ public class FriendHash {
 	}
 	
 	public void makeFriend(UUID friend) {
-		addFriend(new Friendship(uuid, friend, System.currentTimeMillis(), false, true, getStatus(friend)));
+		addFriend(new Friendship(uuid, friend, System.currentTimeMillis(), false, true, getStatus(friend), null));
 		removeRequest(friend);
 		if(isOnline(friend)) {
 			if(Configs.BUNGEEMODE.getBoolean()) sendPluginMessage(friend, Messages.CMD_ACCEPT_NEW_FRIEND.getMessage(Bukkit.getPlayer(friend)).replace("%NAME%", name));
 			else Bukkit.getPlayer(friend).sendMessage(Messages.CMD_ACCEPT_NEW_FRIEND.getMessage(Bukkit.getPlayer(friend)).replace("%NAME%", name));
 			FriendHash.getFriendHash(friend).removeRequest(uuid);
-			FriendHash.getFriendHash(friend).addFriend(new Friendship(friend, uuid, System.currentTimeMillis(), false, true, getStatus()));
+			FriendHash.getFriendHash(friend).addFriend(new Friendship(friend, uuid, System.currentTimeMillis(), false, true, getStatus(), null));
 			return;
 		}
 		if(Friends.isMySQL()) {
@@ -264,6 +264,7 @@ public class FriendHash {
 	}
 	
 	public Options getOptions() {
+		if(Configs.BUNGEEMODE.getBoolean()) return Friends.getSMgr().getOptions(uuid);
 		return this.options;
 	}
 	
@@ -281,6 +282,7 @@ public class FriendHash {
 	}
 	
 	public LinkedList<Friendship> getFriends() {
+		if(Configs.BUNGEEMODE.getBoolean()) return Friends.getSMgr().getFriendships(uuid);
 		return friends;
 	}
 	
@@ -502,7 +504,7 @@ public class FriendHash {
 					addFriend(new Friendship(uuid, UUID.fromString(fUUIDs), fcfg.getLong(uuid.toString() + "." + fUUIDs + ".Timestamp"), 
 							fcfg.getBoolean(uuid.toString() + "." + fUUIDs + ".Favorite"), 
 							fcfg.getBoolean(uuid.toString() + "." + fUUIDs + ".CanSendMessages"),
-							ocfg.getString(fUUIDs + ".Status")));
+							ocfg.getString(fUUIDs + ".Status"), fcfg.getString(uuid.toString() + "." + fUUIDs + ".Nickname")));
 			
 			FileConfiguration bcfg = FileManager.getConfig("/Util","blocked.dat");
 			if(bcfg.getString(uuid.toString()) != null)

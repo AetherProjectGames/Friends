@@ -51,6 +51,14 @@ public class BlockeditInventoryListener implements Listener {
 										return;
 									}
 									
+									String invName = "BlockedEditInventory";
+									for(int customIndex = 0; customIndex < ItemStacks.getItemCount(invName); customIndex++)
+										if(e.getCurrentItem().getItemMeta().getDisplayName().contentEquals(ItemStacks.getCutomItem(invName, customIndex, p).getItemMeta().getDisplayName())) {
+											String cmd = ItemStacks.getCustomCommand(invName, customIndex);
+											if(cmd.length() > 0) p.performCommand(cmd.replace("%NAME%", p.getName()));
+											return;
+										}
+									
 								}
 					}
 			}

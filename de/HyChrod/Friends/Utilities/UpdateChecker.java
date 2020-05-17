@@ -1,5 +1,6 @@
 package de.HyChrod.Friends.Utilities;
 
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;

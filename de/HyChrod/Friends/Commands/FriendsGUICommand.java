@@ -5,7 +5,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import de.HyChrod.Friends.Friends;
 import de.HyChrod.Friends.Listeners.FriendInventoryListener;
 import de.HyChrod.Friends.Utilities.InventoryBuilder;
 import de.HyChrod.Friends.Utilities.Messages;
@@ -15,11 +14,11 @@ public class FriendsGUICommand implements CommandExecutor  {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if(args.length != 0) {
-			sender.sendMessage(Friends.getMessage(Messages.CMD_WRONG_USAGE.getMessage(null)));
+			sender.sendMessage(Messages.CMD_WRONG_USAGE.getMessage(null).replace("%USAGE%", "/friendsgui"));
 			return false;
 		}
 		if(!(sender instanceof Player)) {
-			sender.sendMessage(Friends.getMessage(Messages.NO_PLAYER.getMessage(null)));
+			sender.sendMessage(Messages.NO_PLAYER.getMessage(null));
 			return false;
 		}
 		

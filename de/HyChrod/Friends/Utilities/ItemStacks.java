@@ -2,7 +2,11 @@ package de.HyChrod.Friends.Utilities;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -81,28 +85,54 @@ public enum ItemStacks {
 	}
 	
 	public ItemStack getItem(OfflinePlayer player) {
-		ItemStack item = new ItemStack(Material.getMaterial(material.toUpperCase()));
-		ItemMeta meta = item.getItemMeta();
-		meta.setDisplayName(name);
-		if(!lore.isEmpty()) meta.setLore(lore);
-		if(Bukkit.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null && player != null) {
-			try {
-				meta.setDisplayName((String) Class.forName("me.clip.placeholderapi.PlaceholderAPI").getMethod("setPlaceholders", OfflinePlayer.class, String.class).invoke(null, player, name));
-				List<String> l = new ArrayList<String>();
-				for(String v : lore)
-					l.add((String) Class.forName("me.clip.placeholderapi.PlaceholderAPI").getMethod("setPlaceholders", OfflinePlayer.class, String.class).invoke(null, player, v));
-				if(!l.isEmpty()) meta.setLore(l);
-			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
-					| NoSuchMethodException | SecurityException | ClassNotFoundException e) {
-				e.printStackTrace();
-			}
-		}
-		item.setItemMeta(meta);
-		return item;
+		return getItemStack(name, material, lore, player);
 	}
 	
 	public int getInventorySlot() {
 		return inventoryslot-1;
+	}
+	
+	private static HashMap<String, LinkedList<String[]>> customItems = new HashMap<String, LinkedList<String[]>>();
+	
+	private static void generateCustomItems(FileConfiguration cfg) {
+		String[] inventorys = new String[] {"FriendInventory","FriendEditInventory","RequestsInventory","RequestEditInventory","BlockedInventory","BlockedEditInventory","OptionsInventory"};
+		for(String inv : inventorys) {
+			if(cfg.getConfigurationSection("Friends." + inv + ".CustomItems") == null) continue;
+			for(String cFItems : cfg.getConfigurationSection("Friends." + inv + ".CustomItems").getKeys(false)) {
+				if(!cFItems.startsWith("CUSTOM_ITEM")) continue;
+				String[] values = new String[5];
+				values[0] = createUniqueIdentifier() + ChatColor.translateAlternateColorCodes('&', cfg.getString("Friends." + inv + ".CustomItems." + cFItems + ".Name"));
+				values[1] = cfg.getString("Friends." + inv + ".CustomItems." + cFItems + ".Material");
+				values[2] = ChatColor.translateAlternateColorCodes('&', cfg.getString("Friends." + inv + ".CustomItems." + cFItems + ".Lore"));
+				values[3] = cfg.getString("Friends." + inv + ".CustomItems." + cFItems + ".InventorySlot");
+				values[4] = cfg.getString("Friends." + inv + ".CustomItems." + cFItems + ".PerformCommand");
+				addToHash(inv, values);
+			}
+		}
+	}
+	
+	public static int getItemCount(String inv) {
+		return customItems.containsKey(inv) ? customItems.get(inv).size() : 0;
+	}
+	
+	public static int getCustomInventorySlot(String inv, int index) {
+		return customItems.containsKey(inv) ? Integer.valueOf(customItems.get(inv).get(index)[3]) : 0;
+	}
+	
+	public static String getCustomCommand(String inv, int index) {
+		return customItems.containsKey(inv) ? customItems.get(inv).get(index)[4] : "";
+	}
+	
+	public static ItemStack getCutomItem(String inv, int index, OfflinePlayer p) {
+		if(!customItems.containsKey(inv) || (customItems.containsKey(inv) && customItems.get(inv).size() <= index)) return null;
+		String[] data = customItems.get(inv).get(index);
+		return getItemStack(p == null ? data[0] : data[0].replace("%NAME%", p.getName()), data[1], Arrays.asList((p == null ? data[2] : data[2].replace("%NAME%", p.getName())).split("//")), p);
+	}
+	
+	private static void addToHash(String key, String[] item) {
+		LinkedList<String[]> cItems = customItems.containsKey(key) ? customItems.get(key) : new LinkedList<String[]>();
+		cItems.add(item);
+		customItems.put(key, cItems);
 	}
 	
 	public static ItemStack setSkin(ItemStack item, String name) {
@@ -125,10 +155,40 @@ public enum ItemStacks {
 		return item;
 	}
 	
+	private static ItemStack getItemStack(String name, String material, List<String> lore, OfflinePlayer player) {
+		ItemStack item = new ItemStack(Material.getMaterial(material.toUpperCase()));
+		ItemMeta meta = item.getItemMeta();
+		meta.setDisplayName(name);
+		if(!lore.isEmpty()) meta.setLore(lore);
+		if(Bukkit.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null && player != null) {
+			try {
+				meta.setDisplayName((String) Class.forName("me.clip.placeholderapi.PlaceholderAPI").getMethod("setPlaceholders", OfflinePlayer.class, String.class).invoke(null, player, name));
+				List<String> l = new ArrayList<String>();
+				for(String v : lore)
+					l.add((String) Class.forName("me.clip.placeholderapi.PlaceholderAPI").getMethod("setPlaceholders", OfflinePlayer.class, String.class).invoke(null, player, v));
+				if(!l.isEmpty()) meta.setLore(l);
+			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
+					| NoSuchMethodException | SecurityException | ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+		item.setItemMeta(meta);
+		return item;
+	}
+	
 	public static void loadItems() {
 		FileConfiguration cfg = FileManager.getConfig("","config.yml");
 		for(ItemStacks items : ItemStacks.values())
 			items.load(cfg);
+		generateCustomItems(cfg);
+	}
+	
+	private static String[] keys = new String[] {"§a","§b","§c","§d","§e","§f","§1","§2","§3","§4","§5","§6","§7","§8","§9","§o"};
+	private static String createUniqueIdentifier() {
+		String identifier = "";
+		for(int i = 0; i < 15; i++)
+			identifier = identifier + keys[new Random().nextInt(keys.length)];
+		return identifier+"§r";
 	}
 
 }

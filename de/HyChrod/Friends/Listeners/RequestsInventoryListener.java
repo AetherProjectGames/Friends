@@ -78,6 +78,14 @@ public class RequestsInventoryListener implements Listener {
 									return;
 								}
 								
+								String invName = "RequestsInventory";
+								for(int customIndex = 0; customIndex < ItemStacks.getItemCount(invName); customIndex++)
+									if(e.getCurrentItem().getItemMeta().getDisplayName().contentEquals(ItemStacks.getCutomItem(invName, customIndex, p).getItemMeta().getDisplayName())) {
+										String cmd = ItemStacks.getCustomCommand(invName, customIndex);
+										if(cmd.length() > 0) p.performCommand(cmd.replace("%NAME%", p.getName()));
+										return;
+									}
+								
 								HashMap<String, Request> positions = cashedPositionsByUUID.get(p.getUniqueId());
 								for(String identifier : positions.keySet())
 									if(("§f"+e.getCurrentItem().getItemMeta().getDisplayName()).contains(identifier)) {

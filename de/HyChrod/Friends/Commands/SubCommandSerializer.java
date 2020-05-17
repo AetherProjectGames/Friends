@@ -30,6 +30,7 @@ public class SubCommandSerializer {
         this.register("messages", "OptMessages_Command");
         this.register("requests", "OptRequests_Command");
         this.register("offlinemode", "OptOffline_Command");
+        this.register("nickname", "Nickname_Command");
     }
     
     private void register(final String cmd, final String clazz) {

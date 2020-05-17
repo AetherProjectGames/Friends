@@ -95,6 +95,10 @@ public enum InventoryBuilder {
 		if(Configs.INV_FRIEND_PREVIOUSPAGE_ENABLE.getBoolean() && (!Configs.INV_FRIEND_HIDEPAGES.getBoolean() || (Configs.INV_FRIEND_HIDEPAGES.getBoolean() && page > 0)))
 			inv.setItem(ItemStacks.INV_FRIEND_PREVIOUSPAGE.getInventorySlot(), ItemStacks.INV_FRIEND_PREVIOUSPAGE.getItem(player));
 		
+		String invName = "FriendInventory";
+		for(int customItem = 0; customItem < ItemStacks.getItemCount(invName); customItem++) 
+			inv.setItem(ItemStacks.getCustomInventorySlot(invName, customItem) -1, ItemStacks.getCutomItem(invName, customItem, player));
+		
 		Bukkit.getScheduler().runTaskAsynchronously(Friends.getInstance(), new Runnable() {
 			
 			@Override
@@ -175,6 +179,7 @@ public enum InventoryBuilder {
 	
 	private static String addFriend(Inventory inv, Friendship fs, FileConfiguration cfg, FriendHash hash) {
 		String name = FriendHash.getName(fs.getFriend());
+		name = fs.hasNickname() ? fs.getNickname() : name;
 		
 		boolean changeSkull = (Configs.INV_FRIENDS_FRIENDS_CHANGESKULL.getBoolean() && !FriendHash.isOnline(fs.getFriend()));
 		String status = Bukkit.getPlayer(fs.getFriend()) != null ? FriendHash.getFriendHash(fs.getFriend()).getStatus() : fs.getStatus();
@@ -195,7 +200,7 @@ public enum InventoryBuilder {
 		boolean online = FriendHash.isOnline(fs.getFriend());
 		String displayName = Configs.ITEM_FRIENDS_NAME.getText().replace("%ONLINE_STATUS%", online ? Configs.ITEM_FRIENDS_ONLINE_STAT_ON.getText() : Configs.ITEM_FRIENDS_ONLINE_STAT_OFF.getText())
 				.replace("%SERVER%", FriendHash.getServer(fs.getFriend())).replace("%WORLD%", FriendHash.getWorld(fs.getFriend()));
-		meta.setDisplayName(identifier + ChatColor.translateAlternateColorCodes('&', setPlaceholders(displayName.replace("%NAME%", name), Bukkit.getOfflinePlayer(fs.getFriend()))));
+		meta.setDisplayName(identifier + ChatColor.translateAlternateColorCodes('&', setPlaceholders(displayName.replace("%NAME%", fs.hasNickname() ? fs.getNickname() : name), Bukkit.getOfflinePlayer(fs.getFriend()))));
 		ArrayList<String> l = new ArrayList<String>();
 		
 		String[] friendlore = (online ? Configs.ITEM_FRIENDS_LORE_ONLINE.getText() : Configs.ITEM_FRIENDS_LORE_OFFLINE.getText()).split("//");
@@ -224,6 +229,10 @@ public enum InventoryBuilder {
 		inv.setItem(ItemStacks.INV_REQUESTS_BACK.getInventorySlot(), ItemStacks.INV_REQUESTS_BACK.getItem(player));
 		if(Configs.INV_REQUEST_PREVIOUSPAGE_ENABLE.getBoolean() && (!Configs.INV_REQUEST_HIDEPAGES.getBoolean() || (Configs.INV_REQUEST_HIDEPAGES.getBoolean() && page > 0))) 
 			inv.setItem(ItemStacks.INV_REQUESTS_PREVIOUSPAGE.getInventorySlot(), ItemStacks.INV_REQUESTS_PREVIOUSPAGE.getItem(player));
+		
+		String invName = "RequestsInventory";
+		for(int customItem = 0; customItem < ItemStacks.getItemCount(invName); customItem++) 
+			inv.setItem(ItemStacks.getCustomInventorySlot(invName, customItem) - 1, ItemStacks.getCutomItem(invName, customItem, player));
 		
 		HashMap<String, Request> cashedPositions = new HashMap<String, Request>();
 		Bukkit.getScheduler().runTaskAsynchronously(Friends.getInstance(), new Runnable() {
@@ -286,6 +295,10 @@ public enum InventoryBuilder {
 		if(Configs.INV_BLOCKED_PREVIOUSPAGE_ENABLE.getBoolean() && (!Configs.INV_BLOCKED_HIDEPAGES.getBoolean() || (Configs.INV_BLOCKED_HIDEPAGES.getBoolean() && page > 0))) 
 			inv.setItem(ItemStacks.INV_BLOCKED_PREVIOUSPAGE.getInventorySlot(), ItemStacks.INV_BLOCKED_PREVIOUSPAGE.getItem(player));
 		if(Configs.INV_BLOCKED_UNBLOCKALL_ENABLE.getBoolean()) inv.setItem(ItemStacks.INV_BLOCKED_UNBLOCKALL.getInventorySlot(), ItemStacks.replace(ItemStacks.INV_BLOCKED_UNBLOCKALL.getItem(player), "%BLOCKED_COUNT%", "0"));
+		
+		String invName = "BlockedInventory";
+		for(int customItem = 0; customItem < ItemStacks.getItemCount(invName); customItem++) 
+			inv.setItem(ItemStacks.getCustomInventorySlot(invName, customItem) - 1, ItemStacks.getCutomItem(invName, customItem, player));
 		
 		HashMap<String, Blockplayer> cashedPositions = new HashMap<String, Blockplayer>();
 		Bukkit.getScheduler().runTaskAsynchronously(Friends.getInstance(), new Runnable() {
@@ -350,6 +363,10 @@ public enum InventoryBuilder {
 		if(Configs.INV_REQUESTEDIT_MESSAGE_ENABLE.getBoolean()) inv.setItem(ItemStacks.INV_REQUESTEDIT_MESSAGE.getInventorySlot(), ItemStacks.replace(ItemStacks
 				.replace(ItemStacks.INV_REQUESTEDIT_MESSAGE.getItem(player), "%MESSAGE%", msg), "%NAME%", name));
 		
+		String invName = "RequestEditInventory";
+		for(int customItem = 0; customItem < ItemStacks.getItemCount(invName); customItem++) 
+			inv.setItem(ItemStacks.getCustomInventorySlot(invName, customItem), ItemStacks.getCutomItem(invName, customItem, player));
+		
 		player.openInventory(inv);
 	}
 	
@@ -366,11 +383,16 @@ public enum InventoryBuilder {
 		if(Configs.INV_BLOCKEDIT_NOTE_ENABLE.getBoolean()) inv.setItem(ItemStacks.INV_BLOCKEDIT_NOTE.getInventorySlot(), ItemStacks.replace(ItemStacks.INV_BLOCKEDIT_NOTE.getItem(player), "%NOTE%", msg));
 		inv.setItem(ItemStacks.INV_BLOCKEDIT_UNBLOCK.getInventorySlot(), ItemStacks.replace(ItemStacks.INV_BLOCKEDIT_UNBLOCK.getItem(player), "%NAME%", name));
 		
+		String invName = "BlockedEditInventory";
+		for(int customItem = 0; customItem < ItemStacks.getItemCount(invName); customItem++) 
+			inv.setItem(ItemStacks.getCustomInventorySlot(invName, customItem) - 1, ItemStacks.getCutomItem(invName, customItem, player));
+		
 		player.openInventory(inv);
 	}
 	
 	public static void openFriendEditInventory(Player player, Friendship fs) {
 		String name = FriendHash.getName(fs.getFriend());
+		name = fs.hasNickname() ? fs.getNickname() : name;
 		Inventory inv = Bukkit.createInventory(null, FRIENDEDIT_INVENTORY.getSize(), FRIENDEDIT_INVENTORY.getTitle(player).replace("%NAME%", name));
 		
 		for(String slots : FileManager.CONFIG.getConfig().getStringList("Friends.FriendEditInventory.Placeholders.InventorySlots"))
@@ -390,6 +412,10 @@ public enum InventoryBuilder {
 				"%NICKNAME%", nickname));
 		if(Configs.INV_JUMPING_ENABLE.getBoolean()) inv.setItem(ItemStacks.INV_FRIENDEDIT_JUMP.getInventorySlot(), ItemStacks.replace(ItemStacks.INV_FRIENDEDIT_JUMP.getItem(player), "%NAME%", name));
 	
+		String invName = "FriendEditInventory";
+		for(int customItem = 0; customItem < ItemStacks.getItemCount(invName); customItem++) 
+			inv.setItem(ItemStacks.getCustomInventorySlot(invName, customItem) - 1, ItemStacks.getCutomItem(invName, customItem, player));
+		
 		player.openInventory(inv);
 	}
 	
@@ -416,6 +442,10 @@ public enum InventoryBuilder {
 		if(Configs.OPTIONS_STATUS_SHOW.getBoolean()) inv.setItem(ItemStacks.INV_OPTIONS_STATUS.getInventorySlot(), ItemStacks.replace(ItemStacks.INV_OPTIONS_STATUS.getItem(p), "%STATUS%", status));
 		if(Configs.OPTIONS_JUMP_SHOW.getBoolean()) inv.setItem(ItemStacks.INV_OPTIONS_JUMP.getInventorySlot(), ItemStacks
 				.replace(ItemStacks.INV_OPTIONS_JUMP.getItem(p), "%OPTION_JUMPING_STATUS%", jumping));
+		
+		String invName = "OptionsInventory";
+		for(int customItem = 0; customItem < ItemStacks.getItemCount(invName); customItem++) 
+			inv.setItem(ItemStacks.getCustomInventorySlot(invName, customItem) - 1, ItemStacks.getCutomItem(invName, customItem, p));
 		
 		p.openInventory(inv);
 	}

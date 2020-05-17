@@ -1,7 +1,7 @@
 #################################################################################################################################
 #																																#
 #	FriendsRELOADED	MC1.13 - 1.15																								#
-#	Version 1.1.2	Made by: HyChrod (Flocrafter77)																				#
+#	Version 1.1.4	Made by: HyChrod (Flocrafter77)																				#
 #																																#
 #################################################################################################################################
 Friends:
@@ -41,6 +41,13 @@ Friends:
     ChangeDuration: 600
     # Toggle wether you want players to use farbcodes in order to set a colored status!
     AllowFarbcodes: false
+
+  # If you enable Nicknames, players can give their friends a unique nickname!
+  # If enabled, you can use %REAL_NAME% as a placeholder to show a players real name
+  Nicknames:
+    Enable: true
+    # You can check given nicknames and block abusive words (defined in forbidden_phrases.txt)
+    CheckForAbusiveWords: true
   
   # Friends have the possibility to send global messages to all their friends
   FriendChat:
@@ -168,6 +175,22 @@ Friends:
       - 48
       - 50
       - 52
+    # In the following section you are able to create your own items, which can perform commands or just work as additional placeholders/design elements.
+    # To add a new item, just follow these format-rules:
+    # CustomItems:
+    #   CUSTOM_ITEM_<Number>:
+    #     Name: ""
+    #     Material: ""
+    #     Lore: ""
+    #     InventorySlot: 1 
+    #     PerformCommand: <Command> | If you do not want to use a command just let it empty
+    CustomItems:
+      CUSTOM_ITEM_1:
+        Name: "&aCustomItem"
+        Material: "oak_sign"
+        Lore: "&7This is a custom item, which can be//&7created and edited in the config.yml// //&7If you do not want to use this item//&7just remove it."
+        InventorySlot: 1
+        PerformCommand: "say HyChrod is the best!"
       
   FriendEditInventory:
     InventoryTitle: "&3%NAME%"
@@ -226,6 +249,17 @@ Friends:
       - 4
       - 7
       - 8
+    # In the following section you are able to create your own items, which can perform commands or just work as additional placeholders/design elements.
+    # To add a new item, just follow these format-rules:
+    # CustomItems:
+    #   CUSTOM_ITEM_<Number>:
+    #     Name: ""
+    #     Material: ""
+    #     Lore: ""
+    #     InventorySlot: 1 
+    #     PerformCommand: <Command> | If you do not want to use a command just let it empty
+    CustomItems:
+      NO_ITEMS: []
       
   RequestsInventory:
     InventoryTitle: "&aYour requests: (Page %PAGE%)"
@@ -280,6 +314,17 @@ Friends:
       - 48
       - 50
       - 52
+    # In the following section you are able to create your own items, which can perform commands or just work as additional placeholders/design elements.
+    # To add a new item, just follow these format-rules:
+    # CustomItems:
+    #   CUSTOM_ITEM_<Number>:
+    #     Name: ""
+    #     Material: ""
+    #     Lore: ""
+    #     InventorySlot: 1 
+    #     PerformCommand: <Command> | If you do not want to use a command just let it empty
+    CustomItems:
+      NO_ITEMS: []
     
   RequestEditInventory:
     InventoryTitle: "&a%NAME% request:"
@@ -320,6 +365,17 @@ Friends:
       - 7
       - 8
       - 9
+    # In the following section you are able to create your own items, which can perform commands or just work as additional placeholders/design elements.
+    # To add a new item, just follow these format-rules:
+    # CustomItems:
+    #   CUSTOM_ITEM_<Number>:
+    #     Name: ""
+    #     Material: ""
+    #     Lore: ""
+    #     InventorySlot: 1 
+    #     PerformCommand: <Command> | If you do not want to use a command just let it empty
+    CustomItems:
+      NO_ITEMS: []
       
   BlockedInventory:
     InventoryTitle: "&cBlocked players: (Page %PAGE%)"
@@ -368,6 +424,17 @@ Friends:
       - 49
       - 51
       - 52
+    # In the following section you are able to create your own items, which can perform commands or just work as additional placeholders/design elements.
+    # To add a new item, just follow these format-rules:
+    # CustomItems:
+    #   CUSTOM_ITEM_<Number>:
+    #     Name: ""
+    #     Material: ""
+    #     Lore: ""
+    #     InventorySlot: 1 
+    #     PerformCommand: <Command> | If you do not want to use a command just let it empty
+    CustomItems:
+      NO_ITEMS: []
       
   BlockedEditInventory:
     InventoryTitle: "&c%NAME%"
@@ -403,6 +470,17 @@ Friends:
       - 7
       - 8
       - 9
+    # In the following section you are able to create your own items, which can perform commands or just work as additional placeholders/design elements.
+    # To add a new item, just follow these format-rules:
+    # CustomItems:
+    #   CUSTOM_ITEM_<Number>:
+    #     Name: ""
+    #     Material: ""
+    #     Lore: ""
+    #     InventorySlot: 1 
+    #     PerformCommand: <Command> | If you do not want to use a command just let it empty
+    CustomItems:
+      NO_ITEMS: []
       
   OptionsInventory:
     InventoryTitle: "&3Options:"
@@ -460,3 +538,14 @@ Friends:
       - 4
       - 6
       - 8
+    # In the following section you are able to create your own items, which can perform commands or just work as additional placeholders/design elements.
+    # To add a new item, just follow these format-rules:
+    # CustomItems:
+    #   CUSTOM_ITEM_<Number>:
+    #     Name: ""
+    #     Material: ""
+    #     Lore: ""
+    #     InventorySlot: 1 
+    #     PerformCommand: <Command> | If you do not want to use a command just let it empty
+    CustomItems:
+      NO_ITEMS: []

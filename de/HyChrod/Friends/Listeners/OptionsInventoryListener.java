@@ -109,6 +109,8 @@ public class OptionsInventoryListener implements Listener {
 										meta.setDisplayName(current);
 										item.setItemMeta(meta);
 										
+										float expt = p.getExp();
+										int lvl = p.getLevel();
 										new AnvilGUI.Builder().onComplete((BiFunction<Player, String, AnvilGUI.Response>)(player,text) -> {
 											if(text.length() > Configs.STATUS_LENGHT.getNumber()) {
 												p.sendMessage(Messages.CMD_STATUS_STATUS_LENGHT.getMessage(p).replace("%LIMIT%", String.valueOf(Configs.STATUS_LENGHT.getNumber())));
@@ -133,11 +135,24 @@ public class OptionsInventoryListener implements Listener {
 											p.sendMessage(Messages.CMD_STATUS_STATUS_SET.getMessage(p).replace("%STATUS%", text));
 											if(Configs.BUNGEEMODE.getBoolean())
 												AsyncSQLQueueUpdater.addToQueue("update friends_options set status='" + text + "' where uuid='" + p.getUniqueId().toString() + "'");
+											
+											if(p.getExp() != expt || p.getLevel() != lvl) {
+												p.setExp(expt);
+												p.setLevel(lvl);
+											}
 											return AnvilGUI.Response.close();
 											
 										}).title("§aStatus:").item(item).text(current).plugin(Friends.getInstance()).open(p);
 										return;
 									}
+									
+									String invName = "OptionsInventory";
+									for(int customIndex = 0; customIndex < ItemStacks.getItemCount(invName); customIndex++)
+										if(e.getCurrentItem().getItemMeta().getDisplayName().contentEquals(ItemStacks.getCutomItem(invName, customIndex, p).getItemMeta().getDisplayName())) {
+											String cmd = ItemStacks.getCustomCommand(invName, customIndex);
+											if(cmd.length() > 0) p.performCommand(cmd.replace("%NAME%", p.getName()));
+											return;
+										}
 									
 								}
 					}

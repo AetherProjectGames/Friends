@@ -41,6 +41,7 @@ public class MSG_Command {
 		FriendHash hash = FriendHash.getFriendHash(p.getUniqueId());
 		for(Friendship fs : hash.getFriendsNew())
 			if(fs.getFriend().equals(toSend)) {
+				String name = fs.hasNickname() ? fs.getNickname() : playerToSend;
 				if(FriendHash.isOnline(toSend)) {
 					if(!hash.getOptions().getMessages() && !hash.getOptions().getFavMessages()) {
 						p.sendMessage(Messages.CMD_MSG_MSG_DISABLED.getMessage(p));
@@ -50,7 +51,7 @@ public class MSG_Command {
 					FriendHash fhash = FriendHash.getFriendHash(toSend);
 					Friendship ffs = fhash.getFriendship(p.getUniqueId());
 					if(!ffs.getCanSendMessages() || (!fhash.getOptions().getMessages() && !fhash.getOptions().getFavMessages()) || (fhash.getOptions().getFavMessages() && !ffs.getFavorite())) {
-						p.sendMessage(Messages.CMD_MSG_NOMSG.getMessage(p).replace("%NAME%", playerToSend));
+						p.sendMessage(Messages.CMD_MSG_NOMSG.getMessage(p).replace("%NAME%", name));
 						return;
 					}
 					
@@ -68,11 +69,11 @@ public class MSG_Command {
 						}
 					}
 					
-					p.sendMessage(Messages.CMD_MSG_MSG.getMessage(p).replace("%NAME%", playerToSend).replace("%SENDER%", p.getName()).replace("%MESSAGE%", msg));
+					p.sendMessage(Messages.CMD_MSG_MSG.getMessage(p).replace("%NAME%", name).replace("%SENDER%", p.getName()).replace("%MESSAGE%", msg));
 					Bukkit.getPlayer(toSend).sendMessage(Messages.CMD_MSG_MSG.getMessage(Bukkit.getPlayer(toSend)).replace("%NAME%", playerToSend).replace("%SENDER%", p.getName()).replace("%MESSAGE%", msg));
 					return;
 				}
-				p.sendMessage(Messages.CMD_MSG_OFFLINE.getMessage(p).replace("%NAME%", playerToSend));
+				p.sendMessage(Messages.CMD_MSG_OFFLINE.getMessage(p).replace("%NAME%", name));
 				return;
 			}
 		p.sendMessage(Messages.CMD_MSG_NOFRIENDS.getMessage(p).replace("%NAME%", playerToSend));

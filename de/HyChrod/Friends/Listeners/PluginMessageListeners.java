@@ -33,6 +33,11 @@ public class PluginMessageListeners implements PluginMessageListener {
 			UUID uuid = UUID.fromString(in.readUTF());
 			if(Bukkit.getPlayer(uuid) == null) return;
 			InventoryBuilder.openFriendInventory(Bukkit.getPlayer(uuid), uuid, FriendInventoryListener.getPage(Bukkit.getPlayer(uuid).getUniqueId()), true);
+			return;
+		}
+		if(channel.startsWith("friends:reload")) {
+			Friends.reload();
+			return;
 		}
 	}
 	

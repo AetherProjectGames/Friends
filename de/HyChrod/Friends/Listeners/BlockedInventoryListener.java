@@ -69,6 +69,14 @@ public class BlockedInventoryListener implements Listener {
 									return;
 								}
 								
+								String invName = "BlockedInventory";
+								for(int customIndex = 0; customIndex < ItemStacks.getItemCount(invName); customIndex++)
+									if(e.getCurrentItem().getItemMeta().getDisplayName().contentEquals(ItemStacks.getCutomItem(invName, customIndex, p).getItemMeta().getDisplayName())) {
+										String cmd = ItemStacks.getCustomCommand(invName, customIndex);
+										if(cmd.length() > 0) p.performCommand(cmd.replace("%NAME%", p.getName()));
+										return;
+									}
+								
 								HashMap<String, Blockplayer> positions = cashedPositionsByUUID.get(p.getUniqueId());
 								for(String identifier : positions.keySet()) {
 									System.out.println(identifier);

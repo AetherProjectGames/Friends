@@ -124,6 +124,11 @@ Messages:
     OptionsOfflinemodeCommand:
       Disable: "%PREFIX% &aYou are now online!"
       Enable: "%PREFIX% &7You are now offline!"
+    NicknameCommand:
+      NoFriends: "%PREFIX% &c%NAME% has to be your friend in order to give him a nickname!"
+      SameNickname: "%PREFIX% &c%NAME% is already named %NICKNAME%!"
+      SetNick: "%PREFIX% &a%NAME% is now called %NICKNAME%"
+      AbusivePhrase: "%PREFIX% &cYour nickname contains forbidden phrases! \n%PREFIX% &cFlagged: &7%PHRASE%"
   FriendChat: 
     DisabledOption: "%PREFIX% &cYou cannot write in the friendchat while you have disabled your messages!"
     Format: "&b%NAME% -> Friends&7:&r%MESSAGE%"

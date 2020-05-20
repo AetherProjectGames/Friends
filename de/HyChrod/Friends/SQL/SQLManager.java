@@ -12,6 +12,7 @@ import de.HyChrod.Friends.Hashing.Blockplayer;
 import de.HyChrod.Friends.Hashing.Friendship;
 import de.HyChrod.Friends.Hashing.Options;
 import de.HyChrod.Friends.Hashing.Request;
+import de.HyChrod.Party.Utilities.Parties;
 
 public class SQLManager {
 	
@@ -33,7 +34,7 @@ public class SQLManager {
 				con.close();
 			
 			Class.forName("com.mysql.jdbc.Driver");
-			con = DriverManager.getConnection("jdbc:mysql://" + this.host + ":"+ this.port + "/" + this.database + "?useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", this.username, this.password);
+			con = DriverManager.getConnection("jdbc:mysql://" + this.host + ":"+ this.port + "/" + this.database + "?autoReconnect=true&useUnicode=yes&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", this.username, this.password);
 			
 			createTables();
 		} catch (Exception ex) {}
@@ -54,12 +55,92 @@ public class SQLManager {
 		getCon().prepareStatement("create table if not exists friends_frienddata(uuid VARCHAR(50), uuid2 VARCHAR(50), favorite int, timestamp long, nickname TEXT, canSendMessages int);").executeUpdate();
 		getCon().prepareStatement("create table if not exists friends_requests(uuid VARCHAR(50), uuid2 VARCHAR(50), message TEXT, timestamp long);").executeUpdate();
 		getCon().prepareStatement("create table if not exists friends_blocked(uuid VARCHAR(50), uuid2 VARCHAR(50), message TEXT, timestamp long);").executeUpdate();
-		getCon().prepareStatement("create table if not exists friends_options(uuid VARCHAR(50) NOT NULL PRIMARY KEY, offline int, receiveMsg int, receiveRequests int, sorting int, status TEXT, jumping int);").executeUpdate();
+		getCon().prepareStatement("create table if not exists friends_options(uuid VARCHAR(50) NOT NULL PRIMARY KEY, offline int, receiveMsg int, receiveRequests int, sorting int, status TEXT, jumping int, party int);").executeUpdate();
+		getCon().prepareStatement("create table if not exists party(id int NOT NULL PRIMARY KEY, prvt int, server VARCHAR(50));").executeUpdate();
+		getCon().prepareStatement("create table if not exists party_members(id int, uuid varchar(50) NOT NULL PRIMARY KEY);").executeUpdate();
+		getCon().prepareStatement("create table if not exists party_leaders(id int, uuid varchar(50) NOT NULL PRIMARY KEY);").executeUpdate();
+		getCon().prepareStatement("create table if not exists party_players(uuid varchar(50) NOT NULL PRIMARY KEY, id int);").executeUpdate();
 		try {
+			perform("alter table friends_options add party int after status");
 			perform("alter table friends_playerdata add server varchar(50) after lastOnline");
 			perform("alter table friends_options add jumping int after status");
 			perform("alter table friends_playerdata add online int after name");
 		} catch (Exception ex) {}
+	}
+	
+	public Parties getParty(UUID uuid) {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Parties party = new Parties();
+		try {
+			ps = getCon().prepareStatement("select p.server,p.prvt,p.id,l.uuid as leader,m.uuid as member from party_players pp join party p on p.id=pp.id left join party_members m on m.id=p.id left "
+					+ "join party_leaders l on l.id=p.id where pp.uuid='" + uuid.toString() +"';");
+			rs = ps.executeQuery();
+			while(rs.next()) {
+				party.setID(rs.getInt("p.id"));
+				if(rs.getString("p.server") != null) party.setInfo(rs.getString("p.server"));
+				if(rs.getString("prvt") != null) party.setPublic(rs.getInt("prvt") == 0 ? true : false);
+				if(rs.getString("member") != null) party.addParticipant(UUID.fromString(rs.getString("member")));
+				if(rs.getString("leader") != null) party.makeLeader(UUID.fromString(rs.getString("leader")));
+			}
+			if(party.getID() < 0) return null;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			close(rs, ps);
+		}
+		return party;
+	}
+	
+	public LinkedList<UUID> getMembers(int id) {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		LinkedList<UUID> members = new LinkedList<UUID>();
+		try {
+			ps = getCon().prepareStatement("(select uuid party_members where id='" + id + "' union (select uuid from party_leaders where id='" + id + "';");
+			rs = ps.executeQuery();
+			while(rs.next())
+				members.add(UUID.fromString(rs.getString("uuid")));
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			close(rs, ps);
+		}
+		return members;
+	}
+	
+	public LinkedList<UUID> getParticipants(int id) {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		LinkedList<UUID> members = new LinkedList<UUID>();
+		try {
+			ps = getCon().prepareStatement("select uuid party_members where id='" + id + "';");
+			rs = ps.executeQuery();
+			while(rs.next())
+				members.add(UUID.fromString(rs.getString("uuid")));
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			close(rs, ps);
+		}
+		return members;
+	}
+	
+	public LinkedList<UUID> getLeaders(int id) {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		LinkedList<UUID> members = new LinkedList<UUID>();
+		try {
+			ps = getCon().prepareStatement("select uuid party_leaders where id='" + id + "';");
+			rs = ps.executeQuery();
+			while(rs.next())
+				members.add(UUID.fromString(rs.getString("uuid")));
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			close(rs, ps);
+		}
+		return members;
 	}
 	
 	public String getServer(UUID uuid) {
@@ -231,11 +312,11 @@ public class SQLManager {
 		if(!isConnected()) return;
 		PreparedStatement ps = null;
 		try {
-			ps = getCon().prepareStatement("insert into friends_options(uuid, offline, receiveMsg, receiveRequests, sorting, status, jumping) "
+			ps = getCon().prepareStatement("insert into friends_options(uuid, offline, receiveMsg, receiveRequests, sorting, status, jumping, party) "
 					+ "values ('" + options.getUuid().toString() + "','" + (options.isOffline() ? 1 : 0) + "','" + (options.getMessages() ? 1 : options.getFavMessages() ? 2 : 0) 
 					+ "','" + (options.getRequests() ? 1 : 0) + "','" + options.getSorting() + "','" + (options.getStatus() == null || options.getStatus().length() < 1 ? "" : options.getStatus()) 
-					+ "', '" + (options.getJumping() ? 1 : 0) + "') on duplicate key " + "update uuid=values(uuid), offline=values(offline), receiveMsg=values(receiveMsg), "
-							+ "receiveRequests=values(receiveRequests), sorting=values(sorting), status=values(status), jumping=values(jumping);");
+					+ "', '" + (options.getJumping() ? 1 : 0) + "', '" + (options.getPartyInvites() ? 1 : 0) + "') on duplicate key " + "update uuid=values(uuid), offline=values(offline), receiveMsg=values(receiveMsg), "
+							+ "receiveRequests=values(receiveRequests), sorting=values(sorting), status=values(status), jumping=values(jumping), party=values(party);");
 			ps.executeUpdate();
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -295,12 +376,12 @@ public class SQLManager {
 	}
 	
 	public Options getOptions(UUID uuid) {
-		Options opt = new Options(uuid, false, true, 1, null, 0, false);
+		Options opt = new Options(uuid, false, true, 1, null, 0, false, true);
 		if(!isConnected()) return opt;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			ps = getCon().prepareStatement("select offline,receivemsg,receiverequests,sorting,status,jumping from friends_options where uuid = '" + uuid.toString() + "'");
+			ps = getCon().prepareStatement("select offline,receivemsg,receiverequests,sorting,status,jumping,party from friends_options where uuid = '" + uuid.toString() + "'");
 			rs = ps.executeQuery();
 			if(rs.next()) {
 				opt.setOffline(rs.getInt("offline") == 0 ? false : true);
@@ -309,6 +390,7 @@ public class SQLManager {
 				opt.setSorting(rs.getInt("sorting"));
 				opt.setStatus(rs.getString("status"));
 				opt.setJumping(rs.getString("jumping") != null ? (rs.getInt("jumping") == 0 ? false : true) : true);
+				opt.setPartyInvites(rs.getInt("party") == 0 ? false : true);
 			}
 		} catch (Exception ex) {ex.printStackTrace();} finally {
 			close(rs, ps);

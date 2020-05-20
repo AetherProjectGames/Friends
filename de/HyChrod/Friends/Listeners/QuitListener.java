@@ -11,6 +11,8 @@ import de.HyChrod.Friends.Hashing.FriendHash;
 import de.HyChrod.Friends.Hashing.Friendship;
 import de.HyChrod.Friends.Utilities.Configs;
 import de.HyChrod.Friends.Utilities.Messages;
+import de.HyChrod.Party.Commands.SubCommands.Leave_Command;
+import de.HyChrod.Party.Utilities.Parties;
 
 public class QuitListener implements Listener {
 	
@@ -20,6 +22,7 @@ public class QuitListener implements Listener {
 		FriendHash hash = FriendHash.getFriendHash(p.getUniqueId());
 		if((hash.getOptions() != null && hash.getOptions().isOffline()) || Configs.BUNGEEMODE.getBoolean()) return;
 		hash.setLastOnline(System.currentTimeMillis());
+		if(Parties.getParty(p.getUniqueId()) != null) new Leave_Command(Friends.getInstance(), p, new String[] {"leave"}); 
 		if(!FriendHash.isOnline(p.getUniqueId())) return;
 		Bukkit.getScheduler().runTaskAsynchronously(Friends.getInstance(), new Runnable() {
 			

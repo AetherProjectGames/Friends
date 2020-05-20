@@ -25,7 +25,7 @@ public class PluginMessageListeners implements PluginMessageListener {
 			Bukkit.getPlayer(uuid).sendMessage(Messages.CMD_VERSION.getMessage(Bukkit.getPlayer(uuid)).replace("%VERSION%", Friends.getInstance().getDescription().getVersion() + (Friends.isUpdateNeeded() ? " §c(Outdated)" : "")));
 			return;
 		}
-		if(channel.startsWith("friends:openinv")) {
+		if(channel.equalsIgnoreCase("friends:openinv")) {
 			if(!Configs.GUI_WITH_COMMAND.getBoolean()) {
 				sender.sendMessage(Messages.CMD_UNKNOWN_COMMAND.getMessage(null));
 				return;

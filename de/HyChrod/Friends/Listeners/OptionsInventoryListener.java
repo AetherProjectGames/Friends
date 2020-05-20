@@ -38,10 +38,10 @@ public class OptionsInventoryListener implements Listener {
 			if(e.getView().getTitle() != null && e.getView().getTitle().equals(InventoryBuilder.OPTIONS_INVENTORY.getTitle((Player)e.getPlayer()))) {
 				if(currentlyEditing.containsKey(e.getPlayer().getUniqueId())) {
 					Options opt = currentlyEditing.get(e.getPlayer().getUniqueId());
-					AsyncSQLQueueUpdater.addToQueue("insert into friends_options(uuid, offline,receivemsg,receiverequests,sorting,status,jumping) "
+					AsyncSQLQueueUpdater.addToQueue("insert into friends_options(uuid, offline,receivemsg,receiverequests,sorting,status,jumping,party) "
 							+ "values ('" + e.getPlayer().getUniqueId().toString() + "','" + (opt.isOffline() ? 1 : 0) + "','" + (opt.getMessages() ? 1 : opt.getFavMessages() ? 2 : 0) + "','" + (opt.getRequests() ? 1 : 0) + "',"
-									+ "'" + opt.getSorting() + "','" + opt.getStatus() + "', '" + (opt.getJumping() ? 1 : 0) + "') on duplicate key update "
-							+ "offline=values(offline),receivemsg=values(receivemsg),receiverequests=values(receiverequests),sorting=values(sorting),status=values(status),jumping=values(jumping);");
+									+ "'" + opt.getSorting() + "','" + opt.getStatus() + "', '" + (opt.getJumping() ? 1 : 0) + "', '" + (opt.getPartyInvites() ? 1 : 0) + "') on duplicate key update "
+							+ "offline=values(offline),receivemsg=values(receivemsg),receiverequests=values(receiverequests),sorting=values(sorting),status=values(status),jumping=values(jumping),party=values(party);");
 				}
 				
 			}
@@ -70,6 +70,7 @@ public class OptionsInventoryListener implements Listener {
 									String requests = ChatColor.translateAlternateColorCodes('&', opt.getRequests() ? Configs.OPTIONS_ON.getText() : Configs.OPTIONS_OFF.getText());
 									String status = opt.getStatus() == null || opt.getStatus().length() < 1 ? Configs.INV_FRIENDS_NO_STATUS_REPLACEMENT.getText() : opt.getStatus();
 									String jumping = ChatColor.translateAlternateColorCodes('&', opt.getJumping() ? Configs.OPTIONS_ON.getText() : Configs.OPTIONS_OFF.getText());
+									String party = ChatColor.translateAlternateColorCodes('&', opt.getPartyInvites() ? Configs.OPTIONS_ON.getText() : Configs.OPTIONS_OFF.getText());
 									
 									if(e.getCurrentItem().getItemMeta().getDisplayName().equals(ItemStacks.INV_OPTIONS_MESSAGES.getItem(p).getItemMeta().getDisplayName()
 											.replace("%OPTION_MESSAGES_STATUS%", messages))) {
@@ -94,6 +95,12 @@ public class OptionsInventoryListener implements Listener {
 									if(e.getCurrentItem().getItemMeta().getDisplayName().equals(ItemStacks.INV_OPTIONS_JUMP.getItem(p).getItemMeta().getDisplayName()
 											.replace("%OPTION_JUMPING_STATUS%", jumping))) {
 										opt.setJumping(opt.getJumping() ? false : true);
+										InventoryBuilder.openOptionsInventory(p, opt);
+										return;
+									}
+									if(e.getCurrentItem().getItemMeta().getDisplayName().equals(ItemStacks.INV_OPTIONS_PARTY.getItem(p).getItemMeta().getDisplayName()
+											.replace("%OPTION_PARTY_STATUS%", party))) {
+										opt.setPartyInvites(opt.getPartyInvites() ? false : true);
 										InventoryBuilder.openOptionsInventory(p, opt);
 										return;
 									}

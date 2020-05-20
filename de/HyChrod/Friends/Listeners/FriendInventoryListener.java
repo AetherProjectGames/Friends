@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,11 +13,15 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import de.HyChrod.Friends.Friends;
 import de.HyChrod.Friends.Hashing.Blockplayer;
 import de.HyChrod.Friends.Hashing.FriendHash;
 import de.HyChrod.Friends.Hashing.Friendship;
 import de.HyChrod.Friends.Utilities.InventoryBuilder;
 import de.HyChrod.Friends.Utilities.ItemStacks;
+import de.HyChrod.Party.Listeners.PartyInventoryListener;
+import de.HyChrod.Party.Utilities.PInventoryBuilder;
+import de.HyChrod.Party.Utilities.Parties;
 
 public class FriendInventoryListener implements Listener {
 	
@@ -45,7 +50,13 @@ public class FriendInventoryListener implements Listener {
 					if(e.getItem().getItemMeta().hasDisplayName()) {
 						if(e.getItem().getItemMeta().getDisplayName().equals(ItemStacks.FRIEND_ITEM.getItem((Player)e.getPlayer()).getItemMeta().getDisplayName())) {
 							e.setCancelled(true);
-							InventoryBuilder.openFriendInventory(e.getPlayer(), e.getPlayer().getUniqueId(), getPage(e.getPlayer().getUniqueId()), true);
+							Bukkit.getScheduler().runTaskAsynchronously(Friends.getInstance(), new Runnable() {
+								
+								@Override
+								public void run() {
+									InventoryBuilder.openFriendInventory(e.getPlayer(), e.getPlayer().getUniqueId(), getPage(e.getPlayer().getUniqueId()), true);
+								}
+							});
 							return;
 						}
 					}
@@ -79,6 +90,11 @@ public class FriendInventoryListener implements Listener {
 								if(e.getCurrentItem().getItemMeta().getDisplayName().equals(ItemStacks.INV_FRIEND_OPTIONS.getItem(p).getItemMeta().getDisplayName())) {
 									OptionsInventoryListener.setEditing(p.getUniqueId(), hash.getOptions());
 									InventoryBuilder.openOptionsInventory(p, hash.getOptions());
+									return;
+								}
+								if(e.getCurrentItem().getItemMeta().getDisplayName().equals(ItemStacks.INV_FRIEND_PARTY.getItem(p).getItemMeta().getDisplayName())) {
+									if(Parties.getParty(p.getUniqueId()) == null) PInventoryBuilder.openCreateInventory(p);
+									else PartyInventoryListener.setPositions(p.getUniqueId(), PInventoryBuilder.openPartyInventory(p, Parties.getParty(p.getUniqueId())));
 									return;
 								}
 								if(e.getCurrentItem().getItemMeta().getDisplayName().equals(ItemStacks.INV_FRIEND_NEXTPAGE.getItem(p).getItemMeta().getDisplayName())) {

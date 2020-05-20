@@ -94,6 +94,8 @@ public enum InventoryBuilder {
 		inv.setItem(ItemStacks.INV_FRIEND_OPTIONS.getInventorySlot(), ItemStacks.INV_FRIEND_OPTIONS.getItem(player));
 		if(Configs.INV_FRIEND_PREVIOUSPAGE_ENABLE.getBoolean() && (!Configs.INV_FRIEND_HIDEPAGES.getBoolean() || (Configs.INV_FRIEND_HIDEPAGES.getBoolean() && page > 0)))
 			inv.setItem(ItemStacks.INV_FRIEND_PREVIOUSPAGE.getInventorySlot(), ItemStacks.INV_FRIEND_PREVIOUSPAGE.getItem(player));
+		if(Configs.INV_PARTY_ENABLE.getBoolean())
+			inv.setItem(ItemStacks.INV_FRIEND_PARTY.getInventorySlot(), ItemStacks.INV_FRIEND_PARTY.getItem(player));
 		
 		String invName = "FriendInventory";
 		for(int customItem = 0; customItem < ItemStacks.getItemCount(invName); customItem++) 
@@ -411,7 +413,8 @@ public enum InventoryBuilder {
 		if(Configs.INV_FRIENDEDIT_NICK_ENABLE.getBoolean()) inv.setItem(ItemStacks.INV_FRIENDEDIT_NICKNAME.getInventorySlot(), ItemStacks.replace(ItemStacks.replace(ItemStacks.INV_FRIENDEDIT_NICKNAME.getItem(player), "%NAME%", name), 
 				"%NICKNAME%", nickname));
 		if(Configs.INV_JUMPING_ENABLE.getBoolean()) inv.setItem(ItemStacks.INV_FRIENDEDIT_JUMP.getInventorySlot(), ItemStacks.replace(ItemStacks.INV_FRIENDEDIT_JUMP.getItem(player), "%NAME%", name));
-	
+		if(Configs.INV_FRIENDEDIT_PARTY_ENABLE.getBoolean()) inv.setItem(ItemStacks.INV_FRIENDEDIT_PARTY.getInventorySlot(), ItemStacks.replace(ItemStacks.INV_FRIENDEDIT_PARTY.getItem(player), "%NAME%", name));
+		
 		String invName = "FriendEditInventory";
 		for(int customItem = 0; customItem < ItemStacks.getItemCount(invName); customItem++) 
 			inv.setItem(ItemStacks.getCustomInventorySlot(invName, customItem) - 1, ItemStacks.getCutomItem(invName, customItem, player));
@@ -430,6 +433,7 @@ public enum InventoryBuilder {
 		String requests = ChatColor.translateAlternateColorCodes('&', opt.getRequests() ? Configs.OPTIONS_ON.getText() : Configs.OPTIONS_OFF.getText());
 		String status = opt.getStatus() == null || opt.getStatus().length() < 1 ? Configs.INV_FRIENDS_NO_STATUS_REPLACEMENT.getText() : opt.getStatus();
 		String jumping = ChatColor.translateAlternateColorCodes('&', opt.getJumping() ? Configs.OPTIONS_ON.getText() : Configs.OPTIONS_OFF.getText());
+		String party = ChatColor.translateAlternateColorCodes('&', opt.getPartyInvites() ? Configs.OPTIONS_ON.getText() : Configs.OPTIONS_OFF.getText());
 		if(Configs.ALLOW_STATUS_COLOR.getBoolean()) status = ChatColor.translateAlternateColorCodes('&', status);
 		
 		inv.setItem(ItemStacks.INV_OPTIONS_BACK.getInventorySlot(), ItemStacks.INV_OPTIONS_BACK.getItem(p));
@@ -442,6 +446,8 @@ public enum InventoryBuilder {
 		if(Configs.OPTIONS_STATUS_SHOW.getBoolean()) inv.setItem(ItemStacks.INV_OPTIONS_STATUS.getInventorySlot(), ItemStacks.replace(ItemStacks.INV_OPTIONS_STATUS.getItem(p), "%STATUS%", status));
 		if(Configs.OPTIONS_JUMP_SHOW.getBoolean()) inv.setItem(ItemStacks.INV_OPTIONS_JUMP.getInventorySlot(), ItemStacks
 				.replace(ItemStacks.INV_OPTIONS_JUMP.getItem(p), "%OPTION_JUMPING_STATUS%", jumping));
+		if(Configs.OPTIONS_PARTY_SHOW.getBoolean()) inv.setItem(ItemStacks.INV_OPTIONS_PARTY.getInventorySlot(), ItemStacks
+				.replace(ItemStacks.INV_OPTIONS_PARTY.getItem(p), "%OPTION_PARTY_STATUS%", party));
 		
 		String invName = "OptionsInventory";
 		for(int customItem = 0; customItem < ItemStacks.getItemCount(invName); customItem++) 

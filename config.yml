@@ -169,6 +169,13 @@ Friends:
       # You can split the lines by using '//'
       Lore: ""
       InventorySlot: 53
+    PartyItem:
+      ShowItem: true
+      Name: "&9Your Party"
+      Material: "firework_rocket"
+      # You can split the lines by using '//'
+      Lore: ""
+      InventorySlot: 50
     Placeholders:
       Material: "gray_stained_glass_pane"
       InventorySlots:
@@ -242,6 +249,12 @@ Friends:
       # You can split the lines by using '//'
       Lore: ""
       InventorySlot: 4
+    PartyItem:
+      ShowItem: true
+      Name: "&dInvite %NAME% to your Party!"
+      Material: "firework_star"
+      Lore: ""
+      InventorySlot: 7
     Placeholders:
       Material: "gray_stained_glass_pane"
       InventorySlots:
@@ -531,6 +544,13 @@ Friends:
       # You can split the lines by using '//'
       Lore: "&7Currently: %OPTION_JUMPING_STATUS%// //&7If enabled, friends can jump to//&7your current location!"
       InventorySlot: 4
+    PartyItem:
+      ShowItem: true
+      Name: "&dParty Invites"
+      Material: "firework_star"
+      # You can split the lines by using '//'
+      Lore: "&7Currently: %OPTION_PARTY_STATUS%// //&7Toggle wether you want to receive//&7partyinvites from your friends!"
+      InventorySlot: 2
     Placeholders:
       Material: "gray_stained_glass_pane"
       InventorySlots:

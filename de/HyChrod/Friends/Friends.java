@@ -35,6 +35,8 @@ import de.HyChrod.Friends.Utilities.ItemStacks;
 import de.HyChrod.Friends.Utilities.Messages;
 import de.HyChrod.Friends.Utilities.Metrics;
 import de.HyChrod.Friends.Utilities.UpdateChecker;
+import de.HyChrod.Party.Party;
+import de.HyChrod.Party.Utilities.PConfigs;
 
 /**
  * 
@@ -47,7 +49,6 @@ import de.HyChrod.Friends.Utilities.UpdateChecker;
  * - Friends.FriendLimit.Extended
  * - Friends.Status.ChangeLimit.ByPass
  * - Friends.Commands.Msg
- * - Friends.Commands.Nickname
  *
  */
 
@@ -64,6 +65,7 @@ public class Friends extends JavaPlugin {
 		FileManager.loadFiles(this);
 		FileManager.updateFiles();
 		Configs.loadConfigs();
+		PConfigs.loadConfigs();
 		prefix = ChatColor.translateAlternateColorCodes('&', FileManager.CONFIG.getConfig().getString("Friends.Prefix"));
 		instance = this;
 		
@@ -88,6 +90,7 @@ public class Friends extends JavaPlugin {
 		
 		if(Configs.CHECK_FOR_UPDATES.getBoolean()) checkForUpdates();
 		Bukkit.getConsoleSender().sendMessage(prefix + " §aPlugin was successfully loaded!");
+		if(PConfigs.PARTY_CHAT_ENABLE.getBoolean()) new Party().enable(this);
 		return;
 	}
 	

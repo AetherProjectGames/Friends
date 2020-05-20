@@ -7,7 +7,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 
 import de.HyChrod.Friends.Utilities.ItemStacks;
 
@@ -64,19 +63,4 @@ public class FriendItemListener implements Listener {
 						if(e.getItemDrop().getItemStack().getItemMeta().getDisplayName().equals(ItemStacks.FRIEND_ITEM.getItem(e.getPlayer()).getItemMeta().getDisplayName()))
 							e.setCancelled(true);
 	}
-	
-	@EventHandler
-	public void onHandSwitch(PlayerSwapHandItemsEvent e) {
-		if(e.getMainHandItem() != null)
-			if(e.getMainHandItem().hasItemMeta())
-				if(e.getMainHandItem().getItemMeta().hasDisplayName())
-					if(e.getMainHandItem().getItemMeta().getDisplayName().equals(ItemStacks.FRIEND_ITEM.getItem(e.getPlayer()).getItemMeta().getDisplayName()))
-						e.setCancelled(true);
-		if(e.getOffHandItem() != null)
-			if(e.getOffHandItem().hasItemMeta())
-				if(e.getOffHandItem().getItemMeta().hasDisplayName())
-					if(e.getOffHandItem().getItemMeta().getDisplayName().equals(ItemStacks.FRIEND_ITEM.getItem(e.getPlayer()).getItemMeta().getDisplayName()))
-						e.setCancelled(true);
-	}
-
 }

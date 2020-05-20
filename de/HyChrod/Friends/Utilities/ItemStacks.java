@@ -62,7 +62,10 @@ public enum ItemStacks {
 	INV_OPTIONS_STATUS("Friends.OptionsInventory.StatusItem"),
 	INV_OPTIONS_PLACEHOLDERS("Friends.OptionsInventory.Placeholders"),
 	INV_FRIENDEDIT_JUMP("Friends.FriendEditInventory.JumpItem"),
-	INV_OPTIONS_JUMP("Friends.OptionsInventory.JumpItem");
+	INV_OPTIONS_JUMP("Friends.OptionsInventory.JumpItem"),
+	INV_OPTIONS_PARTY("Friends.OptionsInventory.PartyItem"),
+	INV_FRIENDEDIT_PARTY("Friends.FriendEditInventory.PartyItem"),
+	INV_FRIEND_PARTY("Friends.FriendInventory.PartyItem");
 	
 	private String path;
 	private String name = " ";

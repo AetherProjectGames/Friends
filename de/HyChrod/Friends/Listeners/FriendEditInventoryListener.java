@@ -14,6 +14,9 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
+
 import de.HyChrod.Friends.Friends;
 import de.HyChrod.Friends.Commands.SubCommands.Jump_Command;
 import de.HyChrod.Friends.Commands.SubCommands.Remove_Command;
@@ -24,6 +27,7 @@ import de.HyChrod.Friends.Utilities.Configs;
 import de.HyChrod.Friends.Utilities.InventoryBuilder;
 import de.HyChrod.Friends.Utilities.ItemStacks;
 import de.HyChrod.Friends.Utilities.Messages;
+import de.HyChrod.Party.Commands.SubCommands.Invite_Command;
 import net.wesjd.anvilgui.AnvilGUI;
 
 public class FriendEditInventoryListener implements Listener {
@@ -54,7 +58,7 @@ public class FriendEditInventoryListener implements Listener {
 			if(currentlyEditing.containsKey(p.getUniqueId())) {
 				Friendship fs = currentlyEditing.get(p.getUniqueId());
 				if(e.getView() != null)
-					if(e.getView().getTitle() != null && e.getView().getTitle().equals(InventoryBuilder.FRIENDEDIT_INVENTORY.getTitle(p).replace("%NAME%", fs.hasNickname() ? fs.getNickname() : FriendHash.getName(fs.getFriend())))) {
+					if(e.getView().getTitle() != null && e.getView().getTitle().equals(InventoryBuilder.FRIENDEDIT_INVENTORY.getTitle(p).replace("%NAME%", FriendHash.getName(fs.getFriend())))) {
 						e.setCancelled(true);
 						
 						OfflinePlayer inEdit = Bukkit.getOfflinePlayer(fs.getFriend());
@@ -62,7 +66,7 @@ public class FriendEditInventoryListener implements Listener {
 							if(e.getCurrentItem().hasItemMeta())
 								if(e.getCurrentItem().getItemMeta().hasDisplayName()) {
 									String orig_name = FriendHash.getName(fs.getFriend());
-									String name = fs.hasNickname() ? fs.getNickname() : orig_name;
+									String name = orig_name;
 									if(e.getCurrentItem().getItemMeta().getDisplayName().equals(ItemStacks.INV_FRIENDEDIT_BACK.getItem(inEdit).getItemMeta().getDisplayName())) {
 										InventoryBuilder.openFriendInventory(p, p.getUniqueId(), FriendInventoryListener.getPage(p.getUniqueId()), false);
 										return;
@@ -109,6 +113,17 @@ public class FriendEditInventoryListener implements Listener {
 											return AnvilGUI.Response.close();
 											
 										}).title("§aNickname:").item(item).text(current).plugin(Friends.getInstance()).open(p);
+										return;
+									}
+									if(e.getCurrentItem().getItemMeta().getDisplayName().equals(ItemStacks.INV_FRIENDEDIT_PARTY.getItem(inEdit).getItemMeta().getDisplayName().replace("%NAME%", name))) {
+										if(Configs.BUNGEEMODE.getBoolean()) {
+											ByteArrayDataOutput out = ByteStreams.newDataOutput();
+											out.writeUTF(p.getUniqueId().toString());
+											out.writeUTF(fs.getFriend().toString());
+											p.sendPluginMessage(Friends.getInstance(), "party:invite", out.toByteArray());		
+											return;
+										}
+										new Invite_Command(Friends.getInstance(), p, new String[] {"invite",name});
 										return;
 									}
 									if(e.getCurrentItem().getItemMeta().getDisplayName().equals(ItemStacks.INV_FRIENDEDIT_CANSENDMESSAGES.getItem(inEdit).getItemMeta().getDisplayName()

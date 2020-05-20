@@ -9,16 +9,18 @@ public class Options {
 	private boolean receive_requests = true;
 	private boolean jumping = true;
 	private int receive_messages = 0;
+	private boolean party_invites = true;
 	private int sorting = 0;
 	private String status = null;
 	
-	public Options(UUID uuid, boolean offline, boolean requests, int messages, String status, int sorting, boolean jumping) {
+	public Options(UUID uuid, boolean offline, boolean requests, int messages, String status, int sorting, boolean jumping, boolean party) {
 		this.uuid = uuid;
 		this.offline = offline;
 		this.receive_messages = messages;
 		this.receive_requests = requests;
 		this.status = status;
 		this.sorting = sorting;
+		this.party_invites = party;
 		this.jumping = jumping;
 	}
 	
@@ -32,6 +34,14 @@ public class Options {
 	
 	public String getStatus() {
 		return status;
+	}
+	
+	public boolean getPartyInvites() {
+		return party_invites;
+	}
+	
+	public void setPartyInvites(boolean bool) {
+		this.party_invites = bool;
 	}
 	
 	public boolean getRequests() {

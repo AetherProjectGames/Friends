@@ -56,7 +56,7 @@ public class Friendship {
 	}
 	
 	public boolean hasNickname() {
-		return nickname.equals(ChatColor.translateAlternateColorCodes('&', Configs.ITEM_FRIEND_NO_NICK_REPLACEMENT.getText())) ? false : nickname == null ? false : nickname.length() < 1 ? false : true;
+		return nickname == null ? false : nickname.equals(ChatColor.translateAlternateColorCodes('&', Configs.ITEM_FRIEND_NO_NICK_REPLACEMENT.getText())) ? false : nickname.length() < 1 ? false : true;
 	}
 	
 	public String getNickname() {

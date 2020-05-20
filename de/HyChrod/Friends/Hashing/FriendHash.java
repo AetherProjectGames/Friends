@@ -264,7 +264,6 @@ public class FriendHash {
 	}
 	
 	public Options getOptions() {
-		if(Configs.BUNGEEMODE.getBoolean()) return Friends.getSMgr().getOptions(uuid);
 		return this.options;
 	}
 	
@@ -282,7 +281,6 @@ public class FriendHash {
 	}
 	
 	public LinkedList<Friendship> getFriends() {
-		if(Configs.BUNGEEMODE.getBoolean()) return Friends.getSMgr().getFriendships(uuid);
 		return friends;
 	}
 	
@@ -418,7 +416,7 @@ public class FriendHash {
 		if(Friends.isMySQL()) return Friends.getSMgr().getOptions(uuid);
 		FileConfiguration cfg = FileManager.OPTIONS.getConfig();
 		return new Options(uuid, cfg.getBoolean(uuid.toString() + ".Offlinemode"), cfg.getBoolean(uuid.toString() + ".Requests"), cfg.getInt(uuid.toString() + ".Messages"),
-				cfg.getString(uuid.toString() + ".Status"), cfg.getInt(uuid.toString() + ".Sorting"), cfg.getBoolean(uuid.toString() + ".Jumping"));
+				cfg.getString(uuid.toString() + ".Status"), cfg.getInt(uuid.toString() + ".Sorting"), cfg.getBoolean(uuid.toString() + ".Jumping"), cfg.getBoolean(uuid.toString() + ".Party"));
 	}
 	
 	public static String getStatus(UUID uuid) {
@@ -481,12 +479,12 @@ public class FriendHash {
 			if(pcfg.get("LastOnline." + uuid.toString()) != null) lastonline = pcfg.getLong("LastOnline." + uuid.toString());
 			
 			uuidByNames.put(name, uuid);
-			this.options = new Options(uuid, false, true, 1, "", 0, true);
+			this.options = new Options(uuid, false, true, 1, "", 0, true, true);
 			
 			FileConfiguration ocfg = FileManager.OPTIONS.getNewCfg();
 			if(ocfg.get(uuid.toString()) != null) {
 				this.options = new Options(uuid, ocfg.getBoolean(uuid.toString() + ".Offlinemode"), ocfg.getBoolean(uuid.toString() + ".Requests"), ocfg.getInt(uuid.toString() + ".Messages"), 
-						ocfg.getString(uuid.toString() + ".Status"), ocfg.getInt(uuid.toString() + ".Sorting"), ocfg.getBoolean(uuid.toString() + ".Jumping"));
+						ocfg.getString(uuid.toString() + ".Status"), ocfg.getInt(uuid.toString() + ".Sorting"), ocfg.getBoolean(uuid.toString() + ".Jumping"), ocfg.getBoolean(uuid.toString() + ".Party"));
 			}
 			
 			if(pcfg.get("Sorting." + uuid.toString() + ".FriendInv") != null)
@@ -588,6 +586,7 @@ public class FriendHash {
 			FileManager.save(ocfg, ofile, uuid.toString() + ".Status", this.options.getStatus());
 			FileManager.save(ocfg, ofile, uuid.toString() + ".Sorting", this.options.getSorting());
 			FileManager.save(ocfg, ofile, uuid.toString() + ".Jumping", this.options.getJumping());
+			FileManager.save(ocfg, ofile, uuid.toString() + ".Party", this.options.getPartyInvites());
 		}
 		
 		File pfile = FileManager.PLAYERDATA.getNewFile();

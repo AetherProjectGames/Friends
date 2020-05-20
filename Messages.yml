@@ -133,3 +133,95 @@ Messages:
     DisabledOption: "%PREFIX% &cYou cannot write in the friendchat while you have disabled your messages!"
     Format: "&b%NAME% -> Friends&7:&r%MESSAGE%"
     AbusivePhrase: "%PREFIX% &cYour message contains forbidden phrases! \n%PREFIX% &cFlagged: &7%PHRASE%"
+    
+PartyMessages:
+  NoPermissions: "%PREFIX% &cYou do not have permissions to do that!"
+  Version: "%PREFIX% &aYou are running Party-Version: %VERSION%"
+  NoPlayer: "%PREFIX% &cOnly players are able to perform this command!"
+  UnknownCommand: "%PREFIX% &cUnknown command! -> /party help"
+  WrongUsage: "%PREFIX% &cWrong usage! -> %USAGE%"
+  Commands:
+    PlayerInvalid: "%PREFIX% &c%NAME% seems to be offline!"
+    HelpCommand:
+      UnknownPage: "%PREFIX% &c%PAGE% &c is not a valid helppage!"
+      Page1:
+      - "%PREFIX% ------------------------------------------"
+      - "%PREFIX% &b/party invite <Name>"
+      - "%PREFIX% &b/party accept <Name>"
+      - "%PREFIX% &b/party deny <Name>"
+      - "%PREFIX% &b/party leave"
+      - "%PREFIX%"
+      - "%PREFIX% &7More commands -> /party help 2"
+      - "%PREFIX% ------------------------------------------"
+      Page2:
+      - "%PREFIX% ------------------------------------------"
+      - "%PREFIX% &b/party kick <Name>"
+      - "%PREFIX% &b/party promote <Name>"
+      - "%PREFIX% &b/party demote <Name>"
+      - "%PREFIX% &b@party <Message>"
+      - "%PREFIX% &b/party join <Name>"
+      - "%PREFIX% &b/party list"
+      - "%PREFIX% ------------------------------------------"
+    InviteCommand:
+      NoFriends: "%PREFIX% &c%NAME% has to be your friend in order to invite him to your party!"
+      NoInvites: "%PREFIX% &c%NAME% does not want to receive any party-invites!"
+      AlreadyInParty: "%PREFIX% &c%NAME% is already in a party!"
+      NotLeader: "%PREFIX% &cOnly party leaders are able to invite new members!"
+      AlreadyInvited: "%PREFIX% &cYou have already sent an invite to %NAME%!"
+      PlayerOffline: "%PREFIX% &c%NAME% seems to be offline!"
+      InviteSent: "%PREFIX% &aYou have successfully send an invite to %NAME%!"
+      InviteReceived: "%PREFIX% &3%NAME% &awants you to join his party!"
+      CreateParty: "%PREFIX% &aYou successfully created a party!"
+      ClickableMessage:
+        Message: "%PREFIX% %ACCEPT_BUTTON% &aor %DENY_BUTTON% &a%NAME%'s party-invite!"
+        AcceptButton:
+          Text: "&6[Accept]"
+          Hover: "&aClick here to accept %NAME%'s request!"
+        DenyButton:
+          Text: "&c[Deny]"
+          Hover: "&cClick here to deny %NAME%'s request!"
+    DenyCommand:
+      NoInvite: "%PREFIX% &cYou do not have an invite from %NAME%!"
+      Deny: "%PREFIX% &7You denied the invite from %NAME%!"
+      NoNewInvite: "%PREFIX% &cYou do not have any new invite!"
+      Denied: "%PREFIX% &7%NAME% denied your party-invite!"
+    AcceptCommand:
+      NoInvite: "%PREFIX% &cYou do not have an invite from %NAME%!"
+      PartyClosed: "%PREFIX% &cThe party you want to join does not exist anymore!"
+      NoNewInvite: "%PREFIX% &cYou do not have any new invite!"
+      InviteExpired: "%PREFIX% &cThis party-invite has expired!"
+      PartyLimitReached: "%PREFIX% &cThe party you want to join has already reached the maximum amount of players!"
+      Join: "%PREFIX% &aYou joined %NAME%'s party!"
+      NewMember: "%PREFIX% &3%NAME% has joined the party!"
+    LeaveCommand:
+      NoParty: "%PREFIX% &cYou are currently in no party!"
+      Leave: "%PREFIX% &7You left the party!"
+      MemberLeave: "%PREFIX% &3%NAME% &7has left the party!"
+    PromoteCommand:
+      NotInParty: "%PREFIX% &c%NAME% is not a member of your party!"
+      NoParty: "%PREFIX% &cYou are currently in no party!"
+      NoLeader: "%PREFIX% &cOnly partyleaders are able to promote other members!"
+      Promoted: "%PREFIX% &a%NAME% is now a party-leader!"
+      NewLeader: "%PREFIX% &aYou are now a party-leader!"
+      AlreadyLeader: "%PREFIX% &c%NAME% is already a party-leader!"
+    DemoteCommand:
+      NotInParty: "%PREFIX% &c%NAME% is not a member of your party!"
+      NoParty: "%PREFIX% &cYou are currently in no party!"
+      AlreadyMember: "%PREFIX% &c%NAME% is already a normal party-member!"
+      NoLeader: "%PREFIX% &cOnly partyleaders are able to demote other members!"
+      Demoted: "%PREFIX% &7%NAME% is no longer a leader!"
+      NewMember: "%PREFIX% &7You are no longer a party-leader!"
+    ListCommand:
+      NoParty: "%PREFIX% &cYou are currently in no party!"
+      List: "%PREFIX% &aLeaders (&7%LEADER_COUNT%&a):\n%PREFIX% &7%PARTY_LEADERS%\n%PREFIX% &aMembers (&7%MEMBER_COUNT%&a):\n%PREFIX% &7%PARTY_MEMBERS%"
+    JoinCommand:
+      NoParty: "%PREFIX% &c%NAME% has no party to join!"
+      Private: "%PREFIX% &c%NAME%'s party is private!"
+      InParty: "%PREFIX% &cYou are already in a party!"
+      PartyLimitReached: "%PREFIX% &cThe party you want to join has already reached the maximum amount of players!"
+  PartyChat:
+    NoParty: "%PREFIX% &cYou are currently in no party!"
+    Message: "%PREFIX% &3%NAME% | &r%MESSAGE%"
+  SwitchServer:
+    NoLeader: "%PREFIX% &cOnly party-leaders can switch servers!"
+    JoinServer: "%PREFIX% &aYour party joins server %SERVER%!"

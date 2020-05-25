@@ -58,7 +58,6 @@ public enum PInventoryBuilder {
 	public static void loadInventorys() {
 		FileConfiguration cfg = FileManager.PARTY.getConfig();
 		for(PInventoryBuilder builders : PInventoryBuilder.values()) {
-			System.out.println(builders.name());
 			builders.load(cfg);
 		}
 	}

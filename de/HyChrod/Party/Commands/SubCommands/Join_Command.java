@@ -57,7 +57,7 @@ public class Join_Command {
 		}
 		
 		for(UUID member : party.getMembers())
-			if(Bukkit.getPlayer(member) != null)
+			if(Bukkit.getPlayer(member) != null && !member.equals(p.getUniqueId()))
 				Bukkit.getPlayer(member).sendMessage(PMessages.CMD_ACCEPT_NEW_MEMBER.getMessage(p).replace("%NAME%", p.getName()));
 		p.sendMessage(PMessages.CMD_ACCEPT_PARTY_JOIN.getMessage(p).replace("%NAME%", toJoin));
 		return;

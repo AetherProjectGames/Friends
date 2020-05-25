@@ -32,8 +32,10 @@ public class QuitListener implements Listener {
 					if(Bukkit.getPlayer(fs.getFriend()) != null) {
 						FriendHash fHash = FriendHash.getFriendHash(fs.getFriend());
 						Friendship ffs = fHash.getFriendship(p.getUniqueId());
-						if(!fHash.getOptions().getMessages() && !fHash.getOptions().getFavMessages() || !ffs.getCanSendMessages()) continue;
-						if(fHash.getOptions().getFavMessages() && !ffs.getFavorite()) continue;
+						if(fHash.getOptions() != null) {
+							if(!fHash.getOptions().getMessages() && !fHash.getOptions().getFavMessages() || !ffs.getCanSendMessages()) continue;
+							if(fHash.getOptions().getFavMessages() && !ffs.getFavorite()) continue;
+						}
 						Bukkit.getPlayer(fs.getFriend()).sendMessage(Messages.QUIT_MESSAGE.getMessage(Bukkit.getPlayer(fs.getFriend())).replace("%NAME%", p.getName()));
 					}
 			}

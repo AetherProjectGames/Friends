@@ -12,6 +12,7 @@ import org.bukkit.scheduler.BukkitWorker;
 import de.HyChrod.Friends.Commands.CommandManager;
 import de.HyChrod.Friends.Commands.FriendsGUICommand;
 import de.HyChrod.Friends.Commands.MSGManager;
+import de.HyChrod.Friends.Commands.ReplyCommand;
 import de.HyChrod.Friends.Hashing.FriendHash;
 import de.HyChrod.Friends.Listeners.BlockedInventoryListener;
 import de.HyChrod.Friends.Listeners.BlockeditInventoryListener;
@@ -90,7 +91,7 @@ public class Friends extends JavaPlugin {
 		
 		if(Configs.CHECK_FOR_UPDATES.getBoolean()) checkForUpdates();
 		Bukkit.getConsoleSender().sendMessage(prefix + " §aPlugin was successfully loaded!");
-		if(PConfigs.PARTY_CHAT_ENABLE.getBoolean()) new Party().enable(this);
+		if(PConfigs.PARTY_ENABLE.getBoolean()) new Party().enable(this);
 		return;
 	}
 	
@@ -100,7 +101,11 @@ public class Friends extends JavaPlugin {
 			commandMapField.setAccessible(true);
 			CommandMap cMap = (CommandMap) commandMapField.get(Bukkit.getServer());
 			cMap.register("friends", new CommandManager("friends"));
-			if(Configs.MSG_COMMAND.getBoolean()) cMap.register("msg", new MSGManager("msg"));
+			if(Configs.MSG_COMMAND.getBoolean()) {
+				cMap.register("msg", new MSGManager("msg"));
+				cMap.register("r", new ReplyCommand("r"));
+				cMap.register("reply", new ReplyCommand("reply"));
+			}
 		} catch (IllegalArgumentException | SecurityException | NoSuchFieldException | IllegalAccessException e) {
 			e.printStackTrace();
 		}

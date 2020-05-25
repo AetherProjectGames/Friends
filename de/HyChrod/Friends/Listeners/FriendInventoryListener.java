@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -13,7 +12,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import de.HyChrod.Friends.Friends;
 import de.HyChrod.Friends.Hashing.Blockplayer;
 import de.HyChrod.Friends.Hashing.FriendHash;
 import de.HyChrod.Friends.Hashing.Friendship;
@@ -50,13 +48,7 @@ public class FriendInventoryListener implements Listener {
 					if(e.getItem().getItemMeta().hasDisplayName()) {
 						if(e.getItem().getItemMeta().getDisplayName().equals(ItemStacks.FRIEND_ITEM.getItem((Player)e.getPlayer()).getItemMeta().getDisplayName())) {
 							e.setCancelled(true);
-							Bukkit.getScheduler().runTaskAsynchronously(Friends.getInstance(), new Runnable() {
-								
-								@Override
-								public void run() {
-									InventoryBuilder.openFriendInventory(e.getPlayer(), e.getPlayer().getUniqueId(), getPage(e.getPlayer().getUniqueId()), true);
-								}
-							});
+							InventoryBuilder.openFriendInventory(e.getPlayer(), e.getPlayer().getUniqueId(), getPage(e.getPlayer().getUniqueId()), true);
 							return;
 						}
 					}

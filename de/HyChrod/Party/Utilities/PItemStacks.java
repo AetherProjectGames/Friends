@@ -104,7 +104,6 @@ public enum PItemStacks {
 	public static void loadItems() {
 		FileConfiguration cfg = FileManager.getConfig("","Party.yml");
 		for(PItemStacks items : PItemStacks.values()) {
-			System.out.println(items.name());
 			items.load(cfg);
 		}
 	}

@@ -13,12 +13,23 @@ import de.HyChrod.Friends.Friends;
 import de.HyChrod.Friends.Utilities.Configs;
 import de.HyChrod.Friends.Utilities.InventoryBuilder;
 import de.HyChrod.Friends.Utilities.Messages;
+import de.HyChrod.Party.Listeners.PartyInventoryListener;
+import de.HyChrod.Party.Utilities.PInventoryBuilder;
+import de.HyChrod.Party.Utilities.Parties;
 
 public class PluginMessageListeners implements PluginMessageListener {
 
 	@Override
 	public void onPluginMessageReceived(String channel, Player sender, byte[] data) {
 		ByteArrayDataInput in = ByteStreams.newDataInput(data);
+		if(channel.equalsIgnoreCase("party:openinv")) {
+			UUID uuid = UUID.fromString(in.readUTF());
+			if(Bukkit.getPlayer(uuid) == null) return;
+			Parties party = Parties.getParty(uuid);
+			if(party == null) PInventoryBuilder.openCreateInventory(Bukkit.getPlayer(uuid));
+			else PartyInventoryListener.setPositions(uuid, PInventoryBuilder.openPartyInventory(Bukkit.getPlayer(uuid), party));
+			return;
+		}
 		if(channel.equalsIgnoreCase("friends:version")) {
 			UUID uuid = UUID.fromString(in.readUTF());
 			if(Bukkit.getPlayer(uuid) == null) return;

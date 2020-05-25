@@ -1,5 +1,6 @@
 package de.HyChrod.Friends.Commands.SubCommands;
 
+import java.util.HashMap;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -13,13 +14,19 @@ import de.HyChrod.Friends.Utilities.Messages;
 
 public class MSG_Command {
 	
+	private static HashMap<UUID, UUID> reply = new HashMap<UUID, UUID>();
+	
+	public static UUID getReply(UUID uuid) {
+		return reply.containsKey(uuid) ? reply.get(uuid) : null;
+	}
+	
 	public MSG_Command(Friends friends, Player p, String[] args) {
 		if(!p.hasPermission("Friends.Commands.Basic")) {
 			p.sendMessage(Messages.NO_PERMISSIONS.getMessage(p));
 			return;
 		}
 		if(args.length < 3) {
-			p.sendMessage(Messages.CMD_WRONG_USAGE.getMessage(p).replace("%USAGE%", "/friends msg <Name> <Message>"));
+			p.sendMessage(Messages.CMD_WRONG_USAGE.getMessage(p).replace("%USAGE%", (Configs.MSG_COMMAND.getBoolean() ? "/msg <Name> <Message>" : "/friends msg <Name> <Message>")));
 			return;
 		}
 		if(!Configs.FRIEND_MSG_ENABLE.getBoolean()) {
@@ -50,10 +57,11 @@ public class MSG_Command {
 					
 					FriendHash fhash = FriendHash.getFriendHash(toSend);
 					Friendship ffs = fhash.getFriendship(p.getUniqueId());
-					if(!ffs.getCanSendMessages() || (!fhash.getOptions().getMessages() && !fhash.getOptions().getFavMessages()) || (fhash.getOptions().getFavMessages() && !ffs.getFavorite())) {
-						p.sendMessage(Messages.CMD_MSG_NOMSG.getMessage(p).replace("%NAME%", name));
-						return;
-					}
+					if(fhash.getOptions() != null)
+						if(!ffs.getCanSendMessages() || (!fhash.getOptions().getMessages() && !fhash.getOptions().getFavMessages()) || (fhash.getOptions().getFavMessages() && !ffs.getFavorite())) {
+							p.sendMessage(Messages.CMD_MSG_NOMSG.getMessage(p).replace("%NAME%", name));
+							return;
+						}
 					
 					String msg = "";
 					for(int i = 2; i < args.length; i++)
@@ -68,6 +76,7 @@ public class MSG_Command {
 							}
 						}
 					}
+					reply.put(toSend, p.getUniqueId());
 					
 					p.sendMessage(Messages.CMD_MSG_MSG.getMessage(p).replace("%NAME%", name).replace("%SENDER%", p.getName()).replace("%MESSAGE%", msg));
 					Bukkit.getPlayer(toSend).sendMessage(Messages.CMD_MSG_MSG.getMessage(Bukkit.getPlayer(toSend)).replace("%NAME%", playerToSend).replace("%SENDER%", p.getName()).replace("%MESSAGE%", msg));

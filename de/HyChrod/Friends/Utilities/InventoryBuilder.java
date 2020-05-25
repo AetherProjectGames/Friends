@@ -1,14 +1,17 @@
 package de.HyChrod.Friends.Utilities;
 
 import java.lang.reflect.InvocationTargetException;
+import java.text.Collator;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -159,15 +162,14 @@ public enum InventoryBuilder {
 							if(fs.getTimestamp() == ts) friendsOnPage.add(fs);
 				}
 				if(hash.getOptions().getSorting() == 3) {
-					List<String> names = new ArrayList<String>();
+					Collection<String> names = new TreeSet<String>(Collator.getInstance());
 					for(Friendship fs : friends)
 						names.add(FriendHash.getName(fs.getFriend()));
-					Collections.sort(names);
+					
 					for(String nm : names)
 						for(Friendship fs : friends)
 							if(FriendHash.getName(fs.getFriend()).equals(nm)) friendsOnPage.add(fs);
 				}
-
 				for (Friendship fs : friendsOnPage) 
 					cashedPositions.put(addFriend(inv, fs, cfg, hash), fs);
 				
@@ -181,7 +183,6 @@ public enum InventoryBuilder {
 	
 	private static String addFriend(Inventory inv, Friendship fs, FileConfiguration cfg, FriendHash hash) {
 		String name = FriendHash.getName(fs.getFriend());
-		name = fs.hasNickname() ? fs.getNickname() : name;
 		
 		boolean changeSkull = (Configs.INV_FRIENDS_FRIENDS_CHANGESKULL.getBoolean() && !FriendHash.isOnline(fs.getFriend()));
 		String status = Bukkit.getPlayer(fs.getFriend()) != null ? FriendHash.getFriendHash(fs.getFriend()).getStatus() : fs.getStatus();
@@ -394,7 +395,6 @@ public enum InventoryBuilder {
 	
 	public static void openFriendEditInventory(Player player, Friendship fs) {
 		String name = FriendHash.getName(fs.getFriend());
-		name = fs.hasNickname() ? fs.getNickname() : name;
 		Inventory inv = Bukkit.createInventory(null, FRIENDEDIT_INVENTORY.getSize(), FRIENDEDIT_INVENTORY.getTitle(player).replace("%NAME%", name));
 		
 		for(String slots : FileManager.CONFIG.getConfig().getStringList("Friends.FriendEditInventory.Placeholders.InventorySlots"))

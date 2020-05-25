@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandMap;
 
 import de.HyChrod.Friends.Friends;
+import de.HyChrod.Friends.Listeners.PluginMessageListeners;
 import de.HyChrod.Friends.SQL.SQLManager;
 import de.HyChrod.Friends.Utilities.Configs;
 import de.HyChrod.Friends.Utilities.FileManager;
@@ -45,6 +46,7 @@ public class Party {
 		if(Configs.BUNGEEMODE.getBoolean()) {
 			friends.getServer().getMessenger().registerOutgoingPluginChannel(friends, "party:invite");
 			friends.getServer().getMessenger().registerOutgoingPluginChannel(friends, "party:create");
+			friends.getServer().getMessenger().registerIncomingPluginChannel(friends, "party:openinv", new PluginMessageListeners());
 		}
 		
 		Bukkit.getServer().getPluginManager().registerEvents(new ChatListener(), friends);

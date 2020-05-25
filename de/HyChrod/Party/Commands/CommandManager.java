@@ -15,7 +15,10 @@ import de.HyChrod.Friends.Friends;
 import de.HyChrod.Friends.Utilities.FileManager;
 import de.HyChrod.Friends.Utilities.Messages;
 import de.HyChrod.Party.Party;
+import de.HyChrod.Party.Listeners.PartyInventoryListener;
+import de.HyChrod.Party.Utilities.PInventoryBuilder;
 import de.HyChrod.Party.Utilities.PMessages;
+import de.HyChrod.Party.Utilities.Parties;
 
 public class CommandManager extends BukkitCommand {
 
@@ -29,7 +32,17 @@ public class CommandManager extends BukkitCommand {
 	@Override
 	public boolean execute(CommandSender sender, String label, String[] args ) {
 		if(args.length == 0) {
-			
+			if(!(sender instanceof Player)) {
+				sender.sendMessage(PMessages.NO_PLAYER.getMessage(null));
+				return false;
+			}
+			Player p = (Player) sender;
+			if(p.hasPermission("Party.Commands.OpenGUI")) {
+				if(Parties.getParty(p.getUniqueId()) == null) PInventoryBuilder.openCreateInventory(p);
+				else PartyInventoryListener.setPositions(p.getUniqueId(), PInventoryBuilder.openPartyInventory(p, Parties.getParty(p.getUniqueId())));
+				return true;
+			}
+			p.sendMessage(PMessages.NO_PERMISSIONS.getMessage(p));
 			return false;
 		}
 		

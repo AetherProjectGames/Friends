@@ -102,7 +102,6 @@ public enum PMessages {
 	public static void loadAll(String prefix) {
 		FileConfiguration cfg = FileManager.getConfig("","Messages.yml");
 		for(PMessages msg : PMessages.values()) {
-			System.out.println(msg.name());
 			msg.loadMessage(cfg, prefix);
 		}
 	}

@@ -105,6 +105,8 @@ Messages:
       NoMSGWanted: "%PREFIX% &cYou are currently not able to send %NAME% private messages!"
       MSG: "&bF &7| [&3%SENDER%&7] -> [&3%NAME%&7]: &r%MESSAGE%"
       AbusivePhrase: "%PREFIX% &cYour message contains forbidden phrases! \n%PREFIX% &cFlagged: &7%PHRASE%"
+    ReplyCommand:
+      NoReply: "%PREFIX% &cYou do not have a message to repyl to!"
     JumpCommand:
       NoFriends: "%PREFIX% &c%NAME% has to be your friend in order to jump to his location!"
       PlayerOffline: "%PREFIX% &c%NAME% seems to be offline!"
@@ -219,6 +221,15 @@ PartyMessages:
       Private: "%PREFIX% &c%NAME%'s party is private!"
       InParty: "%PREFIX% &cYou are already in a party!"
       PartyLimitReached: "%PREFIX% &cThe party you want to join has already reached the maximum amount of players!"
+    KickCommand:
+      NoParty: "%PREFIX% &cYou are currently in no party!"
+      NoLeader: "%PREFIX% &cYou are not allowed to kick other members!"
+      Kick: "%PREFIX% &7Y%NAME% was kicked out of the party!"
+      Kicked: "%PREFIX% &cYou were kicked out of the party!"
+      NotInParty: "%PREFIX% &c%NAME% is not in your party!"
+    CreateCommand:
+      InParty: "%PREFIX% &cYou are already in a party!"
+      Create: "%PREFIX% &aYou successfully created a party!"
   PartyChat:
     NoParty: "%PREFIX% &cYou are currently in no party!"
     Message: "%PREFIX% &3%NAME% | &r%MESSAGE%"

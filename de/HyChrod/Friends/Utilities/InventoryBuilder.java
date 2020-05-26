@@ -92,9 +92,12 @@ public enum InventoryBuilder {
 			inv.setItem(Integer.parseInt(slots) - 1, ItemStacks.INV_FRIEND_PLACEHOLDERS.getItem(player));
 
 		HashMap<String, Friendship> cashedPositions = new HashMap<String, Friendship>();
-		inv.setItem(ItemStacks.INV_FRIEND_BLOCKED.getInventorySlot(), ItemStacks.replace(ItemStacks.INV_FRIEND_BLOCKED.getItem(player), "%BLOCKED_COUNT%", "0"));
-		inv.setItem(ItemStacks.INV_FRIEND_REQUESTS.getInventorySlot(), ItemStacks.replace(ItemStacks.INV_FRIEND_REQUESTS.getItem(player),"%REQUESTS_COUNT%","0"));
-		inv.setItem(ItemStacks.INV_FRIEND_OPTIONS.getInventorySlot(), ItemStacks.INV_FRIEND_OPTIONS.getItem(player));
+		if(Configs.INV_FRIEND_BLOCKED_ENABLE.getBoolean())
+			inv.setItem(ItemStacks.INV_FRIEND_BLOCKED.getInventorySlot(), ItemStacks.replace(ItemStacks.INV_FRIEND_BLOCKED.getItem(player), "%BLOCKED_COUNT%", "0"));
+		if(Configs.INV_FRIEND_REQUESTS_ENABLE.getBoolean())
+			inv.setItem(ItemStacks.INV_FRIEND_REQUESTS.getInventorySlot(), ItemStacks.replace(ItemStacks.INV_FRIEND_REQUESTS.getItem(player),"%REQUESTS_COUNT%","0"));
+		if(Configs.INV_FRIEND_OPTIONS_ENABLE.getBoolean())
+			inv.setItem(ItemStacks.INV_FRIEND_OPTIONS.getInventorySlot(), ItemStacks.INV_FRIEND_OPTIONS.getItem(player));
 		if(Configs.INV_FRIEND_PREVIOUSPAGE_ENABLE.getBoolean() && (!Configs.INV_FRIEND_HIDEPAGES.getBoolean() || (Configs.INV_FRIEND_HIDEPAGES.getBoolean() && page > 0)))
 			inv.setItem(ItemStacks.INV_FRIEND_PREVIOUSPAGE.getInventorySlot(), ItemStacks.INV_FRIEND_PREVIOUSPAGE.getItem(player));
 		if(Configs.INV_PARTY_ENABLE.getBoolean())
@@ -154,8 +157,8 @@ public enum InventoryBuilder {
 				}
 				if(hash.getOptions().getSorting() == 2) {
 					List<Long> timestamps = new ArrayList<Long>();
-					for(Friendship fs : friends)
-						timestamps.add(fs.getTimestamp());
+					for(int i = (page*freeSlots); i < ((page*freeSlots)+freeSlots); i++)
+						timestamps.add(friends.get(i).getTimestamp());
 					Collections.sort(timestamps);
 					for(Long ts : timestamps)
 						for(Friendship fs : friends)
@@ -163,8 +166,8 @@ public enum InventoryBuilder {
 				}
 				if(hash.getOptions().getSorting() == 3) {
 					Collection<String> names = new TreeSet<String>(Collator.getInstance());
-					for(Friendship fs : friends)
-						names.add(FriendHash.getName(fs.getFriend()));
+					for(int i = (page*freeSlots); i < ((page*freeSlots)+freeSlots); i++)
+						names.add(FriendHash.getName(friends.get(i).getFriend()));
 					
 					for(String nm : names)
 						for(Friendship fs : friends)

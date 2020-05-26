@@ -85,7 +85,10 @@ public enum Configs {
 	INV_REQUEST_HIDEPAGES("Friends.RequestsInventory.HidePageItemsWhenNotNeeded"),
 	INV_BLOCKED_HIDEPAGES("Friends.BlockedInventory.HidePageItemsWhenNotNeeded"),
 	NICK_ENABLE("Friends.Nicknames.Enable"),
-	NICK_CHECK_FOR_ABUSIVE_WORDS("Friends.Nicknames.CheckForAbusiveWords");
+	NICK_CHECK_FOR_ABUSIVE_WORDS("Friends.Nicknames.CheckForAbusiveWords"),
+	INV_FRIEND_REQUESTS_ENABLE("Friends.FriendInventory.RequestsItem.ShowItem"),
+	INV_FRIEND_BLOCKED_ENABLE("Friends.FriendInventory.BlockedItem.ShowItem"),
+	INV_FRIEND_OPTIONS_ENABLE("Friends.FriendInventory.OptionsItem.ShowItem");
 	
 	private Object value;
 	private String path;

@@ -44,6 +44,7 @@ public class FriendHash {
 	
 	public FriendHash(UUID uuid) {
 		this.uuid = uuid;
+		this.options = new Options(uuid, false, true, 1, "", 0, true, true);
 		hashes.put(uuid, this);
 		load();
 	}

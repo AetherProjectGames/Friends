@@ -1,7 +1,7 @@
 #################################################################################################################################
 #																																#
 #	FriendsRELOADED	MC1.13 - 1.15																								#
-#	Version 1.1.4	Made by: HyChrod (Flocrafter77)																				#
+#	Version 1.2.4	Made by: HyChrod (Flocrafter77)																				#
 #																																#
 #################################################################################################################################
 Friends:
@@ -127,18 +127,21 @@ Friends:
       LastOnlineFormat: "MM/dd/yyyy - HH:mm"
       UseDisplaynames: false
     RequestsItem:
+      ShowItem: true
       Name: "&aRequests"
       Material: "emerald"
       # You can split the lines by using '//'
       Lore: "&7Currently: (%REQUESTS_COUNT%)"
       InventorySlot: 46
     BlockedItem:
+      ShowItem: true
       Name: "&cBlocked Players"
       Material: "tnt"
       # You can split the lines by using '//'
       Lore: "&7Currently: (%BLOCKED_COUNT%)"
       InventorySlot: 47
     OptionsItem:
+      ShowItem: true
       Name: "&3Options"
       Material: "comparator"
       # You can split the lines by using '//'

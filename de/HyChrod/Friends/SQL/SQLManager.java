@@ -376,7 +376,7 @@ public class SQLManager {
 	}
 	
 	public Options getOptions(UUID uuid) {
-		Options opt = new Options(uuid, false, true, 1, null, 0, false, true);
+		Options opt = new Options(uuid, false, true, 1, "", 0, true, true);
 		if(!isConnected()) return opt;
 		PreparedStatement ps = null;
 		ResultSet rs = null;

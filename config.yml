@@ -80,6 +80,9 @@ Friends:
       Enable: true
       # This defines the total lenght of the additional note for blocked players
       CharacterLimit: 40
+    # Decide wether you want other players to jump to each others locations!
+    Jumping:
+      Enable: true
   
   # This is the item which opens the friend-inventory on a rightclick!
   FriendItem:

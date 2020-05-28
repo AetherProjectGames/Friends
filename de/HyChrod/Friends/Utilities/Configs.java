@@ -88,7 +88,8 @@ public enum Configs {
 	NICK_CHECK_FOR_ABUSIVE_WORDS("Friends.Nicknames.CheckForAbusiveWords"),
 	INV_FRIEND_REQUESTS_ENABLE("Friends.FriendInventory.RequestsItem.ShowItem"),
 	INV_FRIEND_BLOCKED_ENABLE("Friends.FriendInventory.BlockedItem.ShowItem"),
-	INV_FRIEND_OPTIONS_ENABLE("Friends.FriendInventory.OptionsItem.ShowItem");
+	INV_FRIEND_OPTIONS_ENABLE("Friends.FriendInventory.OptionsItem.ShowItem"),
+	JUMPING_ENABLE("Friends.Commands.Jumping.Enable");
 	
 	private Object value;
 	private String path;

@@ -94,7 +94,8 @@ public enum Messages {
 	CMD_NICKNAME_SAME_NICK("Messages.Commands.NicknameCommand.SameNickname"),
 	CMD_NICKNAME_SET_NICK("Messages.Commands.NicknameCommand.SetNick"),
 	CMD_NICKNAME_ABUSIVE_PHRASE("Messages.Commands.NicknameCommand.AbusivePhrase"),
-	CMD_REPLY_NO_REPLY("Messages.Commands.ReplyCommand.NoReply");
+	CMD_REPLY_NO_REPLY("Messages.Commands.ReplyCommand.NoReply"),
+	CMD_JUMP_NOT_ALLOWED("Messages.Commands.JumpCommand.JumpingNotAllowed");
 	
 	private String path;
 	private String message;

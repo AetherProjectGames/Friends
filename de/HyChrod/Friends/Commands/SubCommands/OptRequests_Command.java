@@ -12,6 +12,10 @@ import de.HyChrod.Friends.Utilities.Messages;
 public class OptRequests_Command {
 	
 	public OptRequests_Command(Friends friends, Player p, String[] args) {
+		if(!p.hasPermission("Friends.Commands.Options.Requests")) {
+			p.sendMessage(Messages.NO_PERMISSIONS.getMessage(p));
+			return;
+		}
 		if(args.length != 1) {
 			p.sendMessage(Messages.CMD_WRONG_USAGE.getMessage(p).replace("%USAGE%", "/friends requests"));
 			return;

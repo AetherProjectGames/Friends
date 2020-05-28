@@ -26,7 +26,7 @@ public class CommandManager extends BukkitCommand {
 		super(name);
 		this.description = "Party! -> /party help";
 		this.usageMessage = "/party";
-		this.setAliases(new ArrayList<String>());
+		this.setAliases(new ArrayList<String>(FileManager.PARTY.getConfig().getStringList("Party.CommandAliases")));
 	}
 
 	@Override

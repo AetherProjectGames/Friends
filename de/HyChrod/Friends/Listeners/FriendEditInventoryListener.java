@@ -138,6 +138,10 @@ public class FriendEditInventoryListener implements Listener {
 										return;
 									}
 									if(e.getCurrentItem().getItemMeta().getDisplayName().equals(ItemStacks.INV_FRIENDEDIT_JUMP.getItem(inEdit).getItemMeta().getDisplayName().replace("%NAME%", name))) {
+										if(!Configs.JUMPING_ENABLE.getBoolean()) {
+											p.sendMessage(Messages.CMD_JUMP_NOT_ALLOWED.getMessage(p));
+											return;
+										}
 										new Jump_Command(Friends.getInstance(), p, new String[] {"jump",orig_name});
 										return;
 									}

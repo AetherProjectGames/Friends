@@ -113,6 +113,7 @@ Messages:
       JumpingDisabled: "%PREFIX% &c%NAME% does not want players to jump to his location!"
       JumpToFriend: "%PREFIX% &aYou jumped to %NAME%'s location!"
       JumpedToYou: "%PREFIX% &3%NAME% jumped to your location!"
+      JumpingNotAllowed: "%PREFIX% &cJumping cannot be used on this server!"
     OptionsJumpingCommand:
       Enable: "%PREFIX% &aYou enabled jumping to your location!"
       Disable: "%PREFIX% &7You disbaled jumping to your location!"

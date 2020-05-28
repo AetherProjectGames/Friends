@@ -1,6 +1,6 @@
 author: HyChrod
 name: FriendsRELOADED
-version: 1.2.4
+version: 1.2.5
 main: de.HyChrod.Friends.Friends
 api-version: 1.13
 softdepend: [PlaceholderAPI]

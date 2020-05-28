@@ -17,12 +17,12 @@ public class Nickname_Command {
 			p.sendMessage(Messages.CMD_UNKNOWN_COMMAND.getMessage(p));
 			return;
 		}
-		if(args.length != 3) {
-			p.sendMessage(Messages.CMD_WRONG_USAGE.getMessage(p).replace("%USAGE%", "/friends nickname <Name> <Nickname>"));
-			return;
-		}
 		if(!p.hasPermission("Friends.Commands.Nickname")) {
 			p.sendMessage(Messages.NO_PERMISSIONS.getMessage(p));
+			return;
+		}
+		if(args.length != 3) {
+			p.sendMessage(Messages.CMD_WRONG_USAGE.getMessage(p).replace("%USAGE%", "/friends nickname <Name> <Nickname>"));
 			return;
 		}
 		

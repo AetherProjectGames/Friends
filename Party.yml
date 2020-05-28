@@ -2,6 +2,10 @@ Party:
   Enable: true
     
   Prefix: "&9Party &7|"
+
+  CommandAliases:
+  - parties
+  - p
   
   PartyChat:
     Enable: true

@@ -12,7 +12,7 @@ import de.HyChrod.Friends.Utilities.Messages;
 public class Unblock_Command {
 	
 	public Unblock_Command(Friends friends, Player p, String[] args) {
-		if(!p.hasPermission("Friends.Commands.Unblock")) {
+		if(!p.hasPermission("Friends.Commands.Unblock") && !p.hasPermission("Friends.Commands.*")) {
 			p.sendMessage(Messages.NO_PERMISSIONS.getMessage(p));
 			return;
 		}

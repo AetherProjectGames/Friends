@@ -7,6 +7,10 @@ Party:
   - parties
   - p
   
+  DisabledWorlds:
+  - world_end
+  - world_nether
+  
   PartyChat:
     Enable: true
     Format: "@party"

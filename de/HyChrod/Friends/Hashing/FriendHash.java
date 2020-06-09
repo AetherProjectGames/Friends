@@ -254,7 +254,7 @@ public class FriendHash {
 			return;
 		}
 		if(Friends.isMySQL()) {
-			AsyncSQLQueueUpdater.addToQueue("insert into friends_frienddata(uuid,uuid1,favorite,cansendmessages,timestamp) values "
+			AsyncSQLQueueUpdater.addToQueue("insert into friends_frienddata(uuid,uuid2,favorite,cansendmessages,timestamp) values "
 					+ "('" + friend.toString() + "','" + uuid.toString() + "','0','1','" + System.currentTimeMillis() + "');");
 			return;
 		}

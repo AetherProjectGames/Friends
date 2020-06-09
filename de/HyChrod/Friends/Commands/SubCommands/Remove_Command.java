@@ -12,7 +12,7 @@ import de.HyChrod.Friends.Utilities.Messages;
 public class Remove_Command {
 	
 	public Remove_Command(Friends friends, Player p, String[] args) {
-		if(!p.hasPermission("Friends.Commands.Remove")) {
+		if(!p.hasPermission("Friends.Commands.Remove") && !p.hasPermission("Friends.Commands.*")) {
 			p.sendMessage(Messages.NO_PERMISSIONS.getMessage(p));
 			return;
 		}

@@ -72,6 +72,7 @@ public enum ItemStacks {
 	private List<String> lore;
 	private String material;
 	private int inventoryslot;
+	private boolean showItem = true;
 	
 	private ItemStacks(String path) {
 		this.path = path;
@@ -85,6 +86,7 @@ public enum ItemStacks {
 				if(lore.length() > 0) this.lore.add(ChatColor.translateAlternateColorCodes('&', lore));
 		this.material = cfg.getString(path + ".Material");
 		if(cfg.get(path + ".InventorySlot") != null) this.inventoryslot = cfg.getInt(path + ".InventorySlot");
+		if(cfg.get(path + ".ShowItem") != null) showItem = cfg.getBoolean(path + ".ShowItem");
 	}
 	
 	public ItemStack getItem(OfflinePlayer player) {
@@ -93,6 +95,10 @@ public enum ItemStacks {
 	
 	public int getInventorySlot() {
 		return inventoryslot-1;
+	}
+	
+	public boolean show() {
+		return showItem;
 	}
 	
 	private static HashMap<String, LinkedList<String[]>> customItems = new HashMap<String, LinkedList<String[]>>();
@@ -129,7 +135,7 @@ public enum ItemStacks {
 	public static ItemStack getCutomItem(String inv, int index, OfflinePlayer p) {
 		if(!customItems.containsKey(inv) || (customItems.containsKey(inv) && customItems.get(inv).size() <= index)) return null;
 		String[] data = customItems.get(inv).get(index);
-		return getItemStack(p == null ? data[0] : data[0].replace("%NAME%", p.getName()), data[1], Arrays.asList((p == null ? data[2] : data[2].replace("%NAME%", p.getName())).split("//")), p);
+		return getItemStack(p == null ? data[0] : data[0].replace("%NAME%", p.getName()), data[1], data[2].length() == 0 ? new ArrayList<String>() : Arrays.asList((p == null ? data[2] : data[2].replace("%NAME%", p.getName())).split("//")), p);
 	}
 	
 	private static void addToHash(String key, String[] item) {
@@ -154,6 +160,20 @@ public enum ItemStacks {
 			for(String s : meta.getLore())
 				lore.add(s.replace(toReplace, replacement));
 		meta.setLore(lore);
+		item.setItemMeta(meta);
+		return item;
+	}
+	
+	public static ItemStack replaceMulti(ItemStack item, String[] toReplace, String[] replacements) {
+		ItemMeta meta = item.getItemMeta();
+		for(int i = 0; i < toReplace.length; i++) {
+			meta.setDisplayName(meta.getDisplayName().replace(toReplace[i], replacements[i]));
+			ArrayList<String> lore = new ArrayList<String>();
+			if(meta.hasLore())
+				for(String s : meta.getLore())
+					lore.add(s.replace(toReplace[i], replacements[i]));
+			meta.setLore(lore);
+		}
 		item.setItemMeta(meta);
 		return item;
 	}

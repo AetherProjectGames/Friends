@@ -12,7 +12,7 @@ import de.HyChrod.Friends.Utilities.Messages;
 public class OptOffline_Command {
 	
 	public OptOffline_Command(Friends friends, Player p, String[] args) {
-		if(!p.hasPermission("Friends.Commands.Options.Offline")) {
+		if(!p.hasPermission("Friends.Commands.Options.Offline") && !p.hasPermission("Friends.Commands.*")) {
 			p.sendMessage(Messages.NO_PERMISSIONS.getMessage(p));
 			return;
 		}

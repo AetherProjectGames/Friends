@@ -11,7 +11,7 @@ import de.HyChrod.Friends.Utilities.Messages;
 public class List_Command {
 	
 	public List_Command(Friends friends, Player p, String[] args) {
-		if(!p.hasPermission("Friends.Commands.List")) {
+		if(!p.hasPermission("Friends.Commands.List") && !p.hasPermission("Friends.Commands.*")) {
 			p.sendMessage(Messages.NO_PERMISSIONS.getMessage(p));
 			return;
 		}

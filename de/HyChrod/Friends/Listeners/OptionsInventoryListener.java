@@ -35,7 +35,7 @@ public class OptionsInventoryListener implements Listener {
 	public void onInventoryClose(InventoryCloseEvent e) {
 		if(!Configs.BUNGEEMODE.getBoolean()) return;
 		if(e.getView() != null) {
-			if(e.getView().getTitle() != null && e.getView().getTitle().equals(InventoryBuilder.OPTIONS_INVENTORY.getTitle((Player)e.getPlayer()))) {
+			if(e.getView().getTitle() != null && e.getView().getTitle().equals(InventoryBuilder.OPTIONS_INVENTORY.getTitle((Player)e.getPlayer(), 0))) {
 				if(currentlyEditing.containsKey(e.getPlayer().getUniqueId())) {
 					Options opt = currentlyEditing.get(e.getPlayer().getUniqueId());
 					AsyncSQLQueueUpdater.addToQueue("insert into friends_options(uuid, offline,receivemsg,receiverequests,sorting,status,jumping,party) "
@@ -54,7 +54,7 @@ public class OptionsInventoryListener implements Listener {
 			Player p = (Player) e.getWhoClicked();
 			if(currentlyEditing.containsKey(p.getUniqueId())) {
 				if(e.getView() != null)
-					if(e.getView().getTitle() != null && e.getView().getTitle().equals(InventoryBuilder.OPTIONS_INVENTORY.getTitle(p))) {
+					if(e.getView().getTitle() != null && e.getView().getTitle().equals(InventoryBuilder.OPTIONS_INVENTORY.getTitle(p, 0))) {
 						e.setCancelled(true);
 						if(e.getCurrentItem() != null)
 							if(e.getCurrentItem().hasItemMeta())

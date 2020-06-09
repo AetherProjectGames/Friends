@@ -15,7 +15,7 @@ import de.HyChrod.Friends.Utilities.Messages;
 public class Add_Command {
 
 	public Add_Command(Friends friends, Player p, String[] args) {
-		if(!p.hasPermission("Friends.Commands.Add")) {
+		if(!p.hasPermission("Friends.Commands.Add") && !p.hasPermission("Friends.Commands.*")) {
 			p.sendMessage(Messages.NO_PERMISSIONS.getMessage(p));
 			return;
 		}

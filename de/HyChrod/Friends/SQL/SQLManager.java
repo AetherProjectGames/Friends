@@ -163,7 +163,7 @@ public class SQLManager {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			ps = getCon().prepareStatement("select p.online,o.offline from friends_playerdata p join friends_options o using (uuid) where uuid='" + uuid.toString() + "';");
+			ps = getCon().prepareStatement("select p.online,o.offline from friends_playerdata p left join friends_options o using (uuid) where uuid='" + uuid.toString() + "';");
 			rs = ps.executeQuery();
 			if(rs.next()) {
 				boolean online = rs.getString("p.online") == null ? false : rs.getInt("p.online") == 1;
@@ -331,7 +331,7 @@ public class SQLManager {
 		ResultSet rs = null;
 		PreparedStatement ps = null;
 		try {
-			ps = getCon().prepareStatement("select distinct f.uuid2,f.favorite,f.timestamp,f.cansendmessages,f.nickname,o.status,p.lastOnline from friends_frienddata f, friends_options o, friends_playerdata p where o.uuid = f.uuid2 and f.uuid = '" + uuid.toString() + "' and p.uuid=f.uuid2;");
+			ps = getCon().prepareStatement("select distinct f.uuid2,f.favorite,f.timestamp,f.cansendmessages,f.nickname,o.status,p.lastOnline from friends_frienddata f left join friends_options o on o.uuid=f.uuid2 left join friends_playerdata p on p.uuid=f.uuid2 where f.uuid = '" + uuid.toString() + "';");
 			rs = ps.executeQuery();
 			while(rs.next()) {
 				friendships.add(new Friendship(uuid, UUID.fromString(rs.getString("f.uuid2")), rs.getLong("f.timestamp"), rs.getInt("f.favorite") == 0 ? false : true, 
@@ -389,7 +389,7 @@ public class SQLManager {
 				opt.setReceive_requests(rs.getInt("receiverequests") == 0 ? false : true);
 				opt.setSorting(rs.getInt("sorting"));
 				opt.setStatus(rs.getString("status"));
-				opt.setJumping(rs.getString("jumping") != null ? (rs.getInt("jumping") == 0 ? false : true) : true);
+				opt.setJumping(rs.getInt("jumping") == 0 ? false : true);
 				opt.setPartyInvites(rs.getInt("party") == 0 ? false : true);
 			}
 		} catch (Exception ex) {ex.printStackTrace();} finally {

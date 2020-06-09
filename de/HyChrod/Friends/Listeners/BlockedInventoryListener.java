@@ -38,8 +38,7 @@ public class BlockedInventoryListener implements Listener {
 		if(e.getWhoClicked() instanceof Player) {
 			Player p = (Player) e.getWhoClicked();
 			if(e.getView() != null) {
-				if(e.getView().getTitle() != null && e.getView().getTitle().equals(InventoryBuilder.BLOCKED_INVENTORY.getTitle(p).replace("%NAME%", p.getName())
-						.replace("%PAGE%", (getPage(p.getUniqueId())+1)+""))) {
+				if(e.getView().getTitle() != null && e.getView().getTitle().equals(InventoryBuilder.BLOCKED_INVENTORY.getTitle(p, (getPage(p.getUniqueId())+1)).replace("%NAME%", p.getName()))) {
 					e.setCancelled(true);
 					if(e.getCurrentItem() != null)
 						if(e.getCurrentItem().hasItemMeta())
@@ -78,6 +77,7 @@ public class BlockedInventoryListener implements Listener {
 									}
 								
 								HashMap<String, Blockplayer> positions = cashedPositionsByUUID.get(p.getUniqueId());
+								if(positions == null) return;
 								for(String identifier : positions.keySet()) {
 									System.out.println(identifier);
 									if(("§f"+e.getCurrentItem().getItemMeta().getDisplayName()).contains(identifier)) {

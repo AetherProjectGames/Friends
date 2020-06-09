@@ -14,7 +14,7 @@ public class AcceptAll_Command {
 			p.sendMessage(Messages.CMD_WRONG_USAGE.getMessage(p).replace("%USAGE%", "/friends acceptall"));
 			return;
 		}
-		if(!p.hasPermission("Friends.Commands.AcceptAll")) {
+		if(!p.hasPermission("Friends.Commands.AcceptAll") && !p.hasPermission("Friends.Commands.*")) {
 			p.sendMessage(Messages.NO_PERMISSIONS.getMessage(p));
 			return;
 		}

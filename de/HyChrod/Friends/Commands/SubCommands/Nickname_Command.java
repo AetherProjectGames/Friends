@@ -17,7 +17,7 @@ public class Nickname_Command {
 			p.sendMessage(Messages.CMD_UNKNOWN_COMMAND.getMessage(p));
 			return;
 		}
-		if(!p.hasPermission("Friends.Commands.Nickname")) {
+		if(!p.hasPermission("Friends.Commands.Nickname") && !p.hasPermission("Friends.Commands.*")) {
 			p.sendMessage(Messages.NO_PERMISSIONS.getMessage(p));
 			return;
 		}

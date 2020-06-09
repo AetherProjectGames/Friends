@@ -89,7 +89,9 @@ public enum Configs {
 	INV_FRIEND_REQUESTS_ENABLE("Friends.FriendInventory.RequestsItem.ShowItem"),
 	INV_FRIEND_BLOCKED_ENABLE("Friends.FriendInventory.BlockedItem.ShowItem"),
 	INV_FRIEND_OPTIONS_ENABLE("Friends.FriendInventory.OptionsItem.ShowItem"),
-	JUMPING_ENABLE("Friends.Commands.Jumping.Enable");
+	JUMPING_ENABLE("Friends.Commands.Jumping.Enable"),
+	ITEMOPTION_MOVE("Friends.FriendItemOptions.MoveItemInInventory"),
+	ITEMOPTION_DEATH("Friends.FriendItemOptions.KeepOnDeath");
 	
 	private Object value;
 	private String path;
@@ -116,9 +118,14 @@ public enum Configs {
 	}
 	
 	private static LinkedList<String> forbidden_phrases = new LinkedList<String>();
+	private static LinkedList<String> forbidden_servers = new LinkedList<String>();
 	
 	public static LinkedList<String> getForbiddenPhrases() {
 		return forbidden_phrases;
+	}
+	
+	public static LinkedList<String> getForbiddenWorlds() {
+		return forbidden_servers;
 	}
 	
 	public static void loadConfigs() {
@@ -126,6 +133,11 @@ public enum Configs {
 		FileConfiguration cfg = FileManager.getConfig("","forbidden_phrases.txt");
 		for(String phrase : cfg.getStringList("phrases"))
 			forbidden_phrases.add(phrase);
+		
+		forbidden_servers.clear();
+		if(FileManager.CONFIG.getConfig().getString("Friends.DisabledWorlds") != null)
+			for(String forb : FileManager.CONFIG.getConfig().getStringList("Friends.DisabledWorlds"))
+				forbidden_servers.add(forb);
 		
 		for(Configs cf : Configs.values())
 			cf.load();

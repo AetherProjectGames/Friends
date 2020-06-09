@@ -21,7 +21,7 @@ public class MSG_Command {
 	}
 	
 	public MSG_Command(Friends friends, Player p, String[] args) {
-		if(!p.hasPermission("Friends.Commands.Msg")) {
+		if(!p.hasPermission("Friends.Commands.Msg") && !p.hasPermission("Friends.Commands.*")) {
 			p.sendMessage(Messages.NO_PERMISSIONS.getMessage(p));
 			return;
 		}

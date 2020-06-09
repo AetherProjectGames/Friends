@@ -95,7 +95,8 @@ public enum Messages {
 	CMD_NICKNAME_SET_NICK("Messages.Commands.NicknameCommand.SetNick"),
 	CMD_NICKNAME_ABUSIVE_PHRASE("Messages.Commands.NicknameCommand.AbusivePhrase"),
 	CMD_REPLY_NO_REPLY("Messages.Commands.ReplyCommand.NoReply"),
-	CMD_JUMP_NOT_ALLOWED("Messages.Commands.JumpCommand.JumpingNotAllowed");
+	CMD_JUMP_NOT_ALLOWED("Messages.Commands.JumpCommand.JumpingNotAllowed"),
+	CMD_JUMP_SERVER_BLOCKED("Messages.Commands.JumpCommand.ServerBlocked");
 	
 	private String path;
 	private String message;
@@ -124,8 +125,9 @@ public enum Messages {
 	
 	public static void loadAll(String prefix) {
 		FileConfiguration cfg = FileManager.getConfig("","Messages.yml");
-		for(Messages msg : Messages.values())
+		for(Messages msg : Messages.values())  {
 			msg.loadMessage(cfg, prefix);
+		}
 	}
 
 }

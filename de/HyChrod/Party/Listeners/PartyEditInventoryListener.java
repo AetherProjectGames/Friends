@@ -63,7 +63,8 @@ public class PartyEditInventoryListener implements Listener {
 									new Kick_Command(Friends.getInstance(), p, new String[] {"kick",name});
 									party.removeLeader(editing.get(p.getUniqueId()));
 									party.removeParticipant(editing.get(p.getUniqueId()));
-									PartyInventoryListener.setPositions(p.getUniqueId(), PInventoryBuilder.openPartyInventory(p, party));
+									if(name.equalsIgnoreCase(p.getName())) PInventoryBuilder.openCreateInventory(p);
+									else PartyInventoryListener.setPositions(p.getUniqueId(), PInventoryBuilder.openPartyInventory(p, party));
 									return;
 								}
 							}

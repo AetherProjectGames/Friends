@@ -12,7 +12,7 @@ import de.HyChrod.Friends.Utilities.Messages;
 public class OptMessages_Command {
 	
 	public OptMessages_Command(Friends friends, Player p, String[] args) {
-		if(!p.hasPermission("Friends.Commands.Options.Messages")) {
+		if(!p.hasPermission("Friends.Commands.Options.Messages") && !p.hasPermission("Friends.Commands.*")) {
 			p.sendMessage(Messages.NO_PERMISSIONS.getMessage(p));
 			return;
 		}

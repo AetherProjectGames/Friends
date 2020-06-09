@@ -12,7 +12,7 @@ import de.HyChrod.Friends.Utilities.Messages;
 public class OptRequests_Command {
 	
 	public OptRequests_Command(Friends friends, Player p, String[] args) {
-		if(!p.hasPermission("Friends.Commands.Options.Requests")) {
+		if(!p.hasPermission("Friends.Commands.Options.Requests") && !p.hasPermission("Friends.Commands.*")) {
 			p.sendMessage(Messages.NO_PERMISSIONS.getMessage(p));
 			return;
 		}

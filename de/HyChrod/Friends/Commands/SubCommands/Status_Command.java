@@ -33,7 +33,7 @@ public class Status_Command {
 				p.sendMessage(Messages.CMD_WRONG_USAGE.getMessage(p).replace("%USAGE%", "/friends status set <Status>"));
 				return;
 			}
-			if(!p.hasPermission("Friends.Commands.Status.Show")) {
+			if(!p.hasPermission("Friends.Commands.Status.Show") && !p.hasPermission("Friends.Commands.*")) {
 				p.sendMessage(Messages.NO_PERMISSIONS.getMessage(p));
 				return;
 			}
@@ -64,7 +64,7 @@ public class Status_Command {
 		}
 		
 		if(args.length > 2 && args[1].equalsIgnoreCase("set")) {
-			if(!p.hasPermission("Friends.Commands.Status.Set")) {
+			if(!p.hasPermission("Friends.Commands.Status.Set") && !p.hasPermission("Friends.Commands.*")) {
 				p.sendMessage(Messages.NO_PERMISSIONS.getMessage(p));
 				return;
 			}

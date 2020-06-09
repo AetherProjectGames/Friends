@@ -1,5 +1,7 @@
 package de.HyChrod.Party.Utilities;
 
+import java.util.LinkedList;
+
 import org.bukkit.ChatColor;
 
 import de.HyChrod.Friends.Utilities.FileManager;
@@ -53,9 +55,19 @@ public enum PConfigs {
 		return ChatColor.translateAlternateColorCodes('&', text);
 	}
 	
+	private static LinkedList<String> forbidden_worlds = new LinkedList<String>();
+	
+	public static LinkedList<String> getForbiddenWorlds() {
+		return forbidden_worlds;
+	}
+	
 	public static void loadConfigs() {
+		forbidden_worlds.clear();
+		if(FileManager.PARTY.getNewCfg().getString("Party.DisabledWorlds") != null)
+			for(String forb : FileManager.PARTY.getNewCfg().getStringList("Party.DisabledWorlds"))
+				forbidden_worlds.add(forb);
+		
 		for(PConfigs cf : PConfigs.values()) {
-			System.out.println(cf.name());
 			cf.load();
 		}
 	}

@@ -1,7 +1,7 @@
 #################################################################################################################################
 #																																#
 #	FriendsRELOADED	MC1.13 - 1.15																								#
-#	Version 1.2.4	Made by: HyChrod (Flocrafter77)																				#
+#	Version 1.2.8	Made by: HyChrod (Flocrafter77)																				#
 #																																#
 #################################################################################################################################
 Friends:
@@ -28,6 +28,10 @@ Friends:
   # To use friends with BungeeCord, you need to install die BungeeAddon aswell!
   # https://www.spigotmc.org/resources/friends-mc1-8-x-1-15-x-bungeecord-addon.28909/
   BungeeMode: false
+  
+  FriendItemOptions:
+    KeepOnDeath: true
+    MoveItemInInventory: false
   
   JoinQuitMessages: true
   
@@ -83,6 +87,12 @@ Friends:
     # Decide wether you want other players to jump to each others locations!
     Jumping:
       Enable: true
+      
+  # Put in the name of worlds you do not want players to jump to!
+  # This list has no effect when using BungeeMode!
+  DisabledWorlds:
+  - world_end
+  - world_nether
   
   # This is the item which opens the friend-inventory on a rightclick!
   FriendItem:
@@ -200,7 +210,7 @@ Friends:
     CustomItems:
       CUSTOM_ITEM_1:
         Name: "&aCustomItem"
-        Material: "oak_sign"
+        Material: "stone"
         Lore: "&7This is a custom item, which can be//&7created and edited in the config.yml// //&7If you do not want to use this item//&7just remove it."
         InventorySlot: 1
         PerformCommand: "say HyChrod is the best!"

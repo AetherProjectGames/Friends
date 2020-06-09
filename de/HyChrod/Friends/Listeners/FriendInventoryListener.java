@@ -60,8 +60,8 @@ public class FriendInventoryListener implements Listener {
 		if(e.getWhoClicked() instanceof Player) {
 			Player p = (Player) e.getWhoClicked();
 			if(e.getView() != null)
-				if(e.getView().getTitle() != null && e.getView().getTitle().equals(InventoryBuilder.FRIEND_INVENTORY.getTitle(p)
-						.replace("%NAME%", p.getName()).replace("%PAGE%", ""+(getPage(p.getUniqueId())+1)))) {
+				if(e.getView().getTitle() != null && e.getView().getTitle().equals(InventoryBuilder.FRIEND_INVENTORY.getTitle(p, (getPage(p.getUniqueId())+1))
+						.replace("%NAME%", p.getName()))) {
 					e.setCancelled(true);
 					
 					FriendHash hash = FriendHash.getFriendHash(p.getUniqueId());
@@ -117,6 +117,7 @@ public class FriendInventoryListener implements Listener {
 									}
 								
 								HashMap<String, Friendship> positions = cashedPositions.get(p.getUniqueId());
+								if(positions == null) return;
 								for(String identifier : positions.keySet()) {
 									if(("§f"+e.getCurrentItem().getItemMeta().getDisplayName()).contains(identifier)) {
 										Friendship fs = positions.get(identifier);

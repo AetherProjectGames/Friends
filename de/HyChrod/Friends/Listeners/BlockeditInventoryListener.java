@@ -32,7 +32,7 @@ public class BlockeditInventoryListener implements Listener {
 			if(currentlyEditing.containsKey(p.getUniqueId())) {
 				Blockplayer bl = currentlyEditing.get(p.getUniqueId());
 				if(e.getView() != null)
-					if(e.getView().getTitle() != null && e.getView().getTitle().equalsIgnoreCase(InventoryBuilder.BLOCKEDIT_INVENTORY.getTitle(p).replace("%NAME%", FriendHash.getName(bl.getBlocked())))) {
+					if(e.getView().getTitle() != null && e.getView().getTitle().equalsIgnoreCase(InventoryBuilder.BLOCKEDIT_INVENTORY.getTitle(p, 0).replace("%NAME%", FriendHash.getName(bl.getBlocked())))) {
 						e.setCancelled(true);
 						
 						OfflinePlayer inEdit = Bukkit.getOfflinePlayer(bl.getBlocked());

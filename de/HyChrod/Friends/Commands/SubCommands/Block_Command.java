@@ -12,7 +12,7 @@ import de.HyChrod.Friends.Utilities.Messages;
 public class Block_Command {
 
 	public Block_Command(Friends friends, Player p, String[] args) {
-		if(!p.hasPermission("Friends.Commands.Block")) {
+		if(!p.hasPermission("Friends.Commands.Block") && !p.hasPermission("Friends.Commands.*")) {
 			p.sendMessage(Messages.NO_PERMISSIONS.getMessage(p));
 			return;
 		}

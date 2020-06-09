@@ -72,7 +72,8 @@ public enum PMessages {
 	CMD_KICK_KICKED("PartyMessages.Commands.KickCommand.Kicked"),
 	CMD_KICK_NOT_IN_PARTY("PartyMessages.Commands.KickCommand.NotInParty"),
 	CMD_CREATE_IN_PARTY("PartyMessages.Commands.CreateCommand.InParty"),
-	CMD_CREATE_CREATE("PartyMessages.Commands.CreateCommand.Create");
+	CMD_CREATE_CREATE("PartyMessages.Commands.CreateCommand.Create"),
+	SWITCH_SERVER_BLOCKED("PartyMessages.SwitchServer.ServerBlocked");
 	
 	private String path;
 	private String message;

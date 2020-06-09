@@ -30,9 +30,10 @@ public class QuitListener implements Listener {
 			public void run() {
 				for(Friendship fs : hash.getFriendsNew())
 					if(Bukkit.getPlayer(fs.getFriend()) != null) {
+						if(fs == null || fs.getFriend() == null) continue;
 						FriendHash fHash = FriendHash.getFriendHash(fs.getFriend());
 						Friendship ffs = fHash.getFriendship(p.getUniqueId());
-						if(fHash.getOptions() != null) {
+						if(fHash.getOptions() != null && ffs != null) {
 							if(!fHash.getOptions().getMessages() && !fHash.getOptions().getFavMessages() || !ffs.getCanSendMessages()) continue;
 							if(fHash.getOptions().getFavMessages() && !ffs.getFavorite()) continue;
 						}

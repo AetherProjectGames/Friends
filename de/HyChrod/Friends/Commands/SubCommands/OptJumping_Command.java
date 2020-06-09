@@ -12,7 +12,7 @@ import de.HyChrod.Friends.Utilities.Messages;
 public class OptJumping_Command {
 	
 	public OptJumping_Command(Friends friends, Player p, String[] args) {
-		if(!p.hasPermission("Friends.Commands.Options.Jumping")) {
+		if(!p.hasPermission("Friends.Commands.Options.Jumping") && !p.hasPermission("Friends.Commands.*")) {
 			p.sendMessage(Messages.NO_PERMISSIONS.getMessage(p));
 			return;
 		}

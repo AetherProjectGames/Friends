@@ -20,7 +20,7 @@ public class Jump_Command {
 			p.sendMessage(Messages.CMD_UNKNOWN_COMMAND.getMessage(p));
 			return;
 		}
-		if(!p.hasPermission("Friends.Commands.Jump")) {
+		if(!p.hasPermission("Friends.Commands.Jump") && !p.hasPermission("Friends.Commands.*")) {
 			p.sendMessage(Messages.NO_PERMISSIONS.getMessage(p));
 			return;
 		}
@@ -48,7 +48,6 @@ public class Jump_Command {
 				return;
 			}
 			
-			p.sendMessage(Messages.CMD_JUMP_JUMPTOFRIEND.getMessage(p).replace("%NAME%", playerToJump));
 			if(Configs.BUNGEEMODE.getBoolean()) {
 				ByteArrayDataOutput out = ByteStreams.newDataOutput();
 				out.writeUTF(p.getUniqueId().toString());
@@ -56,6 +55,13 @@ public class Jump_Command {
 				p.sendPluginMessage(friends, "friends:connect", out.toByteArray());				
 				return;
 			}
+			
+			if(Configs.getForbiddenWorlds().contains(Bukkit.getPlayer(uuid).getWorld().getName())) {
+				p.sendMessage(Messages.CMD_JUMP_SERVER_BLOCKED.getMessage(p));
+				return;
+			}
+			
+			p.sendMessage(Messages.CMD_JUMP_JUMPTOFRIEND.getMessage(p).replace("%NAME%", playerToJump));
 			Bukkit.getScheduler().scheduleSyncDelayedTask(Friends.getInstance(), new Runnable() {
 				
 				@Override

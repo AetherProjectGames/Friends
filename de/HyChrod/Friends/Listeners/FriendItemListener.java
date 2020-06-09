@@ -8,6 +8,7 @@ import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 
+import de.HyChrod.Friends.Utilities.Configs;
 import de.HyChrod.Friends.Utilities.ItemStacks;
 
 public class FriendItemListener implements Listener {
@@ -27,7 +28,7 @@ public class FriendItemListener implements Listener {
 			if(e.getItem().hasItemMeta())
 				if(e.getItem().getItemMeta().hasDisplayName())
 					if(e.getItem().getItemMeta().getDisplayName().equals(ItemStacks.FRIEND_ITEM.getItem(null).getItemMeta().getDisplayName()))
-						e.setCancelled(true);
+						if(!Configs.ITEMOPTION_MOVE.getBoolean()) e.setCancelled(true);
 	}
 	
 	@EventHandler
@@ -46,12 +47,12 @@ public class FriendItemListener implements Listener {
 			if(e.getCursor().hasItemMeta())
 				if(e.getCursor().getItemMeta().hasDisplayName())
 					if(e.getCursor().getItemMeta().getDisplayName().equalsIgnoreCase(ItemStacks.FRIEND_ITEM.getItem(null).getItemMeta().getDisplayName()))
-						e.setCancelled(true);
+						if(!Configs.ITEMOPTION_MOVE.getBoolean()) e.setCancelled(true);
 		if(e.getCurrentItem() != null)
 			if(e.getCurrentItem().hasItemMeta())
 				if(e.getCurrentItem().getItemMeta().hasDisplayName())
 					if(e.getCurrentItem().getItemMeta().getDisplayName().equals(ItemStacks.FRIEND_ITEM.getItem(null).getItemMeta().getDisplayName()))
-						e.setCancelled(true);
+						if(!Configs.ITEMOPTION_MOVE.getBoolean()) e.setCancelled(true);
 	}
 	
 	@EventHandler

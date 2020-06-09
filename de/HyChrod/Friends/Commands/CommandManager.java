@@ -42,7 +42,7 @@ public class CommandManager extends BukkitCommand {
 		}
 		
 		if(args[0].equalsIgnoreCase("version")) {
-			if(!sender.hasPermission("Friends.Commands.Version")) {
+			if(!sender.hasPermission("Friends.Commands.Version") && !sender.hasPermission("Friends.Commands.*")) {
 				sender.sendMessage(Messages.NO_PERMISSIONS.getMessage(null));
 				return false;
 			}
@@ -56,7 +56,7 @@ public class CommandManager extends BukkitCommand {
 			return true;
 		}
 		if(args[0].equalsIgnoreCase("reload")) {
-			if(!sender.hasPermission("Friends.Commands.Reload")) {
+			if(!sender.hasPermission("Friends.Commands.Reload") && !sender.hasPermission("Friends.Commands.*")) {
 				sender.sendMessage(Messages.NO_PERMISSIONS.getMessage(null));
 				return false;
 			}

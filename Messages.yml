@@ -108,6 +108,7 @@ Messages:
     ReplyCommand:
       NoReply: "%PREFIX% &cYou do not have a message to repyl to!"
     JumpCommand:
+      ServerBlocked: "%PREFIX% &cYou cannot jump to your friends current world!"
       NoFriends: "%PREFIX% &c%NAME% has to be your friend in order to jump to his location!"
       PlayerOffline: "%PREFIX% &c%NAME% seems to be offline!"
       JumpingDisabled: "%PREFIX% &c%NAME% does not want players to jump to his location!"
@@ -174,7 +175,6 @@ PartyMessages:
       PlayerOffline: "%PREFIX% &c%NAME% seems to be offline!"
       InviteSent: "%PREFIX% &aYou have successfully send an invite to %NAME%!"
       InviteReceived: "%PREFIX% &3%NAME% &awants you to join his party!"
-      CreateParty: "%PREFIX% &aYou successfully created a party!"
       ClickableMessage:
         Message: "%PREFIX% %ACCEPT_BUTTON% &aor %DENY_BUTTON% &a%NAME%'s party-invite!"
         AcceptButton:
@@ -235,5 +235,6 @@ PartyMessages:
     NoParty: "%PREFIX% &cYou are currently in no party!"
     Message: "%PREFIX% &3%NAME% | &r%MESSAGE%"
   SwitchServer:
+    ServerBlocked: "%PREFIX% &cYou cannot enter this world while beeing in a party!"
     NoLeader: "%PREFIX% &cOnly party-leaders can switch servers!"
     JoinServer: "%PREFIX% &aYour party joins server %SERVER%!"

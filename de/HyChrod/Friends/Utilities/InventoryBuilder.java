@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.Collator;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -34,22 +35,42 @@ import de.HyChrod.Friends.Listeners.BlockedInventoryListener;
 import de.HyChrod.Friends.Listeners.FriendInventoryListener;
 import de.HyChrod.Friends.Listeners.RequestsInventoryListener;
 
+@SuppressWarnings("unchecked")
 public enum InventoryBuilder {
 	
-	FRIEND_INVENTORY("Friends.FriendInventory.InventoryTitle","Friends.FriendInventory.InventorySize"),
-	REQUESTS_INVENTORY("Friends.RequestsInventory.InventoryTitle","Friends.RequestsInventory.InventorySize"),
-	BLOCKED_INVENTORY("Friends.BlockedInventory.InventoryTitle","Friends.BlockedInventory.InventorySize"),
-	REQUESTEDIT_INVENTORY("Friends.RequestEditInventory.InventoryTitle","Friends.RequestEditInventory.InventorySize"),
-	BLOCKEDIT_INVENTORY("Friends.BlockedEditInventory.InventoryTitle","Friends.BlockedEditInventory.InventorySize"),
-	FRIENDEDIT_INVENTORY("Friends.FriendEditInventory.InventoryTitle","Friends.FriendEditInventory.InventorySize"),
-	OPTIONS_INVENTORY("Friends.OptionsInventory.InventoryTitle","Friends.OptionsInventory.InventorySize");
+	FRIEND_INVENTORY("FriendInventory", "Friends.FriendInventory",
+			ItemStacks.INV_FRIEND_PLACEHOLDERS, ItemStacks.INV_FRIEND_BLOCKED, ItemStacks.INV_FRIEND_REQUESTS, ItemStacks.INV_FRIEND_OPTIONS, 
+			ItemStacks.INV_FRIEND_PARTY),
+	REQUESTS_INVENTORY("RequestsInventory", "Friends.RequestsInventory",
+			ItemStacks.INV_REQUESTS_PLACEHOLDERS, ItemStacks.INV_REQUESTS_ACCEPTALL, ItemStacks.INV_REQUESTS_DENYALL, ItemStacks.INV_REQUESTS_BACK),
+	BLOCKED_INVENTORY("BlockedInventory", "Friends.BlockedInventory",
+			ItemStacks.INV_BLOCKED_PLACEHOLDERS, ItemStacks.INV_BLOCKED_BACK, ItemStacks.INV_BLOCKED_UNBLOCKALL),
+	REQUESTEDIT_INVENTORY("RequestEditInventory", "Friends.RequestEditInventory",
+			ItemStacks.INV_REQUESTEDIT_PLACEHOLDERS, ItemStacks.INV_REQUESTEDIT_ACCEPT, ItemStacks.INV_REQUESTEDIT_DENY, ItemStacks.INV_REQUESTEDIT_BACK, 
+			ItemStacks.INV_REQUESTEDIT_MESSAGE),
+	BLOCKEDIT_INVENTORY("BlockedEditInventory", "Friends.BlockedEditInventory",
+			ItemStacks.INV_BLOCKEDIT_PLACEHOLDERS, ItemStacks.INV_BLOCKEDIT_BACK, ItemStacks.INV_BLOCKEDIT_NOTE, ItemStacks.INV_BLOCKEDIT_UNBLOCK),
+	FRIENDEDIT_INVENTORY("FriendEditInventory", "Friends.FriendEditInventory",
+			ItemStacks.INV_FRIENDEDIT_PLACEHOLDERS, ItemStacks.INV_FRIENDEDIT_BACK, ItemStacks.INV_FRIENDEDIT_REMOVE, ItemStacks.INV_FRIENDEDIT_FAVORITE,
+			ItemStacks.INV_FRIENDEDIT_CANSENDMESSAGES, ItemStacks.INV_FRIENDEDIT_NICKNAME, ItemStacks.INV_FRIENDEDIT_JUMP, ItemStacks.INV_FRIENDEDIT_PARTY),
+	OPTIONS_INVENTORY("OptionsInventory", "Friends.OptionsInventory",
+			ItemStacks.INV_OPTIONS_PLACEHOLDERS, ItemStacks.INV_OPTIONS_BACK, ItemStacks.INV_OPTIONS_MESSAGES, ItemStacks.INV_OPTIONS_OFFLINEMODE,
+			ItemStacks.INV_OPTIONS_REQUESTS, ItemStacks.INV_OPTIONS_STATUS, ItemStacks.INV_OPTIONS_JUMP, ItemStacks.INV_OPTIONS_PARTY);
 	
-	private String title, title_path, size_path;
+	private String title, title_path, size_path, slots_path, name;
 	private int size;
+	private ItemStacks[] items;
 	
-	private InventoryBuilder(String title, String size) {
-		this.title_path = title;
-		this.size_path = size;
+	private InventoryBuilder(String name, String path, ItemStacks...items) {
+		this.title_path = path + ".InventoryTitle";
+		this.size_path = path + ".InventorySize";
+		this.items = items;
+		this.name = name;
+		this.slots_path = path + ".Placeholders.InventorySlots";
+	}
+	
+	private ItemStacks[] getItems() {
+		return items;
 	}
 	
 	private void load(FileConfiguration cfg) {
@@ -57,7 +78,7 @@ public enum InventoryBuilder {
 		this.size = cfg.getInt(size_path);
 	}
 	
-	public String getTitle(Player player) {
+	public String getTitle(Player player, int page) {
 		String title = this.title;
 		if(Bukkit.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null && player != null) {
 			try {
@@ -68,11 +89,28 @@ public enum InventoryBuilder {
 				e.printStackTrace();
 			}
 		}
-		return title;
+		return title.replace("%PAGE%", ""+page);
 	}
 	
 	public int getSize() {
 		return size;
+	}
+	
+	public Inventory createInventory(Player player, String[] toReplace, String[] replacements, int page) {
+		String titl = getTitle(player, page);
+		for(int i = 0; i < toReplace.length; i++)
+			titl = titl.replace(toReplace[i], replacements[i]);
+		
+		Inventory inv = Bukkit.createInventory(null, size, titl);
+		for(String slots : FileManager.CONFIG.getConfig().getStringList(slots_path))
+			inv.setItem(Integer.parseInt(slots) - 1, getItems()[0].getItem(player));
+		for(ItemStacks item : getItems()) {
+			if(item.name().toLowerCase().contains("PLACEHOLDER".toLowerCase())) continue;
+			if(item.show()) inv.setItem(item.getInventorySlot(), ItemStacks.replaceMulti(item.getItem(player), toReplace, replacements));
+		}
+		for(int customItem = 0; customItem < ItemStacks.getItemCount(name); customItem++) 
+			inv.setItem(ItemStacks.getCustomInventorySlot(name, customItem) - 1, ItemStacks.getCutomItem(name, customItem, player));
+		return inv;
 	}
 	
 	public static void loadInventorys() {
@@ -84,28 +122,8 @@ public enum InventoryBuilder {
 	private static String[] sorting = new String[] {Configs.SORTING_ONOFF.getText(), Configs.SORTING_FAVORITE.getText(), Configs.SORTING_LONGFRIEND.getText(), Configs.SORTING_ALPHABETIC.getText()};
 
 	public static HashMap<String, Friendship> openFriendInventory(Player player, UUID toOpen, int page, boolean fresh) {
-		FileConfiguration cfg = FileManager.CONFIG.getConfig();
-		Inventory inv = Bukkit.createInventory(null, FRIEND_INVENTORY.getSize(), FRIEND_INVENTORY.getTitle(player).replace("%NAME%", player.getName())
-				.replace("%PAGE%", ""+(FriendInventoryListener.getPage(toOpen)+1)));
-
-		for (String slots : cfg.getStringList("Friends.FriendInventory.Placeholders.InventorySlots"))
-			inv.setItem(Integer.parseInt(slots) - 1, ItemStacks.INV_FRIEND_PLACEHOLDERS.getItem(player));
-
+		Inventory inv = FRIEND_INVENTORY.createInventory(player, new String[] {"%BLOCKED_COUNT%","%REQUESTS_COUNT%"}, new String[] {"0","0"}, FriendInventoryListener.getPage(toOpen)+1);
 		HashMap<String, Friendship> cashedPositions = new HashMap<String, Friendship>();
-		if(Configs.INV_FRIEND_BLOCKED_ENABLE.getBoolean())
-			inv.setItem(ItemStacks.INV_FRIEND_BLOCKED.getInventorySlot(), ItemStacks.replace(ItemStacks.INV_FRIEND_BLOCKED.getItem(player), "%BLOCKED_COUNT%", "0"));
-		if(Configs.INV_FRIEND_REQUESTS_ENABLE.getBoolean())
-			inv.setItem(ItemStacks.INV_FRIEND_REQUESTS.getInventorySlot(), ItemStacks.replace(ItemStacks.INV_FRIEND_REQUESTS.getItem(player),"%REQUESTS_COUNT%","0"));
-		if(Configs.INV_FRIEND_OPTIONS_ENABLE.getBoolean())
-			inv.setItem(ItemStacks.INV_FRIEND_OPTIONS.getInventorySlot(), ItemStacks.INV_FRIEND_OPTIONS.getItem(player));
-		if(Configs.INV_FRIEND_PREVIOUSPAGE_ENABLE.getBoolean() && (!Configs.INV_FRIEND_HIDEPAGES.getBoolean() || (Configs.INV_FRIEND_HIDEPAGES.getBoolean() && page > 0)))
-			inv.setItem(ItemStacks.INV_FRIEND_PREVIOUSPAGE.getInventorySlot(), ItemStacks.INV_FRIEND_PREVIOUSPAGE.getItem(player));
-		if(Configs.INV_PARTY_ENABLE.getBoolean())
-			inv.setItem(ItemStacks.INV_FRIEND_PARTY.getInventorySlot(), ItemStacks.INV_FRIEND_PARTY.getItem(player));
-		
-		String invName = "FriendInventory";
-		for(int customItem = 0; customItem < ItemStacks.getItemCount(invName); customItem++) 
-			inv.setItem(ItemStacks.getCustomInventorySlot(invName, customItem) -1, ItemStacks.getCutomItem(invName, customItem, player));
 		
 		Bukkit.getScheduler().runTaskAsynchronously(Friends.getInstance(), new Runnable() {
 			
@@ -123,6 +141,8 @@ public enum InventoryBuilder {
 				for(ItemStack item : inv.getContents())
 					if(item == null) freeSlots++;
 				
+				if(Configs.INV_FRIEND_PREVIOUSPAGE_ENABLE.getBoolean() && (!Configs.INV_FRIEND_HIDEPAGES.getBoolean() || (Configs.INV_FRIEND_HIDEPAGES.getBoolean() && page > 0)))
+					inv.setItem(ItemStacks.INV_FRIEND_PREVIOUSPAGE.getInventorySlot(), ItemStacks.INV_FRIEND_PREVIOUSPAGE.getItem(player));
 				if(Configs.INV_FRIEND_NEXTPAGE_ENABLE.getBoolean() && (!Configs.INV_FRIEND_HIDEPAGES.getBoolean() || (Configs.INV_FRIEND_HIDEPAGES.getBoolean() && friends.size() > freeSlots)))
 					inv.setItem(ItemStacks.INV_FRIEND_NEXTPAGE.getInventorySlot(), ItemStacks.INV_FRIEND_NEXTPAGE.getItem(player));
 				
@@ -158,7 +178,8 @@ public enum InventoryBuilder {
 				if(hash.getOptions().getSorting() == 2) {
 					List<Long> timestamps = new ArrayList<Long>();
 					for(int i = (page*freeSlots); i < ((page*freeSlots)+freeSlots); i++)
-						timestamps.add(friends.get(i).getTimestamp());
+						if(friends.size() > i)
+							timestamps.add(friends.get(i).getTimestamp());
 					Collections.sort(timestamps);
 					for(Long ts : timestamps)
 						for(Friendship fs : friends)
@@ -167,14 +188,33 @@ public enum InventoryBuilder {
 				if(hash.getOptions().getSorting() == 3) {
 					Collection<String> names = new TreeSet<String>(Collator.getInstance());
 					for(int i = (page*freeSlots); i < ((page*freeSlots)+freeSlots); i++)
-						names.add(FriendHash.getName(friends.get(i).getFriend()));
+						if(friends.size() > i)
+							names.add(FriendHash.getName(friends.get(i).getFriend()));
 					
 					for(String nm : names)
 						for(Friendship fs : friends)
 							if(FriendHash.getName(fs.getFriend()).equals(nm)) friendsOnPage.add(fs);
 				}
-				for (Friendship fs : friendsOnPage) 
-					cashedPositions.put(addFriend(inv, fs, cfg, hash), fs);
+
+				for (Friendship fs : friendsOnPage) {
+					String identifier = createUniqueIdentifier();
+					boolean changeSkull = (Configs.INV_FRIENDS_FRIENDS_CHANGESKULL.getBoolean() && !FriendHash.isOnline(fs.getFriend()));
+					String status = Bukkit.getPlayer(fs.getFriend()) != null ? FriendHash.getFriendHash(fs.getFriend()).getStatus() : fs.getStatus();
+					status = status == null || fs.getStatus().length() < 1 ? Configs.INV_FRIENDS_NO_STATUS_REPLACEMENT.getText() : status;
+					
+					boolean online = FriendHash.isOnline(fs.getFriend());
+					inv.addItem(createHead(identifier, fs.getFriend(), FriendHash.getName(fs.getFriend()), Configs.ITEM_FRIENDS_NAME.getText(), (online ? Configs.ITEM_FRIENDS_LORE_ONLINE.getText() : Configs.ITEM_FRIENDS_LORE_OFFLINE.getText()), 
+							new String[] {"%ONLINE_STATUS%", "%SERVER%", "%WORLD%", "%DATE%", "%LAST_ONLINE%", "%STATUS%"}, 
+							new String[] {
+									online ? Configs.ITEM_FRIENDS_ONLINE_STAT_ON.getText() : Configs.ITEM_FRIENDS_ONLINE_STAT_OFF.getText(),
+									FriendHash.getServer(fs.getFriend()),
+									FriendHash.getWorld(fs.getFriend()),
+									new SimpleDateFormat(Configs.DATE_FORMAT.getText()).format(new Date(fs.getTimestamp())),
+									new SimpleDateFormat(Configs.LASTONLINE_DATE_FORMAT.getText()).format(new Date(hash.getLastOnline(fs.getFriend()))),
+									(Configs.ALLOW_STATUS_COLOR.getBoolean() ? ChatColor.translateAlternateColorCodes('&', status) : status)
+							}, !changeSkull));
+					cashedPositions.put(identifier, fs);
+				}
 				
 				FriendInventoryListener.setPositions(player.getUniqueId(), cashedPositions);
 				return;
@@ -184,104 +224,29 @@ public enum InventoryBuilder {
 		return cashedPositions;
 	}
 	
-	private static String addFriend(Inventory inv, Friendship fs, FileConfiguration cfg, FriendHash hash) {
-		String name = FriendHash.getName(fs.getFriend());
-		
-		boolean changeSkull = (Configs.INV_FRIENDS_FRIENDS_CHANGESKULL.getBoolean() && !FriendHash.isOnline(fs.getFriend()));
-		String status = Bukkit.getPlayer(fs.getFriend()) != null ? FriendHash.getFriendHash(fs.getFriend()).getStatus() : fs.getStatus();
-		status = status == null || fs.getStatus().length() < 1 ? Configs.INV_FRIENDS_NO_STATUS_REPLACEMENT.getText() : status;
-		
-		ItemStack item = new ItemStack(changeSkull ? Material.SKELETON_SKULL : Material.PLAYER_HEAD);
-		SkullMeta meta = (SkullMeta) item.getItemMeta();
-		if(!changeSkull) meta.setOwningPlayer(Bukkit.getOfflinePlayer(fs.getFriend()));
-		
-		Date date = new Date(fs.getTimestamp());
-		SimpleDateFormat sdf = new SimpleDateFormat(Configs.DATE_FORMAT.getText());
-		
-		Date lastOnline = new Date(hash.getLastOnline(fs.getFriend()));
-		SimpleDateFormat sdl_lastonline = new SimpleDateFormat(Configs.LASTONLINE_DATE_FORMAT.getText());
-		
-		String identifier = createUniqueIdentifier();
-		
-		boolean online = FriendHash.isOnline(fs.getFriend());
-		String displayName = Configs.ITEM_FRIENDS_NAME.getText().replace("%ONLINE_STATUS%", online ? Configs.ITEM_FRIENDS_ONLINE_STAT_ON.getText() : Configs.ITEM_FRIENDS_ONLINE_STAT_OFF.getText())
-				.replace("%SERVER%", FriendHash.getServer(fs.getFriend())).replace("%WORLD%", FriendHash.getWorld(fs.getFriend()));
-		meta.setDisplayName(identifier + ChatColor.translateAlternateColorCodes('&', setPlaceholders(displayName.replace("%NAME%", fs.hasNickname() ? fs.getNickname() : name), Bukkit.getOfflinePlayer(fs.getFriend()))));
-		ArrayList<String> l = new ArrayList<String>();
-		
-		String[] friendlore = (online ? Configs.ITEM_FRIENDS_LORE_ONLINE.getText() : Configs.ITEM_FRIENDS_LORE_OFFLINE.getText()).split("//");
-		for(String lore : friendlore)
-			l.add(setPlaceholders(ChatColor.translateAlternateColorCodes('&', lore.replace("%DATE%", sdf.format(date))
-					.replace("%ONLINE_STATUS%", online ? Configs.ITEM_FRIENDS_ONLINE_STAT_ON.getText() : Configs.ITEM_FRIENDS_ONLINE_STAT_OFF.getText())
-					.replace("%LAST_ONLINE%", sdl_lastonline.format(lastOnline)).replace("%SERVER%", FriendHash.getServer(fs.getFriend())).replace("%WORLD%", FriendHash.getWorld(fs.getFriend())))
-					.replace("%STATUS%", (Configs.ALLOW_STATUS_COLOR.getBoolean() ? ChatColor.translateAlternateColorCodes('&', status) : status)), 
-					Bukkit.getOfflinePlayer(fs.getFriend())));
-		meta.setLore(l);
-		item.setItemMeta(meta);
-		
-		inv.addItem(item);
-		return identifier;
-	}
-	
 	public static HashMap<String, Request> openRequestsInventory(Player player, UUID toOpen, int page, boolean fresh) {
-		Inventory inv = Bukkit.createInventory(null, REQUESTS_INVENTORY.getSize(), REQUESTS_INVENTORY.getTitle(player).replace("%NAME%", player.getName())
-				.replace("%PAGE%", (page+1)+""));
-		
-		for(String slots : FileManager.CONFIG.getConfig().getStringList("Friends.RequestsInventory.Placeholders.InventorySlots"))
-			inv.setItem(Integer.parseInt(slots)-1, ItemStacks.INV_REQUESTS_PLACEHOLDERS.getItem(player));
-		
-		if(Configs.INV_REQUEST_ACCEPTALL_ENABLE.getBoolean()) inv.setItem(ItemStacks.INV_REQUESTS_ACCEPTALL.getInventorySlot(), ItemStacks.replace(ItemStacks.INV_REQUESTS_ACCEPTALL.getItem(player), "%REQUESTS_COUNT%", "0"));
-		if(Configs.INV_REQUEST_DENYALL_ENABLE.getBoolean()) inv.setItem(ItemStacks.INV_REQUESTS_DENYALL.getInventorySlot(), ItemStacks.replace(ItemStacks.INV_REQUESTS_DENYALL.getItem(player), "%REQUESTS_COUNT%", "0"));
-		inv.setItem(ItemStacks.INV_REQUESTS_BACK.getInventorySlot(), ItemStacks.INV_REQUESTS_BACK.getItem(player));
-		if(Configs.INV_REQUEST_PREVIOUSPAGE_ENABLE.getBoolean() && (!Configs.INV_REQUEST_HIDEPAGES.getBoolean() || (Configs.INV_REQUEST_HIDEPAGES.getBoolean() && page > 0))) 
-			inv.setItem(ItemStacks.INV_REQUESTS_PREVIOUSPAGE.getInventorySlot(), ItemStacks.INV_REQUESTS_PREVIOUSPAGE.getItem(player));
-		
-		String invName = "RequestsInventory";
-		for(int customItem = 0; customItem < ItemStacks.getItemCount(invName); customItem++) 
-			inv.setItem(ItemStacks.getCustomInventorySlot(invName, customItem) - 1, ItemStacks.getCutomItem(invName, customItem, player));
-		
+		Inventory inv = REQUESTS_INVENTORY.createInventory(player, new String[] {"REQUESTS_COUNT%"}, new String[] {"0"}, page+1);
 		HashMap<String, Request> cashedPositions = new HashMap<String, Request>();
 		Bukkit.getScheduler().runTaskAsynchronously(Friends.getInstance(), new Runnable() {
 			
 			@Override
 			public void run() {
 				LinkedList<Request> requests = fresh ? FriendHash.getFriendHash(player.getUniqueId()).getRequestsNew() : FriendHash.getFriendHash(player.getUniqueId()).getRequests();
+				Object[] onpageObject = getOnPage(requests, inv, page);
 				
 				if(Configs.INV_REQUEST_ACCEPTALL_ENABLE.getBoolean()) inv.setItem(ItemStacks.INV_REQUESTS_ACCEPTALL.getInventorySlot(), ItemStacks.replace(ItemStacks.INV_REQUESTS_ACCEPTALL.getItem(player), "%REQUESTS_COUNT%", requests.size()+""));
 				if(Configs.INV_REQUEST_DENYALL_ENABLE.getBoolean()) inv.setItem(ItemStacks.INV_REQUESTS_DENYALL.getInventorySlot(), ItemStacks.replace(ItemStacks.INV_REQUESTS_DENYALL.getItem(player), "%REQUESTS_COUNT%", requests.size()+""));
-				
-				int freeSlots = 0;
-				for(ItemStack item : inv.getContents())
-					if(item == null) freeSlots++;
-				
-				if(Configs.INV_REQUEST_NEXTPAGE_ENABLE.getBoolean() && (!Configs.INV_REQUEST_HIDEPAGES.getBoolean() || (Configs.INV_REQUEST_HIDEPAGES.getBoolean() && requests.size() > freeSlots))) 
+				if(Configs.INV_REQUEST_NEXTPAGE_ENABLE.getBoolean() && (!Configs.INV_REQUEST_HIDEPAGES.getBoolean() || (Configs.INV_REQUEST_HIDEPAGES.getBoolean() && requests.size() > ((int)onpageObject[0])))); 
 					inv.setItem(ItemStacks.INV_REQUESTS_NEXTPAGE.getInventorySlot(), ItemStacks.INV_REQUESTS_NEXTPAGE.getItem(player));
+				if(Configs.INV_REQUEST_PREVIOUSPAGE_ENABLE.getBoolean() && (!Configs.INV_REQUEST_HIDEPAGES.getBoolean() || (Configs.INV_REQUEST_HIDEPAGES.getBoolean() && page > 0))) 
+					inv.setItem(ItemStacks.INV_REQUESTS_PREVIOUSPAGE.getInventorySlot(), ItemStacks.INV_REQUESTS_PREVIOUSPAGE.getItem(player));
 				
-				List<Request> requestsOnPage = new ArrayList<Request>();
-				for(int i = (page*freeSlots); i < ((page*freeSlots)+freeSlots); i++)
-					if(requests.size() > i) requestsOnPage.add(requests.get(i));
-				
-				for(Request rq : requestsOnPage) {
-					String name = FriendHash.getName(rq.getPlayerToAdd());
+				for(Request rq : (List<Request>)onpageObject[1]) {
 					String msg = rq.getMessage() == null || rq.getMessage().length() < 1 ? Configs.INV_REQUEST_NO_MSG_REPLACEMENT.getText() : rq.getMessage();
-					
-					Date date = new Date(rq.getTimestamp());
-					SimpleDateFormat sdf = new SimpleDateFormat(Configs.DATE_FORMAT.getText());
-					
-					ItemStack item = new ItemStack(Material.PLAYER_HEAD);
-					SkullMeta meta = (SkullMeta) item.getItemMeta();
-					
 					String identifier = createUniqueIdentifier();
 					cashedPositions.put(identifier, rq);
-					
-					meta.setDisplayName(identifier + ChatColor.translateAlternateColorCodes('&', setPlaceholders(Configs.ITEM_REQUEST_PLAYER_NAME.getText().replace("%NAME%", name), Bukkit.getOfflinePlayer(rq.getPlayerToAdd()))));
-					meta.setOwningPlayer(Bukkit.getOfflinePlayer(rq.getPlayerToAdd()));
-					ArrayList<String> lore = new ArrayList<String>();
-					for(String l : Configs.ITEM_REQUEST_PLAYER_LORE.getText().split("//"))
-						lore.add(setPlaceholders(ChatColor.translateAlternateColorCodes('&', l.replace("%MESSAGE%", msg).replace("%DATE%", sdf.format(date))), Bukkit.getOfflinePlayer(rq.getPlayerToAdd())));
-					meta.setLore(lore);
-					item.setItemMeta(meta);
-					inv.addItem(item);
+					inv.addItem(createHead(identifier, rq.getPlayerToAdd(), FriendHash.getName(rq.getPlayerToAdd()), Configs.ITEM_REQUEST_PLAYER_NAME.getText(), Configs.ITEM_REQUEST_PLAYER_LORE.getText(), 
+							new String[] {"%MESSAGE%", "%DATE%"}, new String[] {msg, new SimpleDateFormat(Configs.DATE_FORMAT.getText()).format(new Date(rq.getTimestamp()))}, true));
 				}
 				RequestsInventoryListener.setPositions(player.getUniqueId(), cashedPositions);
 			}
@@ -291,61 +256,27 @@ public enum InventoryBuilder {
 	}
 	
 	public static HashMap<String, Blockplayer> openBlockedInventory(Player player, UUID toOpen, int page, boolean fresh) {
-		Inventory inv = Bukkit.createInventory(null, BLOCKED_INVENTORY.getSize(), BLOCKED_INVENTORY.getTitle(player).replace("%NAME%", player.getName())
-				.replace("%PAGE%", (page+1)+""));
-		
-		for(String slots : FileManager.CONFIG.getConfig().getStringList("Friends.BlockedInventory.Placeholders.InventorySlots"))
-			inv.setItem(Integer.parseInt(slots)-1, ItemStacks.INV_BLOCKED_PLACEHOLDERS.getItem(player));
-		
-		inv.setItem(ItemStacks.INV_BLOCKED_BACK.getInventorySlot(), ItemStacks.INV_BLOCKED_BACK.getItem(player));
-		if(Configs.INV_BLOCKED_PREVIOUSPAGE_ENABLE.getBoolean() && (!Configs.INV_BLOCKED_HIDEPAGES.getBoolean() || (Configs.INV_BLOCKED_HIDEPAGES.getBoolean() && page > 0))) 
-			inv.setItem(ItemStacks.INV_BLOCKED_PREVIOUSPAGE.getInventorySlot(), ItemStacks.INV_BLOCKED_PREVIOUSPAGE.getItem(player));
-		if(Configs.INV_BLOCKED_UNBLOCKALL_ENABLE.getBoolean()) inv.setItem(ItemStacks.INV_BLOCKED_UNBLOCKALL.getInventorySlot(), ItemStacks.replace(ItemStacks.INV_BLOCKED_UNBLOCKALL.getItem(player), "%BLOCKED_COUNT%", "0"));
-		
-		String invName = "BlockedInventory";
-		for(int customItem = 0; customItem < ItemStacks.getItemCount(invName); customItem++) 
-			inv.setItem(ItemStacks.getCustomInventorySlot(invName, customItem) - 1, ItemStacks.getCutomItem(invName, customItem, player));
-		
+		Inventory inv = BLOCKED_INVENTORY.createInventory(player, new String[] {"%BLOCKED_COUNT%"}, new String[] {"0"}, page+1);
 		HashMap<String, Blockplayer> cashedPositions = new HashMap<String, Blockplayer>();
 		Bukkit.getScheduler().runTaskAsynchronously(Friends.getInstance(), new Runnable() {
 			
 			@Override
 			public void run() {
 				LinkedList<Blockplayer> blockedplayers = fresh ? FriendHash.getFriendHash(player.getUniqueId()).getBlockedNew() : FriendHash.getFriendHash(player.getUniqueId()).getBlocked();
+				Object[] onpageObject = getOnPage(blockedplayers, inv, page);
 				
 				if(Configs.INV_BLOCKED_UNBLOCKALL_ENABLE.getBoolean()) inv.setItem(ItemStacks.INV_BLOCKED_UNBLOCKALL.getInventorySlot(), ItemStacks.replace(ItemStacks.INV_BLOCKED_UNBLOCKALL.getItem(player), "%BLOCKED_COUNT%", blockedplayers.size()+""));
-				
-				int freeSlots = 0;
-				for(ItemStack item : inv.getContents())
-					if(item == null) freeSlots++;
-				
-				if(Configs.INV_BLOCKED_NEXTPAGE_ENABLE.getBoolean() && (!Configs.INV_BLOCKED_HIDEPAGES.getBoolean() || (Configs.INV_BLOCKED_HIDEPAGES.getBoolean() && blockedplayers.size() > freeSlots)))
+				if(Configs.INV_BLOCKED_NEXTPAGE_ENABLE.getBoolean() && (!Configs.INV_BLOCKED_HIDEPAGES.getBoolean() || (Configs.INV_BLOCKED_HIDEPAGES.getBoolean() && blockedplayers.size() > ((int)onpageObject[0]))))
 					inv.setItem(ItemStacks.INV_BLOCKED_NEXTPAGE.getInventorySlot(), ItemStacks.INV_BLOCKED_NEXTPAGE.getItem(player));
-					
-				LinkedList<Blockplayer> blockedOnPage = new LinkedList<Blockplayer>();
-				for(int i = (page*freeSlots); i < ((page*freeSlots)+freeSlots); i++)
-					if(blockedplayers.size() > i) blockedOnPage.add(blockedplayers.get(i));
+				if(Configs.INV_BLOCKED_PREVIOUSPAGE_ENABLE.getBoolean() && (!Configs.INV_BLOCKED_HIDEPAGES.getBoolean() || (Configs.INV_BLOCKED_HIDEPAGES.getBoolean() && page > 0))) 
+					inv.setItem(ItemStacks.INV_BLOCKED_PREVIOUSPAGE.getInventorySlot(), ItemStacks.INV_BLOCKED_PREVIOUSPAGE.getItem(player));
 				
-				for(Blockplayer bl : blockedOnPage) {
-					String name = FriendHash.getName(bl.getBlocked());
+				for(Blockplayer bl : (List<Blockplayer>)onpageObject[1]) {
 					String msg = bl.getMessage() == null || bl.getMessage().length() < 1 ? Configs.INV_BLOCKED_NO_NOTE_REPLACEMENT.getText() : bl.getMessage();
-					
-					Date date = new Date(bl.getTimestamp());
-					SimpleDateFormat sdf = new SimpleDateFormat(Configs.DATE_FORMAT.getText());
-					
 					String identifier = createUniqueIdentifier();
 					cashedPositions.put(identifier, bl);
-					
-					ItemStack item = new ItemStack(Material.PLAYER_HEAD);
-					SkullMeta meta = (SkullMeta) item.getItemMeta();
-					meta.setDisplayName(identifier + ChatColor.translateAlternateColorCodes('&', setPlaceholders(Configs.ITEM_BLOCKED_PLAYER_NAME.getText().replace("%NAME%", name), Bukkit.getOfflinePlayer(bl.getBlocked()))));
-					meta.setOwningPlayer(Bukkit.getOfflinePlayer(bl.getBlocked()));
-					ArrayList<String> lore = new ArrayList<String>();
-					for(String l : Configs.ITEM_BLOCKED_PLAYER_LORE.getText().split("//"))
-						lore.add(setPlaceholders(ChatColor.translateAlternateColorCodes('&', l.replace("%NOTE%", msg).replace("%DATE%", sdf.format(date))), Bukkit.getOfflinePlayer(bl.getBlocked())));
-					meta.setLore(lore);
-					item.setItemMeta(meta);
-					inv.addItem(item);
+					inv.addItem(createHead(identifier, bl.getBlocked(), FriendHash.getName(bl.getBlocked()), Configs.ITEM_BLOCKED_PLAYER_NAME.getText(), Configs.ITEM_BLOCKED_PLAYER_LORE.getText(), 
+							new String[] {"%NOTE%","%DATE%"}, new String[] {msg, new SimpleDateFormat(Configs.DATE_FORMAT.getText()).format(new Date(bl.getTimestamp()))}, true));
 				}
 				BlockedInventoryListener.setPositions(player.getUniqueId(), cashedPositions);
 			}
@@ -354,83 +285,49 @@ public enum InventoryBuilder {
 		return cashedPositions;
 	}
 	
+	private static ItemStack createHead(String identifier, UUID uuid, String name, String display, String lore, String[] toReplace, String[] replacements, boolean changeSkull) {
+		ItemStack item = new ItemStack(changeSkull ? Material.PLAYER_HEAD : Material.SKELETON_SKULL);
+		SkullMeta meta = (SkullMeta) item.getItemMeta();
+		meta.setDisplayName(identifier + setPlaceholders(display.replace("%NAME%", name), Bukkit.getOfflinePlayer(uuid)));
+		for(int i = 0; i < toReplace.length; i++)
+			meta.setDisplayName(meta.getDisplayName().replace(toReplace[i], replacements[i]));
+		meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', meta.getDisplayName()));
+		if(changeSkull) meta.setOwningPlayer(Bukkit.getOfflinePlayer(uuid));
+		lore = setPlaceholders(ChatColor.translateAlternateColorCodes('&', lore), Bukkit.getOfflinePlayer(uuid));
+		meta.setLore(Arrays.asList(lore.split("//")));
+		for(int i = 0; i < toReplace.length; i++) {
+			ArrayList<String> lorelist = new ArrayList<String>();
+			for(String l : meta.getLore())
+				lorelist.add(l.replace(toReplace[i], replacements[i]));
+			meta.setLore(lorelist);
+		}
+		item.setItemMeta(meta);
+		return item;
+	}
+	
 	public static void openRequestEditInventory(Player player, Request rq) {
-		String name = FriendHash.getName(rq.getPlayerToAdd());
-		Inventory inv = Bukkit.createInventory(null, REQUESTEDIT_INVENTORY.getSize(), REQUESTEDIT_INVENTORY.getTitle(player).replace("%NAME%", name));
-		
-		for(String slots : FileManager.CONFIG.getConfig().getStringList("Friends.RequestEditInventory.Placeholders.InventorySlots"))
-			inv.setItem(Integer.parseInt(slots)-1, ItemStacks.INV_REQUESTEDIT_PLACEHOLDERS.getItem(player));
-		
 		String msg = rq.getMessage() == null || rq.getMessage().length() < 1 ? Configs.INV_RQ_EDIT_NO_MSG_REPLACEMENT.getText() : rq.getMessage();
-		
-		inv.setItem(ItemStacks.INV_REQUESTEDIT_ACCEPT.getInventorySlot(), ItemStacks.replace(ItemStacks.INV_REQUESTEDIT_ACCEPT.getItem(player), "%NAME%", name));
-		inv.setItem(ItemStacks.INV_REQUESTEDIT_DENY.getInventorySlot(), ItemStacks.replace(ItemStacks.INV_REQUESTEDIT_DENY.getItem(player), "%NAME%", name));
-		inv.setItem(ItemStacks.INV_REQUESTEDIT_BACK.getInventorySlot(), ItemStacks.INV_REQUESTEDIT_BACK.getItem(player));
-		if(Configs.INV_REQUESTEDIT_MESSAGE_ENABLE.getBoolean()) inv.setItem(ItemStacks.INV_REQUESTEDIT_MESSAGE.getInventorySlot(), ItemStacks.replace(ItemStacks
-				.replace(ItemStacks.INV_REQUESTEDIT_MESSAGE.getItem(player), "%MESSAGE%", msg), "%NAME%", name));
-		
-		String invName = "RequestEditInventory";
-		for(int customItem = 0; customItem < ItemStacks.getItemCount(invName); customItem++) 
-			inv.setItem(ItemStacks.getCustomInventorySlot(invName, customItem), ItemStacks.getCutomItem(invName, customItem, player));
-		
+		Inventory inv = REQUESTEDIT_INVENTORY.createInventory(player, new String[] {"%NAME%","%MESSAGE%"}, new String[] {FriendHash.getName(rq.getPlayerToAdd()), msg}, 0);
 		player.openInventory(inv);
 	}
 	
 	public static void openBlockedEditInventory(Player player, Blockplayer bl) {
-		String name = FriendHash.getName(bl.getBlocked());
-		Inventory inv = Bukkit.createInventory(null, BLOCKEDIT_INVENTORY.getSize(), BLOCKEDIT_INVENTORY.getTitle(player).replace("%NAME%", name));
-		
-		for(String slots : FileManager.CONFIG.getConfig().getStringList("Friends.BlockedEditInventory.Placeholders.InventorySlots"))
-			inv.setItem(Integer.parseInt(slots)-1, ItemStacks.INV_BLOCKEDIT_PLACEHOLDERS.getItem(player));
-		
 		String msg = bl.getMessage() == null || bl.getMessage().length() < 1 ? Configs.INV_BL_EDIT_NO_NOTE_REPLACEMENT.getText() : bl.getMessage();
-		
-		inv.setItem(ItemStacks.INV_BLOCKEDIT_BACK.getInventorySlot(), ItemStacks.INV_BLOCKEDIT_BACK.getItem(player));
-		if(Configs.INV_BLOCKEDIT_NOTE_ENABLE.getBoolean()) inv.setItem(ItemStacks.INV_BLOCKEDIT_NOTE.getInventorySlot(), ItemStacks.replace(ItemStacks.INV_BLOCKEDIT_NOTE.getItem(player), "%NOTE%", msg));
-		inv.setItem(ItemStacks.INV_BLOCKEDIT_UNBLOCK.getInventorySlot(), ItemStacks.replace(ItemStacks.INV_BLOCKEDIT_UNBLOCK.getItem(player), "%NAME%", name));
-		
-		String invName = "BlockedEditInventory";
-		for(int customItem = 0; customItem < ItemStacks.getItemCount(invName); customItem++) 
-			inv.setItem(ItemStacks.getCustomInventorySlot(invName, customItem) - 1, ItemStacks.getCutomItem(invName, customItem, player));
-		
+		Inventory inv = BLOCKEDIT_INVENTORY.createInventory(player, new String[] {"%NAME%","%NOTE%"}, new String[] {FriendHash.getName(bl.getBlocked()),msg}, 0);
 		player.openInventory(inv);
 	}
 	
 	public static void openFriendEditInventory(Player player, Friendship fs) {
 		String name = FriendHash.getName(fs.getFriend());
-		Inventory inv = Bukkit.createInventory(null, FRIENDEDIT_INVENTORY.getSize(), FRIENDEDIT_INVENTORY.getTitle(player).replace("%NAME%", name));
-		
-		for(String slots : FileManager.CONFIG.getConfig().getStringList("Friends.FriendEditInventory.Placeholders.InventorySlots"))
-			inv.setItem(Integer.parseInt(slots)-1, ItemStacks.INV_FRIENDEDIT_PLACEHOLDERS.getItem(player));
-		
 		String nickname = fs.getNickname() == null || fs.getNickname().length() < 1 ? Configs.ITEM_FRIEND_NO_NICK_REPLACEMENT.getText() : fs.getNickname();
-		String favorite_status = fs.getFavorite() ? Configs.ITEM_FRIEND_FAV_STATUS_ON.getText() : Configs.ITEM_FRIEND_FAV_STATUS_OFF.getText();
-		String message_status = fs.getCanSendMessages() ? Configs.ITEM_FRIEND_SENDMSG_STATUS_ON.getText() : Configs.ITEM_FRIEND_SENDMSG_STATUS_OFF.getText();
-		
-		inv.setItem(ItemStacks.INV_FRIENDEDIT_BACK.getInventorySlot(), ItemStacks.INV_FRIENDEDIT_BACK.getItem(player));
-		inv.setItem(ItemStacks.INV_FRIENDEDIT_REMOVE.getInventorySlot(), ItemStacks.replace(ItemStacks.INV_FRIENDEDIT_REMOVE.getItem(player), "%NAME%", name));
-		if(Configs.INV_FRIENDEDIT_FAVORITE_ENABLE.getBoolean()) inv.setItem(ItemStacks.INV_FRIENDEDIT_FAVORITE.getInventorySlot(), ItemStacks.replace(ItemStacks.replace(ItemStacks.INV_FRIENDEDIT_FAVORITE.getItem(player), "%NAME%", name),
-				"%FAVORITE_STATUS%", ChatColor.translateAlternateColorCodes('&', favorite_status)));
-		if(Configs.INV_FRIENDEDIT_CSM_ENABLE.getBoolean()) inv.setItem(ItemStacks.INV_FRIENDEDIT_CANSENDMESSAGES.getInventorySlot(), ItemStacks.replace(ItemStacks.replace(ItemStacks.INV_FRIENDEDIT_CANSENDMESSAGES.getItem(player), "%NAME%", name), 
-				"%SENDMESSAGES_STATUS%", ChatColor.translateAlternateColorCodes('&', message_status)));
-		if(Configs.INV_FRIENDEDIT_NICK_ENABLE.getBoolean()) inv.setItem(ItemStacks.INV_FRIENDEDIT_NICKNAME.getInventorySlot(), ItemStacks.replace(ItemStacks.replace(ItemStacks.INV_FRIENDEDIT_NICKNAME.getItem(player), "%NAME%", name), 
-				"%NICKNAME%", nickname));
-		if(Configs.INV_JUMPING_ENABLE.getBoolean()) inv.setItem(ItemStacks.INV_FRIENDEDIT_JUMP.getInventorySlot(), ItemStacks.replace(ItemStacks.INV_FRIENDEDIT_JUMP.getItem(player), "%NAME%", name));
-		if(Configs.INV_FRIENDEDIT_PARTY_ENABLE.getBoolean()) inv.setItem(ItemStacks.INV_FRIENDEDIT_PARTY.getInventorySlot(), ItemStacks.replace(ItemStacks.INV_FRIENDEDIT_PARTY.getItem(player), "%NAME%", name));
-		
-		String invName = "FriendEditInventory";
-		for(int customItem = 0; customItem < ItemStacks.getItemCount(invName); customItem++) 
-			inv.setItem(ItemStacks.getCustomInventorySlot(invName, customItem) - 1, ItemStacks.getCutomItem(invName, customItem, player));
-		
+		String favorite_status = ChatColor.translateAlternateColorCodes('&', fs.getFavorite() ? Configs.ITEM_FRIEND_FAV_STATUS_ON.getText() : Configs.ITEM_FRIEND_FAV_STATUS_OFF.getText());
+		String message_status = ChatColor.translateAlternateColorCodes('&', fs.getCanSendMessages() ? Configs.ITEM_FRIEND_SENDMSG_STATUS_ON.getText() : Configs.ITEM_FRIEND_SENDMSG_STATUS_OFF.getText());
+		Inventory inv = FRIENDEDIT_INVENTORY.createInventory(player, new String[] {"%NAME%", "%FAVORITE_STATUS%", "%SENDMESSAGES_STATUS%", "%NICKNAME%"}, new String[] {
+			name, favorite_status, message_status, nickname	}, 0);
 		player.openInventory(inv);
 	}
 	
 	public static void openOptionsInventory(Player p, Options opt) {
-		Inventory inv = Bukkit.createInventory(null, OPTIONS_INVENTORY.getSize(), OPTIONS_INVENTORY.getTitle(p).replace("%NAME%", p.getName()));
-		
-		for(String slots : FileManager.CONFIG.getConfig().getStringList("Friends.OptionsInventory.Placeholders.InventorySlots"))
-			inv.setItem(Integer.parseInt(slots)-1, ItemStacks.INV_OPTIONS_PLACEHOLDERS.getItem(p));
-		
 		String offline = ChatColor.translateAlternateColorCodes('&', opt.isOffline() ? Configs.OPTIONS_ON.getText() : Configs.OPTIONS_OFF.getText());
 		String messages = ChatColor.translateAlternateColorCodes('&', opt.getMessages() ? Configs.OPTIONS_ON.getText() : opt.getFavMessages() ? Configs.OPTIONS_MESSAGES_ONLY_FAV_STATUS.getText() : Configs.OPTIONS_OFF.getText());
 		String requests = ChatColor.translateAlternateColorCodes('&', opt.getRequests() ? Configs.OPTIONS_ON.getText() : Configs.OPTIONS_OFF.getText());
@@ -438,25 +335,19 @@ public enum InventoryBuilder {
 		String jumping = ChatColor.translateAlternateColorCodes('&', opt.getJumping() ? Configs.OPTIONS_ON.getText() : Configs.OPTIONS_OFF.getText());
 		String party = ChatColor.translateAlternateColorCodes('&', opt.getPartyInvites() ? Configs.OPTIONS_ON.getText() : Configs.OPTIONS_OFF.getText());
 		if(Configs.ALLOW_STATUS_COLOR.getBoolean()) status = ChatColor.translateAlternateColorCodes('&', status);
-		
-		inv.setItem(ItemStacks.INV_OPTIONS_BACK.getInventorySlot(), ItemStacks.INV_OPTIONS_BACK.getItem(p));
-		if(Configs.OPTIONS_MESSAGES_SHOW.getBoolean()) inv.setItem(ItemStacks.INV_OPTIONS_MESSAGES.getInventorySlot(), ItemStacks
-				.replace(ItemStacks.INV_OPTIONS_MESSAGES.getItem(p), "%OPTION_MESSAGES_STATUS%", messages));
-		if(Configs.OPTIONS_OFFLINEMODE_SHOW.getBoolean()) inv.setItem(ItemStacks.INV_OPTIONS_OFFLINEMODE.getInventorySlot(), ItemStacks
-				.replace(ItemStacks.INV_OPTIONS_OFFLINEMODE.getItem(p), "%OPTION_OFFLINEMODE_STATUS%", offline));
-		if(Configs.OPTIONS_REQUESTS_SHOW.getBoolean()) inv.setItem(ItemStacks.INV_OPTIONS_REQUESTS.getInventorySlot(), ItemStacks
-				.replace(ItemStacks.INV_OPTIONS_REQUESTS.getItem(p), "%OPTION_REQUESTS_STATUS%", requests));
-		if(Configs.OPTIONS_STATUS_SHOW.getBoolean()) inv.setItem(ItemStacks.INV_OPTIONS_STATUS.getInventorySlot(), ItemStacks.replace(ItemStacks.INV_OPTIONS_STATUS.getItem(p), "%STATUS%", status));
-		if(Configs.OPTIONS_JUMP_SHOW.getBoolean()) inv.setItem(ItemStacks.INV_OPTIONS_JUMP.getInventorySlot(), ItemStacks
-				.replace(ItemStacks.INV_OPTIONS_JUMP.getItem(p), "%OPTION_JUMPING_STATUS%", jumping));
-		if(Configs.OPTIONS_PARTY_SHOW.getBoolean()) inv.setItem(ItemStacks.INV_OPTIONS_PARTY.getInventorySlot(), ItemStacks
-				.replace(ItemStacks.INV_OPTIONS_PARTY.getItem(p), "%OPTION_PARTY_STATUS%", party));
-		
-		String invName = "OptionsInventory";
-		for(int customItem = 0; customItem < ItemStacks.getItemCount(invName); customItem++) 
-			inv.setItem(ItemStacks.getCustomInventorySlot(invName, customItem) - 1, ItemStacks.getCutomItem(invName, customItem, p));
-		
+		Inventory inv = OPTIONS_INVENTORY.createInventory(p, new String[] {"%OPTION_MESSAGES_STATUS%", "%OPTION_OFFLINEMODE_STATUS%", "%OPTION_REQUESTS_STATUS%",
+				"%OPTION_JUMPING_STATUS%", "%OPTION_PARTY_STATUS%", "%STATUS%"}, new String[] {messages, offline, requests, jumping, party, status}, 0);
 		p.openInventory(inv);
+	}
+	
+	private static <E> Object[] getOnPage(LinkedList<E> all, Inventory inv, int page) {
+		int freeSlots = 0;
+		for(ItemStack item : inv.getContents())
+			if(item == null) freeSlots++;
+		List<E> onpage = new ArrayList<E>();
+		for(int i = (page*freeSlots); i < ((page*freeSlots)+freeSlots); i++)
+			if(all.size() > i) onpage.add(all.get(i));
+		return new Object[] {freeSlots, onpage};
 	}
 	
 	private static String[] keys = new String[] {"§a","§b","§c","§d","§e","§f","§1","§2","§3","§4","§5","§6","§7","§8","§9","§o"};

@@ -12,7 +12,7 @@ import de.HyChrod.Friends.Utilities.Messages;
 public class DenyAll_Command {
 	
 	public DenyAll_Command(Friends friends, Player p, String[] args) {
-		if(!p.hasPermission("Friends.Commands.DenyAll")) {
+		if(!p.hasPermission("Friends.Commands.DenyAll") && !p.hasPermission("Friends.Commands.*")) {
 			p.sendMessage(Messages.NO_PERMISSIONS.getMessage(p));
 			return;
 		}

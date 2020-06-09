@@ -34,7 +34,7 @@ public class RequestEditInventoryListener implements Listener {
 				Request rq = currentlyEditing.get(p.getUniqueId());
 				String name = FriendHash.getName(rq.getPlayerToAdd());
 				if(e.getView() != null)
-					if(e.getView().getTitle() != null && e.getView().getTitle().equals(InventoryBuilder.REQUESTEDIT_INVENTORY.getTitle(p).replace("%NAME%", name))) {
+					if(e.getView().getTitle() != null && e.getView().getTitle().equals(InventoryBuilder.REQUESTEDIT_INVENTORY.getTitle(p, 0).replace("%NAME%", name))) {
 						e.setCancelled(true);
 						OfflinePlayer inEdit = Bukkit.getOfflinePlayer(rq.getPlayerToAdd());
 						if(e.getCurrentItem() != null)

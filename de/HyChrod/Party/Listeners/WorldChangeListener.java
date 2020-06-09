@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
+import de.HyChrod.Party.Utilities.PConfigs;
 import de.HyChrod.Party.Utilities.PMessages;
 import de.HyChrod.Party.Utilities.Parties;
 
@@ -21,6 +22,12 @@ public class WorldChangeListener implements Listener {
 		
 		Parties party = Parties.getParty(p.getUniqueId());
 		if(party.isLeader(p.getUniqueId()) && !party.getInfo().equals(e.getTo().getWorld().getName())) {
+			if(PConfigs.getForbiddenWorlds().contains(e.getTo().getWorld().getName())) {
+				e.setCancelled(true);
+				p.sendMessage(PMessages.SWITCH_SERVER_BLOCKED.getMessage(p));
+				return;
+			}
+			
 			party.setInfo(e.getTo().getWorld().getName());
 			for(UUID members : party.getMembers())
 				if(Bukkit.getPlayer(members) != null && !members.equals(p.getUniqueId())) {

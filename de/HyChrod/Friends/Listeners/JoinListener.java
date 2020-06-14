@@ -25,10 +25,10 @@ public class JoinListener implements Listener {
 					
 					@Override
 					public void run() {
-						p.getInventory().setItem(ItemStacks.FRIEND_ITEM.getInventorySlot(), ItemStacks.setSkin(ItemStacks.FRIEND_ITEM.getItem(p), p.getName()));
+						p.getInventory().setItem(ItemStacks.FRIEND_ITEM.getInventorySlot(), ItemStacks.setSkin(ItemStacks.FRIEND_ITEM.getItem(p), p.getName(), false, null));
 					}
 				}, 5L);
-			else p.getInventory().setItem(ItemStacks.FRIEND_ITEM.getInventorySlot(), ItemStacks.setSkin(ItemStacks.FRIEND_ITEM.getItem(p), p.getName()));
+			else p.getInventory().setItem(ItemStacks.FRIEND_ITEM.getInventorySlot(), ItemStacks.setSkin(ItemStacks.FRIEND_ITEM.getItem(p), p.getName(), false, null));
 		if(Configs.CHECK_FOR_UPDATES.getBoolean()) {
 			if((p.hasPermission("Friends.Commands.Version") || p.hasPermission("Friends.Commands.Reload")) && Friends.isUpdateNeeded())
 				p.sendMessage(Friends.getPrefix() + " §cThere is a new update available for friends");

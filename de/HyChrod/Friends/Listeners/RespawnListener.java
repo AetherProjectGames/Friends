@@ -19,7 +19,7 @@ public class RespawnListener implements Listener {
 				
 				@Override
 				public void run() {
-					e.getPlayer().getInventory().setItem(ItemStacks.FRIEND_ITEM.getInventorySlot(), ItemStacks.setSkin(ItemStacks.FRIEND_ITEM.getItem(e.getPlayer()), e.getPlayer().getName()));
+					e.getPlayer().getInventory().setItem(ItemStacks.FRIEND_ITEM.getInventorySlot(), ItemStacks.setSkin(ItemStacks.FRIEND_ITEM.getItem(e.getPlayer()), e.getPlayer().getName(), false, null));
 				}
 			}, 10);
 		}

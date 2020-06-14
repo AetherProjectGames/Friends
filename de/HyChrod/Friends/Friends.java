@@ -50,6 +50,7 @@ import de.HyChrod.Party.Utilities.PConfigs;
  * - Friends.FriendLimit.Extended
  * - Friends.Status.ChangeLimit.ByPass
  * - Friends.Commands.Msg
+ * - Friends.Commands.Msg.Bypass
  *
  */
 

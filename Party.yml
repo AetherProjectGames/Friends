@@ -30,13 +30,16 @@ Party:
       Material: "lime_wool"
       Lore: ""
       InventorySlot: 14
+      Base64Value: ""
     BackItem:
       Name: "&7Back to your Friends"
       Material: "iron_door"
       Lore: ""
       InventorySlot: 28
+      Base64Value: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjFmYWIwZTZhZWE4ODc0OGNhM2I1NTEyZWQ1MDJhNmQxOGU3NmQ4YWZjNDc3MGQ5OTUyMzNhYzBkYzUxODYifX19"
     Placeholders:
       Material: "gray_stained_glass_pane"
+      Base64Value: ""
       InventorySlots:
       - 29
       - 30
@@ -60,11 +63,13 @@ Party:
       Material: "red_wool"
       Lore: ""
       InventorySlot: 36
+      Base64Value: ""
     BackItem:
       Name: "&7Back to your Friends"
       Material: "iron_door"
       Lore: ""
       InventorySlot: 28
+      Base64Value: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjFmYWIwZTZhZWE4ODc0OGNhM2I1NTEyZWQ1MDJhNmQxOGU3NmQ4YWZjNDc3MGQ5OTUyMzNhYzBkYzUxODYifX19"
     VisibilityItem:
       Name: "&6Visibility:"
       Material: "comparator"
@@ -72,8 +77,10 @@ Party:
       InventorySlot: 32
       StatusPublic: "&aPublic"
       StatusPrivate: "&cPrivate"
+      Base64Value: ""
     Placeholders:
       Material: "gray_stained_glass_pane"
+      Base64Value: ""
       InventorySlots:
       - 1
       - 2
@@ -112,23 +119,28 @@ Party:
       Material: "gold_ingot"
       Lore: "&7Click here to make %NAME%//&7a party leader!"
       InventorySlot: 4
+      Base64Value: ""
     DemoteItem:
       Name: "&7Demote %NAME%"
       Material: "iron_ingot"
       Lore: "&7Click here to make %NAME%//&7to a normal member!"
       InventorySlot: 6
+      Base64Value: ""
     RemoveItem:
       Name: "&cRemove from Party"
       Material: "red_wool"
       Lore: ""
       InventorySlot: 8
+      Base64Value: ""
     BackItem:
       Name: "&7Back to your Party"
       Material: "iron_door"
       Lore: ""
       InventorySlot: 1
+      Base64Value: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjFmYWIwZTZhZWE4ODc0OGNhM2I1NTEyZWQ1MDJhNmQxOGU3NmQ4YWZjNDc3MGQ5OTUyMzNhYzBkYzUxODYifX19"
     Placeholders:
       Material: "gray_stained_glass_pane"
+      Base64Value: ""
       InventorySlots:
       - 2
       - 3

@@ -94,6 +94,75 @@ public enum FileManager {
     }
     
     public static void updateFiles() {
+    	if(CONFIG.getNewCfg().get("Friends.FriendInventory.RequestsItem.Base64Value") == null) {
+    		// v1.3.0
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.FriendInventory.RequestsItem.Base64Value", "");
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.FriendInventory.BlockedItem.Base64Value", "");
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.FriendInventory.OptionsItem.Base64Value", "");
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.FriendInventory.SortItem.Base64Value", "");
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.FriendInventory.NextPageItem.Base64Value", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjgyYWQxYjljYjRkZDIxMjU5YzBkNzVhYTMxNWZmMzg5YzNjZWY3NTJiZTM5NDkzMzgxNjRiYWM4NGE5NmUifX19");
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.FriendInventory.PreviousPageItem.Base64Value", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzdhZWU5YTc1YmYwZGY3ODk3MTgzMDE1Y2NhMGIyYTdkNzU1YzYzMzg4ZmYwMTc1MmQ1ZjQ0MTlmYzY0NSJ9fX0=");
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.FriendInventory.PartyItem.Base64Value", "");
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.FriendInventory.Placeholders.Base64Value", "");
+    		
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.FriendEditInventory.FavoriteItem.Base64Value", "");
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.FriendEditInventory.CanSendMessagesItem.Base64Value", "");
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.FriendEditInventory.NicknameItem.Base64Value", "");
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.FriendEditInventory.RemoveItem.Base64Value", "");
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.FriendEditInventory.BackItem.Base64Value", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjFmYWIwZTZhZWE4ODc0OGNhM2I1NTEyZWQ1MDJhNmQxOGU3NmQ4YWZjNDc3MGQ5OTUyMzNhYzBkYzUxODYifX19");
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.FriendEditInventory.JumpItem.Base64Value", "");
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.FriendEditInventory.PartyItem.Base64Value", "");
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.FriendEditInventory.Placeholders.Base64Value", "");
+    		
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.RequestsInventory.AcceptAllItem.Base64Value", "");
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.RequestsInventory.DenyAllItem.Base64Value", "");
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.RequestsInventory.BackItem.Base64Value", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjFmYWIwZTZhZWE4ODc0OGNhM2I1NTEyZWQ1MDJhNmQxOGU3NmQ4YWZjNDc3MGQ5OTUyMzNhYzBkYzUxODYifX19");
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.RequestsInventory.PreviousPageItem.Base64Value", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzdhZWU5YTc1YmYwZGY3ODk3MTgzMDE1Y2NhMGIyYTdkNzU1YzYzMzg4ZmYwMTc1MmQ1ZjQ0MTlmYzY0NSJ9fX0=");
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.RequestsInventory.NextPageItem.Base64Value", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjgyYWQxYjljYjRkZDIxMjU5YzBkNzVhYTMxNWZmMzg5YzNjZWY3NTJiZTM5NDkzMzgxNjRiYWM4NGE5NmUifX19");
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.RequestsInventory.Placeholders.Base64Value", "");
+    		
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.RequestEditInventory.MessageItem.Base64Value", "");
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.RequestEditInventory.AcceptItem.Base64Value", "");
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.RequestEditInventory.DenyItem.Base64Value", "");
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.RequestEditInventory.BackItem.Base64Value", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjFmYWIwZTZhZWE4ODc0OGNhM2I1NTEyZWQ1MDJhNmQxOGU3NmQ4YWZjNDc3MGQ5OTUyMzNhYzBkYzUxODYifX19");
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.RequestEditInventory.Placeholders.Base64Value", "");
+    		
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.BlockedInventory.UnblockAllItem.Base64Value", "");
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.BlockedInventory.NextPageItem.Base64Value", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjgyYWQxYjljYjRkZDIxMjU5YzBkNzVhYTMxNWZmMzg5YzNjZWY3NTJiZTM5NDkzMzgxNjRiYWM4NGE5NmUifX19");
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.BlockedInventory.PreviousPageItem.Base64Value", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzdhZWU5YTc1YmYwZGY3ODk3MTgzMDE1Y2NhMGIyYTdkNzU1YzYzMzg4ZmYwMTc1MmQ1ZjQ0MTlmYzY0NSJ9fX0=");
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.BlockedInventory.BackItem.Base64Value", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjFmYWIwZTZhZWE4ODc0OGNhM2I1NTEyZWQ1MDJhNmQxOGU3NmQ4YWZjNDc3MGQ5OTUyMzNhYzBkYzUxODYifX19");
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.BlockedInventory.Placeholders.Base64Value", "");
+    	
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.BlockedEditInventory.BackItem.Base64Value", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjFmYWIwZTZhZWE4ODc0OGNhM2I1NTEyZWQ1MDJhNmQxOGU3NmQ4YWZjNDc3MGQ5OTUyMzNhYzBkYzUxODYifX19");
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.BlockedEditInventory.UnblockItem.Base64Value", "");
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.BlockedEditInventory.NoteItem.Base64Value", "");
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.BlockedEditInventory.Placeholders.Base64Value", "");
+    		
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.OptionsInventory.BackItem.Base64Value", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjFmYWIwZTZhZWE4ODc0OGNhM2I1NTEyZWQ1MDJhNmQxOGU3NmQ4YWZjNDc3MGQ5OTUyMzNhYzBkYzUxODYifX19");
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.OptionsInventory.ReceiveMessagesItem.Base64Value", "");
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.OptionsInventory.ReceiveRequestsItem.Base64Value", "");
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.OptionsInventory.OfflinemodeItem.Base64Value", "");
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.OptionsInventory.StatusItem.Base64Value", "");
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.OptionsInventory.JumpItem.Base64Value", "");
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.OptionsInventory.PartyItem.Base64Value", "");
+    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.OptionsInventory.Placeholders.Base64Value", "");
+    		
+    		save(PARTY.getNewCfg(), PARTY.getNewFile(), "Party.CreateInventory.CreateItem.Base64Value", "");
+    		save(PARTY.getNewCfg(), PARTY.getNewFile(), "Party.CreateInventory.BackItem.Base64Value", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjFmYWIwZTZhZWE4ODc0OGNhM2I1NTEyZWQ1MDJhNmQxOGU3NmQ4YWZjNDc3MGQ5OTUyMzNhYzBkYzUxODYifX19");
+    		save(PARTY.getNewCfg(), PARTY.getNewFile(), "Party.CreateInventory.Placeholders.Base64Value", "");
+    		
+    		save(PARTY.getNewCfg(), PARTY.getNewFile(), "Party.PartyInventory.BackItem.Base64Value", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjFmYWIwZTZhZWE4ODc0OGNhM2I1NTEyZWQ1MDJhNmQxOGU3NmQ4YWZjNDc3MGQ5OTUyMzNhYzBkYzUxODYifX19");
+    		save(PARTY.getNewCfg(), PARTY.getNewFile(), "Party.PartyInventory.VisibilityItem.Base64Value", "");
+    		save(PARTY.getNewCfg(), PARTY.getNewFile(), "Party.PartyInventory.Placeholders.Base64Value", "");
+    		save(PARTY.getNewCfg(), PARTY.getNewFile(), "Party.PartyInventory.LeaveItem.Base64Value", "");
+    		
+    		save(PARTY.getNewCfg(), PARTY.getNewFile(), "Party.EditMemberInventory.PromoteItem.Base64Value", "");
+    		save(PARTY.getNewCfg(), PARTY.getNewFile(), "Party.EditMemberInventory.DemoteItem.Base64Value", "");
+    		save(PARTY.getNewCfg(), PARTY.getNewFile(), "Party.EditMemberInventory.RemoveItem.Base64Value", "");
+    		save(PARTY.getNewCfg(), PARTY.getNewFile(), "Party.EditMemberInventory.BackItem.Base64Value", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjFmYWIwZTZhZWE4ODc0OGNhM2I1NTEyZWQ1MDJhNmQxOGU3NmQ4YWZjNDc3MGQ5OTUyMzNhYzBkYzUxODYifX19");
+    		save(PARTY.getNewCfg(), PARTY.getNewFile(), "Party.EditMemberInventory.Placeholders.Base64Value", "");
+    		
+    	}
     	if(CONFIG.getNewCfg().getString("Friends.DisabledWorlds") == null) {
     		// v1.2.8
     		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.DisabledWorlds", Arrays.asList("world_end","world_nether"));

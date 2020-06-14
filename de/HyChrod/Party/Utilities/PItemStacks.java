@@ -1,18 +1,24 @@
 package de.HyChrod.Party.Utilities;
 
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
 
 import de.HyChrod.Friends.Hashing.FriendHash;
 import de.HyChrod.Friends.Utilities.FileManager;
@@ -37,6 +43,7 @@ public enum PItemStacks {
 	private List<String> lore;
 	private String material;
 	private int inventoryslot;
+	private String base64value;
 	
 	private PItemStacks(String path) {
 		this.path = path;
@@ -50,20 +57,32 @@ public enum PItemStacks {
 				if(lore.length() > 0) this.lore.add(ChatColor.translateAlternateColorCodes('&', lore));
 		this.material = cfg.getString(path + ".Material");
 		if(cfg.get(path + ".InventorySlot") != null) this.inventoryslot = cfg.getInt(path + ".InventorySlot");
+		if(cfg.get(path + ".Base64Value") != null) this.base64value = cfg.getString(path + ".Base64Value");
 	}
 	
 	public ItemStack getItem(OfflinePlayer player) {
-		return getItemStack(name, material, lore, player);
+		return getItemStack(name, material, lore, player, base64value.length() > 20, base64value);
 	}
 	
 	public int getInventorySlot() {
 		return inventoryslot-1;
 	}
 	
-	public static ItemStack setSkin(ItemStack item, String name) {
+	public static ItemStack setSkin(ItemStack item, String name, boolean base64, String signature) {
 		if(!item.getType().name().equals("PLAYER_HEAD")) return item;
 		SkullMeta meta = (SkullMeta) item.getItemMeta();
-		meta.setOwningPlayer(Bukkit.getOfflinePlayer(FriendHash.getUUIDFromName(name)));
+		if(base64) {
+			GameProfile profile = new GameProfile(UUID.randomUUID(), "");
+			profile.getProperties().put("textures", new Property("textures", signature));
+			Field profileField = null;
+			try {
+				profileField = meta.getClass().getDeclaredField("profile");
+				profileField.setAccessible(true);
+				profileField.set(meta, profile);
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		} else meta.setOwningPlayer(Bukkit.getOfflinePlayer(FriendHash.getUUIDFromName(name)));
 		item.setItemMeta(meta);
 		return item;
 	}
@@ -80,7 +99,7 @@ public enum PItemStacks {
 		return item;
 	}
 	
-	private static ItemStack getItemStack(String name, String material, List<String> lore, OfflinePlayer player) {
+	private static ItemStack getItemStack(String name, String material, List<String> lore, OfflinePlayer player, boolean base64, String signature) {
 		ItemStack item = new ItemStack(Material.getMaterial(material.toUpperCase()));
 		ItemMeta meta = item.getItemMeta();
 		meta.setDisplayName(name);
@@ -97,8 +116,14 @@ public enum PItemStacks {
 				e.printStackTrace();
 			}
 		}
+		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+		meta.addItemFlags(ItemFlag.HIDE_DESTROYS);
+		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+		meta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
+		meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+		meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
 		item.setItemMeta(meta);
-		return item;
+		return base64 ? setSkin(getItemStack(name, "PLAYER_HEAD", lore, player, false, null), name, base64, signature) : item;
 	}
 	
 	public static void loadItems() {

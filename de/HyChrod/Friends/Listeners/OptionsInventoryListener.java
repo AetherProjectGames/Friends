@@ -35,7 +35,7 @@ public class OptionsInventoryListener implements Listener {
 	public void onInventoryClose(InventoryCloseEvent e) {
 		if(!Configs.BUNGEEMODE.getBoolean()) return;
 		if(e.getView() != null) {
-			if(e.getView().getTitle() != null && e.getView().getTitle().equals(InventoryBuilder.OPTIONS_INVENTORY.getTitle((Player)e.getPlayer(), 0))) {
+			if(e.getView().getTitle() != null && e.getView().getTitle().equals(InventoryBuilder.OPTIONS_INVENTORY.getTitle((Player)e.getPlayer(),0))) {
 				if(currentlyEditing.containsKey(e.getPlayer().getUniqueId())) {
 					Options opt = currentlyEditing.get(e.getPlayer().getUniqueId());
 					AsyncSQLQueueUpdater.addToQueue("insert into friends_options(uuid, offline,receivemsg,receiverequests,sorting,status,jumping,party) "
@@ -54,7 +54,7 @@ public class OptionsInventoryListener implements Listener {
 			Player p = (Player) e.getWhoClicked();
 			if(currentlyEditing.containsKey(p.getUniqueId())) {
 				if(e.getView() != null)
-					if(e.getView().getTitle() != null && e.getView().getTitle().equals(InventoryBuilder.OPTIONS_INVENTORY.getTitle(p, 0))) {
+					if(e.getView().getTitle() != null && e.getView().getTitle().equals(InventoryBuilder.OPTIONS_INVENTORY.getTitle(p,0))) {
 						e.setCancelled(true);
 						if(e.getCurrentItem() != null)
 							if(e.getCurrentItem().hasItemMeta())
@@ -105,7 +105,7 @@ public class OptionsInventoryListener implements Listener {
 										return;
 									}
 									if(e.getCurrentItem().getItemMeta().getDisplayName().equals(ItemStacks.INV_OPTIONS_STATUS.getItem(p).getItemMeta().getDisplayName().replace("%STATUS%", status))) {
-										if(!p.hasPermission("Friends.Commands.Status.Set")) {
+										if(!p.hasPermission("Friends.Commands.Status.Set") && !p.hasPermission("Friends.Commands.*")) {
 											p.sendMessage(Messages.NO_PERMISSIONS.getMessage(p));
 											return;
 										}
@@ -113,7 +113,7 @@ public class OptionsInventoryListener implements Listener {
 										ItemStack item = new ItemStack(ItemStacks.INV_OPTIONS_STATUS.getItem(p).getType());
 										ItemMeta meta = item.getItemMeta();
 										String current = (opt.getStatus() == null || opt.getStatus().length() < 1 ? Configs.INV_FRIENDS_NO_STATUS_REPLACEMENT.getText() : opt.getStatus());
-										meta.setDisplayName(current);
+										meta.setDisplayName(Configs.ALLOW_STATUS_COLOR.getBoolean() ? current : current.replace("§", "&"));
 										item.setItemMeta(meta);
 										
 										float expt = p.getExp();

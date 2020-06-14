@@ -1,5 +1,6 @@
 package de.HyChrod.Friends.Utilities;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,15 +8,20 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
 
 import de.HyChrod.Friends.Hashing.FriendHash;
 
@@ -73,6 +79,7 @@ public enum ItemStacks {
 	private String material;
 	private int inventoryslot;
 	private boolean showItem = true;
+	private String base64value = "";
 	
 	private ItemStacks(String path) {
 		this.path = path;
@@ -87,10 +94,11 @@ public enum ItemStacks {
 		this.material = cfg.getString(path + ".Material");
 		if(cfg.get(path + ".InventorySlot") != null) this.inventoryslot = cfg.getInt(path + ".InventorySlot");
 		if(cfg.get(path + ".ShowItem") != null) showItem = cfg.getBoolean(path + ".ShowItem");
+		if(cfg.get(path + ".Base64Value") != null) base64value = cfg.getString(path + ".Base64Value");
 	}
 	
 	public ItemStack getItem(OfflinePlayer player) {
-		return getItemStack(name, material, lore, player);
+		return getItemStack(name, material, lore, player, base64value.length() > 20, base64value);
 	}
 	
 	public int getInventorySlot() {
@@ -109,12 +117,13 @@ public enum ItemStacks {
 			if(cfg.getConfigurationSection("Friends." + inv + ".CustomItems") == null) continue;
 			for(String cFItems : cfg.getConfigurationSection("Friends." + inv + ".CustomItems").getKeys(false)) {
 				if(!cFItems.startsWith("CUSTOM_ITEM")) continue;
-				String[] values = new String[5];
+				String[] values = new String[6];
 				values[0] = createUniqueIdentifier() + ChatColor.translateAlternateColorCodes('&', cfg.getString("Friends." + inv + ".CustomItems." + cFItems + ".Name"));
 				values[1] = cfg.getString("Friends." + inv + ".CustomItems." + cFItems + ".Material");
 				values[2] = ChatColor.translateAlternateColorCodes('&', cfg.getString("Friends." + inv + ".CustomItems." + cFItems + ".Lore"));
 				values[3] = cfg.getString("Friends." + inv + ".CustomItems." + cFItems + ".InventorySlot");
 				values[4] = cfg.getString("Friends." + inv + ".CustomItems." + cFItems + ".PerformCommand");
+				values[5] = cfg.get("Friends." + inv + ".CustomItems." + cFItems + ".Base64Value") == null ? "" : cfg.getString("Friends." + inv + ".CustomItems." + cFItems + ".Base64Value");
 				addToHash(inv, values);
 			}
 		}
@@ -135,7 +144,8 @@ public enum ItemStacks {
 	public static ItemStack getCutomItem(String inv, int index, OfflinePlayer p) {
 		if(!customItems.containsKey(inv) || (customItems.containsKey(inv) && customItems.get(inv).size() <= index)) return null;
 		String[] data = customItems.get(inv).get(index);
-		return getItemStack(p == null ? data[0] : data[0].replace("%NAME%", p.getName()), data[1], data[2].length() == 0 ? new ArrayList<String>() : Arrays.asList((p == null ? data[2] : data[2].replace("%NAME%", p.getName())).split("//")), p);
+		String base64 = data[5];
+		return getItemStack(p == null ? data[0] : data[0].replace("%NAME%", p.getName()), data[1], data[2].length() == 0 ? new ArrayList<String>() : Arrays.asList((p == null ? data[2] : data[2].replace("%NAME%", p.getName())).split("//")), p, base64.length() > 20, base64);
 	}
 	
 	private static void addToHash(String key, String[] item) {
@@ -144,10 +154,21 @@ public enum ItemStacks {
 		customItems.put(key, cItems);
 	}
 	
-	public static ItemStack setSkin(ItemStack item, String name) {
+	public static ItemStack setSkin(ItemStack item, String name, boolean base64, String signature) {
 		if(!item.getType().name().equals("PLAYER_HEAD")) return item;
 		SkullMeta meta = (SkullMeta) item.getItemMeta();
-		meta.setOwningPlayer(Bukkit.getOfflinePlayer(FriendHash.getUUIDFromName(name)));
+		if(base64) {
+			GameProfile profile = new GameProfile(UUID.randomUUID(), "");
+			profile.getProperties().put("textures", new Property("textures", signature));
+			Field profileField = null;
+			try {
+				profileField = meta.getClass().getDeclaredField("profile");
+				profileField.setAccessible(true);
+				profileField.set(meta, profile);
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		} else meta.setOwningPlayer(Bukkit.getOfflinePlayer(FriendHash.getUUIDFromName(name)));
 		item.setItemMeta(meta);
 		return item;
 	}
@@ -178,7 +199,7 @@ public enum ItemStacks {
 		return item;
 	}
 	
-	private static ItemStack getItemStack(String name, String material, List<String> lore, OfflinePlayer player) {
+	private static ItemStack getItemStack(String name, String material, List<String> lore, OfflinePlayer player, boolean base64, String signature) {
 		ItemStack item = new ItemStack(Material.getMaterial(material.toUpperCase()));
 		ItemMeta meta = item.getItemMeta();
 		meta.setDisplayName(name);
@@ -195,8 +216,14 @@ public enum ItemStacks {
 				e.printStackTrace();
 			}
 		}
+		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+		meta.addItemFlags(ItemFlag.HIDE_DESTROYS);
+		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+		meta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
+		meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+		meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
 		item.setItemMeta(meta);
-		return item;
+		return base64 ? setSkin(getItemStack(name, "PLAYER_HEAD", lore, player, false, null), name, base64, signature) : item;
 	}
 	
 	public static void loadItems() {

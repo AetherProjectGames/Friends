@@ -45,7 +45,7 @@ public class FriendEditInventoryListener implements Listener {
 		if(currentlyEditing.containsKey(p.getUniqueId())) {
 			Friendship fs = currentlyEditing.get(p.getUniqueId());
 			if(e.getView() != null && e.getView().getTitle() != null)
-				if(e.getView().getTitle().equals(InventoryBuilder.FRIENDEDIT_INVENTORY.getTitle(p, 0).replace("%NAME%", FriendHash.getName(fs.getFriend())))) {
+				if(e.getView().getTitle().equals(InventoryBuilder.FRIENDEDIT_INVENTORY.getTitle(p,0).replace("%NAME%", FriendHash.getName(fs.getFriend())))) {
 					AsyncSQLQueueUpdater.addToQueue("update friends_frienddata set favorite='" + (fs.getFavorite() ? 1 : 0) + "',cansendmessages='" + (fs.getCanSendMessages() ? 1 : 0) + "' where uuid='" + p.getUniqueId().toString() + "' and uuid2='" + fs.getFriend().toString() + "';");
 				}
 		}
@@ -58,7 +58,7 @@ public class FriendEditInventoryListener implements Listener {
 			if(currentlyEditing.containsKey(p.getUniqueId())) {
 				Friendship fs = currentlyEditing.get(p.getUniqueId());
 				if(e.getView() != null)
-					if(e.getView().getTitle() != null && e.getView().getTitle().equals(InventoryBuilder.FRIENDEDIT_INVENTORY.getTitle(p, 0).replace("%NAME%", FriendHash.getName(fs.getFriend())))) {
+					if(e.getView().getTitle() != null && e.getView().getTitle().equals(InventoryBuilder.FRIENDEDIT_INVENTORY.getTitle(p,0).replace("%NAME%", FriendHash.getName(fs.getFriend())))) {
 						e.setCancelled(true);
 						
 						OfflinePlayer inEdit = Bukkit.getOfflinePlayer(fs.getFriend());

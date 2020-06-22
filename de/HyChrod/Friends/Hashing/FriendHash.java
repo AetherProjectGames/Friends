@@ -174,7 +174,7 @@ public class FriendHash {
 	}
 	
 	public void removeRequest(UUID toRemove) {
-		for(Request rq : getRequestsNew())
+		for(Request rq : new LinkedList<>(getRequestsNew()))
 			if(rq.getPlayerToAdd().equals(toRemove)) {
 				requests.remove(rq);
 				if(Configs.BUNGEEMODE.getBoolean())
@@ -205,7 +205,7 @@ public class FriendHash {
 	}
 	
 	public void removeFriend(UUID toRemove) {
-		for(Friendship fs : getFriendsNew())
+		for(Friendship fs : new LinkedList<>(getFriendsNew()))
 			if(fs.getFriend().equals(toRemove)) {
 				friends.remove(fs);
 				if(Configs.BUNGEEMODE.getBoolean())
@@ -214,13 +214,13 @@ public class FriendHash {
 	}
 	
 	public boolean isFriend(UUID toCheck) {
-		for(Friendship fs : getFriendsNew())
+		for(Friendship fs : new LinkedList<>(getFriendsNew()))
 			if(fs.getFriend().equals(toCheck)) return true;
 		return false;
 	}
 	
 	public boolean isBlocked(UUID toCheck) {
-		for(Blockplayer bp : getBlockedNew())
+		for(Blockplayer bp : new LinkedList<>(getBlockedNew()))
 			if(bp.getBlocked().equals(toCheck)) return true;
 		return false;
 	}
@@ -309,7 +309,7 @@ public class FriendHash {
 	}
 	
 	public Friendship getFriendship(UUID uuid) {
-		for(Friendship fs : getFriendsNew())
+		for(Friendship fs : new LinkedList<>(getFriendsNew()))
 			if(fs.getFriend().equals(uuid)) return fs;
 		return null;
 	}

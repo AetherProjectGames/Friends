@@ -26,6 +26,7 @@ import de.HyChrod.Friends.Listeners.PluginMessageListeners;
 import de.HyChrod.Friends.Listeners.QuitListener;
 import de.HyChrod.Friends.Listeners.RequestEditInventoryListener;
 import de.HyChrod.Friends.Listeners.RequestsInventoryListener;
+import de.HyChrod.Friends.Listeners.RespawnListener;
 import de.HyChrod.Friends.SQL.AsyncMySQlReconnctor;
 import de.HyChrod.Friends.SQL.AsyncSQLQueueUpdater;
 import de.HyChrod.Friends.SQL.SQLManager;
@@ -142,6 +143,7 @@ public class Friends extends JavaPlugin {
 		this.getServer().getPluginManager().registerEvents(new BlockeditInventoryListener(), this);
 		this.getServer().getPluginManager().registerEvents(new FriendEditInventoryListener(), this);
 		this.getServer().getPluginManager().registerEvents(new OptionsInventoryListener(), this);
+		this.getServer().getPluginManager().registerEvents(new RespawnListener(), this);
 	}
 	
 	private void loadHashes() {

@@ -14,7 +14,7 @@ public class RespawnListener implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onRespawn(PlayerRespawnEvent e) {
-		if(Configs.ITEMOPTION_DEATH.getBoolean()) {
+		if(Configs.ITEMOPTION_DEATH.getBoolean() && Configs.FRIEND_ITEM_ENABLE.getBoolean()) {
 			Bukkit.getScheduler().runTaskLater(Friends.getInstance(), new Runnable() {
 				
 				@Override

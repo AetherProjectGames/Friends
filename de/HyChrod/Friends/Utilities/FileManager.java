@@ -163,35 +163,35 @@ public enum FileManager {
     		save(PARTY.getNewCfg(), PARTY.getNewFile(), "Party.EditMemberInventory.Placeholders.Base64Value", "");
     		
     	}
-    	if(CONFIG.getNewCfg().getString("Friends.DisabledWorlds") == null) {
+    	if(CONFIG.getNewCfg().get("Friends.DisabledWorlds") == null) {
     		// v1.2.8
     		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.DisabledWorlds", Arrays.asList("world_end","world_nether"));
     		save(PARTY.getNewCfg(), PARTY.getNewFile(), "Party.DisabledWorlds", Arrays.asList("world_end","world_nether"));
     		save(MESSAGES.getNewCfg(), MESSAGES.getNewFile(), "Messages.Commands.JumpCommand.ServerBlocked", "%PREFIX% &cYou cannot jump to your friends current world!");
     		save(MESSAGES.getNewCfg(), MESSAGES.getNewFile(), "PartyMessages.SwitchServer.ServerBlocked", "%PREFIX% &cYou cannot enter this world while beeing in a party!");
     	}
-    	if(CONFIG.getNewCfg().getString("Friends.FriendItemOptions.KeepOnDeath") == null) {
+    	if(CONFIG.getNewCfg().get("Friends.FriendItemOptions.KeepOnDeath") == null) {
     		// v1.2.7
     		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.FriendItemOptions.KeepOnDeath", true);
     		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.FriendItemOptions.MoveItemInInventory", false);
     	}
-    	if(MESSAGES.getNewCfg().getString("Messages.Commands.JumpCommand.JumpingNotAllowed") == null) {
+    	if(MESSAGES.getNewCfg().get("Messages.Commands.JumpCommand.JumpingNotAllowed") == null) {
     		// v1.2.5
     		save(PARTY.getNewCfg(), PARTY.getNewFile(), "Party.CommandAliases", Arrays.asList("parties","p"));
         	save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.Commands.Jumping.Enable", true);
         	save(MESSAGES.getNewCfg(), MESSAGES.getNewFile(), "Messages.Commands.JumpCommand.JumpingNotAllowed", "%PREFIX% &cJumping cannot be used on this server!");
     	}
-		if(CONFIG.getNewCfg().getString("Friends.FriendInventory.RequestsItem.ShowItem") == null) {
+		if(CONFIG.getNewCfg().get("Friends.FriendInventory.RequestsItem.ShowItem") == null) {
 			// v1.2.4
     		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.FriendInventory.RequestsItem.ShowItem", true);
     		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.FriendInventory.BlockedItem.ShowItem", true);
     		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.FriendInventory.OptionsItem.ShowItem", true);
     	}
-    	if(MESSAGES.getNewCfg().getString("Messages.Commands.ReplyCommand.NoReply") == null) {
+    	if(MESSAGES.getNewCfg().get("Messages.Commands.ReplyCommand.NoReply") == null) {
     		// v1.2.3
     		save(MESSAGES.getNewCfg(), MESSAGES.getNewFile(), "Messages.Commands.ReplyCommand.NoReply", "%PREFIX% &cYou do not have any message to reply to!");
     	}
-       	if(MESSAGES.getNewCfg().getString("PartyMessages.Commands.KickCommand.NoParty") == null) {
+       	if(MESSAGES.getNewCfg().get("PartyMessages.Commands.KickCommand.NoParty") == null) {
        		// v1.2.0
     		save(MESSAGES.getNewCfg(), MESSAGES.getNewFile(), "PartyMessages.NoPermissions", "%PREFIX% &cYou do not have permissions to do that!");
     		save(MESSAGES.getNewCfg(), MESSAGES.getNewFile(), "PartyMessages.Version", "%PREFIX% &aYou are running Party-Version: %VERSION%");
@@ -298,17 +298,19 @@ public enum FileManager {
     		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.Nicknames.CheckForAbusiveWords", true);
     	}
 		if(CONFIG.getNewCfg().get("Friends.FriendInventory.CustomItems") == null) {
-			save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.FriendInventory.CustomItems.CUSTOM_ITEM_1.Name", "&aCustomItem");
-    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.FriendInventory.CustomItems.CUSTOM_ITEM_1.Material", "stone");
-    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.FriendInventory.CustomItems.CUSTOM_ITEM_1.Lore", "&7This is a custom item, which can be//&7created and edited in the config.yml// //&7If you do not want to use this item//&7just remove it.");
-    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.FriendInventory.CustomItems.CUSTOM_ITEM_1.InventorySlot", "1");
-    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.FriendInventory.CustomItems.CUSTOM_ITEM_1.PerformCommand", "say HyChrod is the best!");
-    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.FriendEditInventory.CustomItems.NO_ITEMS", new ArrayList<>());
-    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.RequestsInventory.CustomItems.NO_ITEMS", new ArrayList<>());
-    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.RequestEditInventory.CustomItems.NO_ITEMS", new ArrayList<>());
-    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.BlockedInventory.CustomItems.NO_ITEMS", new ArrayList<>());
-    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.BlockedEditInventory.CustomItems.NO_ITEMS", new ArrayList<>());
-    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.OptionsInventory.CustomItems.NO_ITEMS", new ArrayList<>());
+			if(MESSAGES.getNewCfg().get("Messages.Commands.NicknameCommand.NoFriends") == null) {
+				save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.FriendInventory.CustomItems.CUSTOM_ITEM_1.Name", "&aCustomItem");
+	    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.FriendInventory.CustomItems.CUSTOM_ITEM_1.Material", "stone");
+	    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.FriendInventory.CustomItems.CUSTOM_ITEM_1.Lore", "&7This is a custom item, which can be//&7created and edited in the config.yml// //&7If you do not want to use this item//&7just remove it.");
+	    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.FriendInventory.CustomItems.CUSTOM_ITEM_1.InventorySlot", "1");
+	    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.FriendInventory.CustomItems.CUSTOM_ITEM_1.PerformCommand", "say HyChrod is the best!");
+	    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.FriendEditInventory.CustomItems.NO_ITEMS", new ArrayList<>());
+	    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.RequestsInventory.CustomItems.NO_ITEMS", new ArrayList<>());
+	    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.RequestEditInventory.CustomItems.NO_ITEMS", new ArrayList<>());
+	    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.BlockedInventory.CustomItems.NO_ITEMS", new ArrayList<>());
+	    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.BlockedEditInventory.CustomItems.NO_ITEMS", new ArrayList<>());
+	    		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.OptionsInventory.CustomItems.NO_ITEMS", new ArrayList<>());
+			} else save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.FriendInventory.CustomItems", "[]");
     	}
     	if(CONFIG.getNewCfg().get("Friends.FriendInventory.HidePageItemsWhenNotNeeded") == null) {
     		save(CONFIG.getNewCfg(), CONFIG.getNewFile(), "Friends.FriendInventory.HidePageItemsWhenNotNeeded", false);

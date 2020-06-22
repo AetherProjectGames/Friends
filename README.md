@@ -4,27 +4,27 @@
 
 | Commands | Description | Permissions |
 | --- | --- | --- |
-| /friends add (Name) (Message) | Send a request to a certain player with an optional message | Friends.Commands.Basic |
-| /friends accept (Name) | Accepts the request from a certain player | Friends.Commands.Basic |
-| /friends accept | Accepts the last new request | Friends.Commands.Basic |
-| /friends deny (Name) | Denies the request from a certain player | Friends.Commands.Basic |
-| /friends deny | Denies the last new request | Friends.Commands.Basic |
-| /friends remove (Name) | Removes a player from your friends | Friends.Commands.Basic |
-| /friends block (Name) (Note) | Blocks a player with a personal note | Friends.Commands.Basic |
-| /friends unblock (Name) | Removes a player from your list of blocked players | Friends.Commands.Basic |
-| /friends acceptall | Accepts all open requests | Friends.Commands.Basic |
-| /friends denyall | Denies all open requests | Friends.Commands.Basic |
-| /friends jump (Name) | Jumps to a players server/location | Friends.Commands.Basic
-| /friends list | Shows a list of your current friends | Friends.Commands.Basic |
-| /friends status | Shows your current status | Friends.Commands.Basic |
+| /friends add (Name) (Message) | Send a request to a certain player with an optional message | Friends.Commands.Add |
+| /friends accept (Name) | Accepts the request from a certain player | Friends.Commands.Accept |
+| /friends accept | Accepts the last new request | Friends.Commands.Accept |
+| /friends deny (Name) | Denies the request from a certain player | Friends.Commands.Deny |
+| /friends deny | Denies the last new request | Friends.Commands.Deny |
+| /friends remove (Name) | Removes a player from your friends | Friends.Commands.Remove |
+| /friends block (Name) (Note) | Blocks a player with a personal note | Friends.Commands.Block |
+| /friends unblock (Name) | Removes a player from your list of blocked players | Friends.Commands.Unblock |
+| /friends acceptall | Accepts all open requests | Friends.Commands.AcceptAll |
+| /friends denyall | Denies all open requests | Friends.Commands.DenyAll |
+| /friends jump (Name) | Jumps to a players server/location | Friends.Commands.Jump
+| /friends list | Shows a list of your current friends | Friends.Commands.List |
+| /friends status | Shows your current status | - |
 | /friends status set (Status) | Change your current status to something new | Friends.Commands.Status.Set |
 | /friends status show (Name) | Shows you the status of a certain friend | Friends.Commands.Status.Show |
 | /friends msg (Name) (Message) | Send a private message to your friend | Friends.Commands.Msg |
 | /msg (Name) (Message) | If enabled, another way to send private messages | Friends.Commands.Msg |
-| /friends requests | Toggle wether you want to receive new requests or not | Friends.Commands.Basic |
-| /friends messages | Toggle wether you want to receive any kind of message from your friends | Friends.Commands.Basic |
-| /friends jumping | Toggle wether you want other players to jump to your location | Friends.Commands.Basic |
-| /friends offlinemode | Toggle wether you want to be shown as offline or online | Friends.Commands.Basic |
+| /friends requests | Toggle wether you want to receive new requests or not | Friends.Commands.Options.Requests |
+| /friends messages | Toggle wether you want to receive any kind of message from your friends | Friends.Commands.Options.Messages |
+| /friends jumping | Toggle wether you want other players to jump to your location | Friends.Commands.Options.Jumping |
+| /friends offlinemode | Toggle wether you want to be shown as offline or online | Friends.Commands.Options.Offline |
 | /friends version | Shows the current version of friends | Friends.Commands.Version |
 | /friends reload | Reloads all configurations | Friends.Commands.Reload |
 

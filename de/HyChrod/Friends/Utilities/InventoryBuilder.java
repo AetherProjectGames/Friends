@@ -132,8 +132,10 @@ public enum InventoryBuilder {
 				FriendHash hash = FriendHash.getFriendHash(toOpen);
 				LinkedList<Friendship> friends = fresh ? hash.getFriendsNew() : hash.getFriends();
 
-				inv.setItem(ItemStacks.INV_FRIEND_BLOCKED.getInventorySlot(), ItemStacks.replace(ItemStacks.INV_FRIEND_BLOCKED.getItem(player), "%BLOCKED_COUNT%", ""+hash.getBlockedNew().size()));
-				inv.setItem(ItemStacks.INV_FRIEND_REQUESTS.getInventorySlot(), ItemStacks.replace(ItemStacks.INV_FRIEND_REQUESTS.getItem(player),"%REQUESTS_COUNT%",""+hash.getRequestsNew().size()));
+				if(Configs.INV_FRIEND_BLOCKED_ENABLE.getBoolean()) 
+					inv.setItem(ItemStacks.INV_FRIEND_BLOCKED.getInventorySlot(), ItemStacks.replace(ItemStacks.INV_FRIEND_BLOCKED.getItem(player), "%BLOCKED_COUNT%", ""+hash.getBlockedNew().size()));
+				if(Configs.INV_FRIEND_REQUESTS_ENABLE.getBoolean()) 
+					inv.setItem(ItemStacks.INV_FRIEND_REQUESTS.getInventorySlot(), ItemStacks.replace(ItemStacks.INV_FRIEND_REQUESTS.getItem(player),"%REQUESTS_COUNT%",""+hash.getRequestsNew().size()));
 				if(Configs.INV_FRIEND_SORT_ENABLE.getBoolean()) inv.setItem(ItemStacks.INV_FRIEND_SORTING.getInventorySlot(), ItemStacks
 						.replace(ItemStacks.INV_FRIEND_SORTING.getItem(player), "%SORTING%", ChatColor.translateAlternateColorCodes('&', sorting[hash.getSorting()])));
 				

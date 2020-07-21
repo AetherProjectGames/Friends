@@ -14,6 +14,10 @@ import de.HyChrod.Party.Utilities.Parties;
 public class Leave_Command {
 	
 	public Leave_Command(Friends friends, Player p, String[] args) {
+		if(!p.hasPermission("Party.Commands.Leave") && !p.hasPermission("Party.Commands.*")) {
+			p.sendMessage(PMessages.NO_PERMISSIONS.getMessage(p));
+			return;
+		}
 		if(args.length != 1) {
 			p.sendMessage(PMessages.WRONG_USAGE.getMessage(p).replace("%USAGE%", "/party leave"));
 			return;

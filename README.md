@@ -2,6 +2,9 @@
 
 ## 1. Commands and Permissions
 
+When using BungeeCord, make sure you give the following permissions on BungeeCord!
+It does not matter if you are OP or have all permissions on spigot! You will not be able to perform those commands because they are handled trough the proxy and therefor you need these permissions there aswell!
+
 | Commands | Description | Permissions |
 | --- | --- | --- |
 | /friends add (Name) (Message) | Send a request to a certain player with an optional message | Friends.Commands.Add |
@@ -31,6 +34,8 @@
 Additional Permissions:
 - Friends.FriendLimit.Extended | Used to raise the limit of friends as defined in the config.yml
 - Friends.Status.ChangeLimit.ByPass | Players with this permission are able to change their status at anytime
+- Friends.Commands.Msg.FriendByPass | Allows a player to send private messages to someone without the need of beeing friends
+- Party.Commands.OpenGUI | Allows the usage of /party to open the PartyGUI ( If enabled in the party.yml )
 
 
 ## 2. Setup

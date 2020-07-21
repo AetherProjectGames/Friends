@@ -14,12 +14,12 @@ import de.HyChrod.Party.Utilities.Parties;
 public class Invite_Command {
 	
 	public Invite_Command(Friends friends, Player p, String[] args) {
-		if(args.length != 2) {
-			p.sendMessage(PMessages.WRONG_USAGE.getMessage(p).replace("%USAGE%", "/party invite <Name>"));
+		if(!p.hasPermission("Party.Commands.Invite") && !p.hasPermission("Party.Commands.*")) {
+			p.sendMessage(PMessages.NO_PERMISSIONS.getMessage(p));
 			return;
 		}
-		if(!p.hasPermission("Party.Commands.Invite")) {
-			p.sendMessage(PMessages.NO_PERMISSIONS.getMessage(p));
+		if(args.length != 2) {
+			p.sendMessage(PMessages.WRONG_USAGE.getMessage(p).replace("%USAGE%", "/party invite <Name>"));
 			return;
 		}
 		if(Parties.getParty(p.getUniqueId()) != null && !Parties.getParty(p.getUniqueId()).getLeader().contains(p.getUniqueId())) {

@@ -1,12 +1,14 @@
 package de.HyChrod.Friends.SQL;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.UUID;
+
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 import de.HyChrod.Friends.Hashing.Blockplayer;
 import de.HyChrod.Friends.Hashing.Friendship;
@@ -18,7 +20,8 @@ public class SQLManager {
 	
 	private String host, database, username, password, port;
 	
-	private Connection con;
+	private HikariDataSource hDataSource;
+	private HikariConfig hConfig;
 	
 	public SQLManager(String[] sqldata) {
 		this.host = sqldata[0];
@@ -26,28 +29,31 @@ public class SQLManager {
 		this.port = sqldata[1];
 		this.username = sqldata[3];
 		this.password = sqldata[4];
+		
+		hConfig = new HikariConfig();
+		hConfig.setUsername(username);
+		hConfig.setPassword(password);
+		hConfig.setMaximumPoolSize(10);
+		hConfig.setJdbcUrl("jdbc:mysql://" + host + ":" + port + "/" + database + "?autoReconnect=true&useSSL=false&useUnicode=yes&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
 	}
 	
 	public boolean connect() {
 		try {
-			if(con != null)
-				con.close();
-			
-			Class.forName("com.mysql.jdbc.Driver");
-			con = DriverManager.getConnection("jdbc:mysql://" + this.host + ":"+ this.port + "/" + this.database + "?autoReconnect=true&useUnicode=yes&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", this.username, this.password);
-			
+			hDataSource = new HikariDataSource(hConfig);
 			createTables();
-		} catch (Exception ex) {}
-		return con != null;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return hDataSource != null && !hDataSource.isClosed();
 	}
 	
 	public boolean isConnected() {
-		return con != null;
+		return hDataSource != null && !hDataSource.isClosed();
 	}
 	
 	public Connection getCon() throws SQLException {
-		if(con.isClosed()) connect();
-		return con;
+		if(!isConnected()) connect();
+		return hDataSource.getConnection();
 	}
 	
 	private void createTables() throws SQLException {
@@ -72,8 +78,10 @@ public class SQLManager {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		Parties party = new Parties();
+		Connection con = null;
 		try {
-			ps = getCon().prepareStatement("select p.server,p.prvt,p.id,l.uuid as leader,m.uuid as member from party_players pp join party p on p.id=pp.id left join party_members m on m.id=p.id left "
+			con = getCon();
+			ps = con.prepareStatement("select p.server,p.prvt,p.id,l.uuid as leader,m.uuid as member from party_players pp join party p on p.id=pp.id left join party_members m on m.id=p.id left "
 					+ "join party_leaders l on l.id=p.id where pp.uuid='" + uuid.toString() +"';");
 			rs = ps.executeQuery();
 			while(rs.next()) {
@@ -87,7 +95,7 @@ public class SQLManager {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {
-			close(rs, ps);
+			close(rs, ps, con);
 		}
 		return party;
 	}
@@ -96,15 +104,17 @@ public class SQLManager {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		LinkedList<UUID> members = new LinkedList<UUID>();
+		Connection con = null;
 		try {
-			ps = getCon().prepareStatement("(select uuid party_members where id='" + id + "' union (select uuid from party_leaders where id='" + id + "';");
+			con = getCon();
+			ps = con.prepareStatement("(select uuid party_members where id='" + id + "' union (select uuid from party_leaders where id='" + id + "';");
 			rs = ps.executeQuery();
 			while(rs.next())
 				members.add(UUID.fromString(rs.getString("uuid")));
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {
-			close(rs, ps);
+			close(rs, ps, con);
 		}
 		return members;
 	}
@@ -113,15 +123,17 @@ public class SQLManager {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		LinkedList<UUID> members = new LinkedList<UUID>();
+		Connection con = null;
 		try {
-			ps = getCon().prepareStatement("select uuid party_members where id='" + id + "';");
+			con = getCon();
+			ps = con.prepareStatement("select uuid party_members where id='" + id + "';");
 			rs = ps.executeQuery();
 			while(rs.next())
 				members.add(UUID.fromString(rs.getString("uuid")));
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {
-			close(rs, ps);
+			close(rs, ps, con);
 		}
 		return members;
 	}
@@ -130,15 +142,17 @@ public class SQLManager {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		LinkedList<UUID> members = new LinkedList<UUID>();
+		Connection con = null;
 		try {
-			ps = getCon().prepareStatement("select uuid party_leaders where id='" + id + "';");
+			con = getCon();
+			ps = con.prepareStatement("select uuid party_leaders where id='" + id + "';");
 			rs = ps.executeQuery();
 			while(rs.next())
 				members.add(UUID.fromString(rs.getString("uuid")));
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {
-			close(rs, ps);
+			close(rs, ps, con);
 		}
 		return members;
 	}
@@ -146,15 +160,17 @@ public class SQLManager {
 	public String getServer(UUID uuid) {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
+		Connection con = null;
 		try {
-			ps = getCon().prepareStatement("select server from friends_playerdata where uuid='" + uuid.toString() + "'");
+			con = getCon();
+			ps = con.prepareStatement("select server from friends_playerdata where uuid='" + uuid.toString() + "'");
 			rs = ps.executeQuery();
 			if(rs.next() && rs.getString("server") != null)
 				return rs.getString("server");
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {
-			close(rs, ps);
+			close(rs, ps, con);
 		}
 		return null;
 	}
@@ -162,8 +178,10 @@ public class SQLManager {
 	public boolean isOnline(UUID uuid) {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
+		Connection con = null;
 		try {
-			ps = getCon().prepareStatement("select p.online,o.offline from friends_playerdata p left join friends_options o using (uuid) where uuid='" + uuid.toString() + "';");
+			con = getCon();
+			ps = con.prepareStatement("select p.online,o.offline from friends_playerdata p left join friends_options o using (uuid) where uuid='" + uuid.toString() + "';");
 			rs = ps.executeQuery();
 			if(rs.next()) {
 				boolean online = rs.getString("p.online") == null ? false : rs.getInt("p.online") == 1;
@@ -171,7 +189,7 @@ public class SQLManager {
 				return online && !offMode;
 			}
 		} catch (Exception ex) {ex.printStackTrace();} finally {
-			close(rs, ps);
+			close(rs, ps, con);
 		}
 		return false;
 	}
@@ -179,12 +197,14 @@ public class SQLManager {
 	public long getLastOnline(UUID uuid) {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
+		Connection con = null;
 		try {
-			ps = getCon().prepareStatement("select lastOnline from friends_playerdata where uuid='" + uuid.toString() + "';");
+			con = getCon();
+			ps = con.prepareStatement("select lastOnline from friends_playerdata where uuid='" + uuid.toString() + "';");
 			rs = ps.executeQuery();
 			if(rs.next() && rs.getString("lastOnline") != null) return rs.getLong("lastOnline");
 		} catch (Exception ex) {ex.printStackTrace();} finally {
-			close(rs, ps);
+			close(rs, ps, con);
 		}
 		return -1;
 	}
@@ -192,127 +212,139 @@ public class SQLManager {
 	public void insertIntoFriends(LinkedList<Friendship> newFrienships) {
 		if(!isConnected()) return;
 		PreparedStatement ps = null;
+		Connection con = null;
 		try {
+			con = getCon();
 			String statement = "insert into friends_frienddata(uuid, uuid2, favorite, timestamp, nickname, cansendmessages) values";
 			for(Friendship fs : newFrienships) {
 				statement = statement + "('" + fs.getPlayer().toString() + "','" + fs.getFriend().toString() + "','" + (fs.getFavorite() ? 1 : 0) + "','" + fs.getTimestamp() + "','" + fs.getNickname() + "','" + (fs.getCanSendMessages() ? 1 : 0) + "')" + ",";
 			}
 			statement = statement.substring(0, statement.length()-1);
 			if(!newFrienships.isEmpty()) {
-				ps = getCon().prepareStatement(statement);
+				ps = con.prepareStatement(statement);
 				ps.executeUpdate();
 			}
 		} catch (Exception ex) {ex.printStackTrace();} finally {
-			close(null, ps);
+			close(null, ps, con);
 		}
 	}
 	
 	public void insertIntoRequests(LinkedList<Request> newRequest) {
 		if(!isConnected()) return;
 		PreparedStatement ps = null;
+		Connection con = null;
 		try {
+			con = getCon();
 			String statement = "insert into friends_requests(uuid, uuid2, message, timestamp) values";
 			for(Request fs : newRequest) {
 				statement = statement + "('" + fs.getPlayer().toString() + "','" + fs.getPlayerToAdd().toString() + "','" +  fs.getMessage() + "','"  + fs.getTimestamp() + "'),";
 			}
 			statement = statement.substring(0, statement.length()-1);
 			if(!newRequest.isEmpty()) {
-				ps = getCon().prepareStatement(statement);
+				ps = con.prepareStatement(statement);
 				ps.executeUpdate();
 			}
 		} catch (Exception ex) {ex.printStackTrace();} finally {
-			close(null, ps);
+			close(null, ps, con);
 		}
 	}
 	
 	public void insertIntoBlocked(LinkedList<Blockplayer> newBlocked) {
 		if(!isConnected()) return;
 		PreparedStatement ps = null;
+		Connection con = null;
 		try {
+			con = getCon();
 			String statement = "insert into friends_blocked(uuid, uuid2, message, timestamp) values";
 			for(Blockplayer fs : newBlocked) {
 				statement = statement + "('" + fs.getPlayer().toString() + "','" + fs.getBlocked().toString() + "','" +  fs.getMessage() + "','"  + fs.getTimestamp() + "'),";
 			}
 			statement = statement.substring(0, statement.length()-1);
 			if(!newBlocked.isEmpty()) {
-				ps = getCon().prepareStatement(statement);
+				ps = con.prepareStatement(statement);
 				ps.executeUpdate();
 			}
 		} catch (Exception ex) {ex.printStackTrace();} finally {
-			close(null, ps);
+			close(null, ps, con);
 		}
 	}
 	
 	public void updateFriends(LinkedList<Friendship> toUpdate) {
 		if(!isConnected()) return;
 		PreparedStatement ps = null;
+		Connection con = null;
 		try {
+			con = getCon();
 			for(Friendship fs : toUpdate) {
-				ps = getCon().prepareStatement("update friends_frienddata set favorite ='" + (fs.getFavorite() ? 1 : 0) + "', nickname = '" + fs.getNickname() 
+				ps = con.prepareStatement("update friends_frienddata set favorite ='" + (fs.getFavorite() ? 1 : 0) + "', nickname = '" + fs.getNickname() 
 				+ "', cansendmessages = '" + (fs.getCanSendMessages() ? 1 : 0) + "' where uuid = '" + fs.getPlayer().toString() + "' and uuid2 = '" + fs.getFriend().toString() + "'");
 				ps.executeUpdate();
-				close(null, ps);
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {
-			close(null, ps);
+			close(null, ps, con);
 		}
 	}
 	
 	public void deleteFromFriends(LinkedList<Friendship> toDelete) {
 		if(!isConnected()) return;
 		PreparedStatement ps = null;
+		Connection con = null;
 		try {
+			con = getCon();
 			for(Friendship fs : toDelete) {
-				ps = getCon().prepareStatement("delete from friends_frienddata where uuid = '" + fs.getPlayer().toString() + "' and uuid2 = '" + fs.getFriend().toString() + "';");
+				ps = con.prepareStatement("delete from friends_frienddata where uuid = '" + fs.getPlayer().toString() + "' and uuid2 = '" + fs.getFriend().toString() + "';");
 				ps.executeUpdate();
-				close(null, ps);
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {
-			close(null, ps);
+			close(null, ps, con);
 		}
 	}
 	
 	public void deleteFromRequests(LinkedList<Request> toDelete) {
 		if(!isConnected()) return;
 		PreparedStatement ps = null;
+		Connection con = null;
 		try {
+			con = getCon();
 			for(Request fs : toDelete) {
-				ps = getCon().prepareStatement("delete from friends_requests where uuid = '" + fs.getPlayer().toString() + "' and uuid2 = '" + fs.getPlayerToAdd().toString() + "';");
+				ps = con.prepareStatement("delete from friends_requests where uuid = '" + fs.getPlayer().toString() + "' and uuid2 = '" + fs.getPlayerToAdd().toString() + "';");
 				ps.executeUpdate();
-				close(null, ps);
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {
-			close(null, ps);
+			close(null, ps, con);
 		}
 	}
 	
 	public void deleteFromBlocked(LinkedList<Blockplayer> toDelete) {
 		if(!isConnected()) return;
 		PreparedStatement ps = null;
+		Connection con = null;
 		try {
+			con = getCon();
 			for(Blockplayer fs : toDelete) {
-				ps = getCon().prepareStatement("delete from friends_blocked where uuid = '" + fs.getPlayer().toString() + "' and uuid2 = '" + fs.getBlocked().toString() + "';");
+				ps = con.prepareStatement("delete from friends_blocked where uuid = '" + fs.getPlayer().toString() + "' and uuid2 = '" + fs.getBlocked().toString() + "';");
 				ps.executeUpdate();
-				close(null, ps);
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {
-			close(null, ps);
+			close(null, ps, con);
 		}
 	}
 	
 	public void updateOptions(Options options) {
 		if(!isConnected()) return;
 		PreparedStatement ps = null;
+		Connection con = null;
 		try {
-			ps = getCon().prepareStatement("insert into friends_options(uuid, offline, receiveMsg, receiveRequests, sorting, status, jumping, party) "
+			con = getCon();
+			ps = con.prepareStatement("insert into friends_options(uuid, offline, receiveMsg, receiveRequests, sorting, status, jumping, party) "
 					+ "values ('" + options.getUuid().toString() + "','" + (options.isOffline() ? 1 : 0) + "','" + (options.getMessages() ? 1 : options.getFavMessages() ? 2 : 0) 
 					+ "','" + (options.getRequests() ? 1 : 0) + "','" + options.getSorting() + "','" + (options.getStatus() == null || options.getStatus().length() < 1 ? "" : options.getStatus()) 
 					+ "', '" + (options.getJumping() ? 1 : 0) + "', '" + (options.getPartyInvites() ? 1 : 0) + "') on duplicate key " + "update uuid=values(uuid), offline=values(offline), receiveMsg=values(receiveMsg), "
@@ -321,7 +353,7 @@ public class SQLManager {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {
-			close(null, ps);
+			close(null, ps, con);
 		}
 	}
 	
@@ -330,15 +362,17 @@ public class SQLManager {
 		if(!isConnected()) return friendships;
 		ResultSet rs = null;
 		PreparedStatement ps = null;
+		Connection con = null;
 		try {
-			ps = getCon().prepareStatement("select distinct f.uuid2,f.favorite,f.timestamp,f.cansendmessages,f.nickname,o.status,p.lastOnline from friends_frienddata f left join friends_options o on o.uuid=f.uuid2 left join friends_playerdata p on p.uuid=f.uuid2 where f.uuid = '" + uuid.toString() + "';");
+			con = getCon();
+			ps = con.prepareStatement("select distinct f.uuid2,f.favorite,f.timestamp,f.cansendmessages,f.nickname,o.status,p.lastOnline from friends_frienddata f left join friends_options o on o.uuid=f.uuid2 left join friends_playerdata p on p.uuid=f.uuid2 where f.uuid = '" + uuid.toString() + "';");
 			rs = ps.executeQuery();
 			while(rs.next()) {
 				friendships.add(new Friendship(uuid, UUID.fromString(rs.getString("f.uuid2")), rs.getLong("f.timestamp"), rs.getInt("f.favorite") == 0 ? false : true, 
 						rs.getInt("f.cansendmessages") == 0 ? false : true, rs.getString("o.status"), rs.getLong("p.lastOnline"), rs.getString("f.nickname")));
 			}
 		} catch (Exception ex) {ex.printStackTrace();} finally {
-			close(rs, ps);
+			close(rs, ps, con);
 		}
 		return friendships;
 	}
@@ -348,13 +382,15 @@ public class SQLManager {
 		if(!isConnected()) return requests;
 		ResultSet rs  = null;
 		PreparedStatement ps = null;
+		Connection con = null;
 		try {
-			ps = getCon().prepareStatement("select distinct uuid2,message,timestamp from friends_requests where uuid = '" + uuid.toString() + "';");
+			con = getCon();
+			ps = con.prepareStatement("select distinct uuid2,message,timestamp from friends_requests where uuid = '" + uuid.toString() + "';");
 			rs = ps.executeQuery();
 			while(rs.next())
 				requests.add(new Request(uuid, UUID.fromString(rs.getString("uuid2")), rs.getString("message"), rs.getLong("timestamp")));
 		} catch (Exception ex) {ex.printStackTrace();} finally {
-			close(rs, ps);
+			close(rs, ps, con);
 		}
 		return requests;
 	}
@@ -364,13 +400,15 @@ public class SQLManager {
 		if(!isConnected()) return blocked;
 		ResultSet rs  = null;
 		PreparedStatement ps = null;
+		Connection con = null;
 		try {
-			ps = getCon().prepareStatement("select distinct uuid2,message,timestamp from friends_blocked where uuid = '" + uuid.toString() + "';");
+			con = getCon();
+			ps = con.prepareStatement("select distinct uuid2,message,timestamp from friends_blocked where uuid = '" + uuid.toString() + "';");
 			rs = ps.executeQuery();
 			while(rs.next())
 				blocked.add(new Blockplayer(uuid, UUID.fromString(rs.getString("uuid2")), rs.getLong("timestamp"), rs.getString("message")));
 		} catch (Exception ex) {ex.printStackTrace();} finally {
-			close(rs, ps);
+			close(rs, ps, con);
 		}
 		return blocked;
 	}
@@ -380,8 +418,10 @@ public class SQLManager {
 		if(!isConnected()) return opt;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
+		Connection con = null;
 		try {
-			ps = getCon().prepareStatement("select offline,receivemsg,receiverequests,sorting,status,jumping,party from friends_options where uuid = '" + uuid.toString() + "'");
+			con = getCon();
+			ps = con.prepareStatement("select offline,receivemsg,receiverequests,sorting,status,jumping,party from friends_options where uuid = '" + uuid.toString() + "'");
 			rs = ps.executeQuery();
 			if(rs.next()) {
 				opt.setOffline(rs.getInt("offline") == 0 ? false : true);
@@ -393,7 +433,7 @@ public class SQLManager {
 				opt.setPartyInvites(rs.getInt("party") == 0 ? false : true);
 			}
 		} catch (Exception ex) {ex.printStackTrace();} finally {
-			close(rs, ps);
+			close(rs, ps, con);
 		}
 		return opt;
 	}
@@ -403,13 +443,15 @@ public class SQLManager {
 		ResultSet rs = null;
 		PreparedStatement ps = null;
 		UUID uuid = null;
+		Connection con = null;
 		try {
-			ps = getCon().prepareStatement("select uuid from friends_playerdata where name = '" + name + "'");
+			con = getCon();
+			ps = con.prepareStatement("select uuid from friends_playerdata where name = '" + name + "'");
 			rs = ps.executeQuery();
 			if(rs.next())
 				uuid = UUID.fromString(rs.getString("uuid"));
 		} catch (Exception ex) {ex.printStackTrace();} finally {
-			close(rs, ps);
+			close(rs, ps, con);
 		}
 		return uuid;
 	}
@@ -419,14 +461,16 @@ public class SQLManager {
 		ResultSet rs = null;
 		PreparedStatement ps = null;
 		String name = null;
+		Connection con = null;
 		try {
-			ps = getCon().prepareStatement("select name from friends_playerdata where uuid = '" + uuid.toString() + "';");
+			con = getCon();
+			ps = con.prepareStatement("select name from friends_playerdata where uuid = '" + uuid.toString() + "';");
 			rs = ps.executeQuery();
 			if(rs.next())
 				name = rs.getString("name");
 		} catch (Exception ex) {
 		} finally {
-			close(rs, ps);
+			close(rs, ps, con);
 		}
 		return name;
 	}
@@ -434,30 +478,29 @@ public class SQLManager {
 	public void perform(String update) {
 		if(!isConnected()) return;
 		PreparedStatement ps = null;
+		Connection con = null;
 		try {
-			ps = getCon().prepareStatement(update);
+			con = getCon();
+			ps = con.prepareStatement(update);
 			ps.executeUpdate();
 		} catch (Exception ex) {} finally {
-			close(null, ps);
+			close(null, ps, con);
 		}
 	}
 	
-	private void close(ResultSet rs, PreparedStatement ps) {
+	private void close(ResultSet rs, PreparedStatement ps, Connection con) {
 		try {
 			if(rs != null)
 				rs.close();
 			if(ps != null)
 				ps.close();
+			if(con != null)
+				con.close();
 		} catch (Exception ex) {}
 	}
 	
 	public void closeConnection() {
-		if(con != null)
-			try {
-				con.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+		if(isConnected()) hDataSource.close();
 	}
 
 }

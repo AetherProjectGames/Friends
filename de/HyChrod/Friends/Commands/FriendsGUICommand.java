@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import de.HyChrod.Friends.Listeners.FriendInventoryListener;
+import de.HyChrod.Friends.Utilities.Configs;
 import de.HyChrod.Friends.Utilities.InventoryBuilder;
 import de.HyChrod.Friends.Utilities.Messages;
 
@@ -23,6 +24,7 @@ public class FriendsGUICommand implements CommandExecutor  {
 		}
 		
 		Player player = (Player) sender;
+		if(Configs.getForbiddenWorlds().contains(player.getWorld().getName())) return false;
 		FriendInventoryListener.setPositions(player.getUniqueId(), InventoryBuilder.openFriendInventory(player, player.getUniqueId(), FriendInventoryListener.getPage(player.getUniqueId()), true));
 		return false;
 	}

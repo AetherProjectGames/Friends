@@ -33,7 +33,7 @@ public class FriendHash {
 	private String name;
 	private Options options;
 	private int friendInvSorting = 0;
-	private long lastonline;
+	private long lastonline = 0;
 	
 	private LinkedList<Friendship> friends = new LinkedList<>();
 	private LinkedList<Friendship> temp_friends = new LinkedList<Friendship>();
@@ -457,7 +457,8 @@ public class FriendHash {
 				if(Bukkit.getPlayer(uuid) != null) name = Bukkit.getPlayer(uuid).getName();
 				if(name == null) name = Friends.getSMgr().getNameByUUID(uuid);
 				
-				AsyncSQLQueueUpdater.addToQueue("insert into friends_playerdata(uuid,name) values ('" + uuid.toString() + "','" + name + "') on duplicate key update uuid=values(uuid), name=values(name)");
+				if(!Configs.BUNGEEMODE.getBoolean()) 
+					AsyncSQLQueueUpdater.addToQueue("insert into friends_playerdata(uuid,name) values ('" + uuid.toString() + "','" + name + "') on duplicate key update uuid=values(uuid), name=values(name)");
 				uuidByNames.put(name, uuid);
 				options = Friends.getSMgr().getOptions(uuid);
 				
@@ -500,10 +501,9 @@ public class FriendHash {
 			FileConfiguration fcfg = FileManager.getConfig("/Util", "friends.dat");
 			if(fcfg.getString(uuid.toString()) != null)
 				for(String fUUIDs : fcfg.getConfigurationSection(uuid.toString()).getKeys(false))
-					addFriend(new Friendship(uuid, UUID.fromString(fUUIDs), fcfg.getLong(uuid.toString() + "." + fUUIDs + ".Timestamp"), 
-							fcfg.getBoolean(uuid.toString() + "." + fUUIDs + ".Favorite"), 
+					addFriend(new Friendship(uuid, UUID.fromString(fUUIDs), fcfg.getLong(uuid.toString() + "." + fUUIDs + ".Timestamp"), fcfg.getBoolean(uuid.toString() + "." + fUUIDs + ".Favorite"), 
 							fcfg.getBoolean(uuid.toString() + "." + fUUIDs + ".CanSendMessages"),
-							ocfg.getString(fUUIDs + ".Status"), fcfg.getString(uuid.toString() + "." + fUUIDs + ".Nickname")));
+							ocfg.getString(fUUIDs + ".Status"), pcfg.getLong("LastOnline." + fUUIDs), fcfg.getString(uuid.toString() + "." + fUUIDs + ".Nickname")));
 			
 			FileConfiguration bcfg = FileManager.getConfig("/Util","blocked.dat");
 			if(bcfg.getString(uuid.toString()) != null)
@@ -592,7 +592,7 @@ public class FriendHash {
 		
 		File pfile = FileManager.PLAYERDATA.getNewFile();
 		FileConfiguration pcfg = FileManager.PLAYERDATA.getNewCfg();
-		FileManager.save(pcfg, pfile, "LastOnline." + uuid.toString(), lastonline);
+		FileManager.save(pcfg, pfile, "LastOnline." + uuid.toString(), (lastonline < 100 ? System.currentTimeMillis() : lastonline));
 		
 		File rfile = FileManager.getFile("/Util", "requests.dat");
 		FileConfiguration rcfg = FileManager.getConfig(rfile);

@@ -17,6 +17,10 @@ import de.HyChrod.Party.Utilities.Parties;
 public class Accept_Command {
 	
 	public Accept_Command(Friends friends, Player p, String[] args) {
+		if(!p.hasPermission("Party.Commands.Accept") && !p.hasPermission("Party.Commands.*")) {
+			p.sendMessage(PMessages.NO_PERMISSIONS.getMessage(p));
+			return;
+		}
 		if(args.length > 2) {
 			p.sendMessage(PMessages.WRONG_USAGE.getMessage(p).replace("%USAGE%", "/party accept <Name>"));
 			return;

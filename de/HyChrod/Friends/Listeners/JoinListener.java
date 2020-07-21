@@ -46,7 +46,7 @@ public class JoinListener implements Listener {
 					if(Bukkit.getPlayer(fs.getFriend()) != null) {
 						FriendHash fHash = FriendHash.getFriendHash(fs.getFriend());
 						Friendship ffs = fHash.getFriendship(p.getUniqueId());
-						if(fHash.getOptions() == null) continue;
+						if(fHash.getOptions() == null || ffs == null || fHash == null) continue;
 						if(!fHash.getOptions().getMessages() && !fHash.getOptions().getFavMessages() || !ffs.getCanSendMessages()) continue;
 						if(fHash.getOptions().getFavMessages() && !ffs.getFavorite()) continue;
 						Bukkit.getPlayer(fs.getFriend()).sendMessage(Messages.JOIN_MESSAGE.getMessage(Bukkit.getPlayer(fs.getFriend())).replace("%NAME%", p.getName()));

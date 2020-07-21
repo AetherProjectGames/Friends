@@ -15,6 +15,10 @@ import de.HyChrod.Party.Utilities.Parties;
 public class Kick_Command {
 	
 	public Kick_Command(Friends friends, Player p, String[] args) {
+		if(!p.hasPermission("Party.Commands.Kick") && !p.hasPermission("Party.Commands.*")) {
+			p.sendMessage(PMessages.NO_PERMISSIONS.getMessage(p));
+			return;
+		}
 		if(args.length != 2) {
 			p.sendMessage(PMessages.WRONG_USAGE.getMessage(p).replace("%USAGE%", "/party kick <Name>"));
 			return;

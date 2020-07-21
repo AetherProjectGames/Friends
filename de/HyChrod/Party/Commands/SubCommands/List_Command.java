@@ -12,6 +12,10 @@ import de.HyChrod.Party.Utilities.Parties;
 public class List_Command {
 	
 	public List_Command(Friends friends, Player p, String[] args) {
+		if(!p.hasPermission("Party.Commands.List") && !p.hasPermission("Party.Commands.*")) {
+			p.sendMessage(PMessages.NO_PERMISSIONS.getMessage(p));
+			return;
+		}
 		if(args.length != 1) {
 			p.sendMessage(PMessages.WRONG_USAGE.getMessage(p).replace("%USAGE%", "/party list"));
 			return;

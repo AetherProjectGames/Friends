@@ -37,7 +37,7 @@ public class CommandManager extends BukkitCommand {
 				return false;
 			}
 			Player p = (Player) sender;
-			if(p.hasPermission("Party.Commands.OpenGUI")) {
+			if(p.hasPermission("Party.Commands.OpenGUI") || p.hasPermission("Party.Commands.*")) {
 				if(Parties.getParty(p.getUniqueId()) == null) PInventoryBuilder.openCreateInventory(p);
 				else PartyInventoryListener.setPositions(p.getUniqueId(), PInventoryBuilder.openPartyInventory(p, Parties.getParty(p.getUniqueId())));
 				return true;
@@ -47,7 +47,7 @@ public class CommandManager extends BukkitCommand {
 		}
 		
 		if(args[0].equalsIgnoreCase("version")) {
-			if(!sender.hasPermission("Party.Commands.Version")) {
+			if(!sender.hasPermission("Party.Commands.Version") && !sender.hasPermission("Party.Commands.*")) {
 				sender.sendMessage(PMessages.NO_PERMISSIONS.getMessage(null));
 				return false;
 			}

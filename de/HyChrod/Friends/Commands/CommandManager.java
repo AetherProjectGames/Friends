@@ -33,6 +33,7 @@ public class CommandManager extends BukkitCommand {
 			if(Configs.GUI_WITH_COMMAND.getBoolean()) {
 				if(sender instanceof Player) {
 					Player p = (Player) sender;
+					if(Configs.getForbiddenWorlds().contains(p.getWorld().getName())) return false;
 					InventoryBuilder.openFriendInventory(p, p.getUniqueId(), FriendInventoryListener.getPage(p.getUniqueId()), true);
 					return true;
 				}

@@ -1,0 +1,70 @@
+Friends:
+  Prefix: "&3Friends &7|"
+  CheckForUpdates: true
+  
+  CommandAliases:
+  - f
+  - freund
+  - freunde
+  - friend
+  
+  Nicknames:
+    Enable: true
+    CheckForAbusiveWords: true
+  
+  Commands:
+    EnableClickableMessages: true
+    AddMessage:
+      Enable: true
+      CharacterLimit: 30
+    BlockNote:
+      Enable: true
+      CharacterLimit: 40
+    Jumping:
+      Enable: true
+      
+  FriendLimit: 20
+  FriendLimitExtended: 50
+  
+  Status:
+    EnableFilter: true
+    MaxLenght: 40
+    ChangeDuration: 600
+  
+  FriendChat:
+    Enable: true
+    CheckForAbusiveWords: true
+    Format: "@friends"
+  FriendMSG:
+    Enable: true
+    CheckForAbusiveWords: true 
+    UseMSGCommand: true
+    
+  DisabledServers:
+  - dev
+  - build
+  - lobby
+    
+Party:
+  Enable: true
+    
+  Prefix: "&9Party &7|"
+  
+  CommandAliases:
+  - parties
+  - p
+  
+  DisabledServers:
+  - lobby
+  - build
+  
+  PartyChat:
+    Enable: true
+    Format: "@party"
+    CheckForAbusiveWords: true
+  
+  MaxPartySize: 5
+  InviteExpireTime: 300
+  
+  InviteFriendsOnly: true
+  ClickableMessages: true

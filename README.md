@@ -76,4 +76,4 @@ Everything should be setup correctly now and Friends is ready to use.
 
 To verify everything is working as intended type ingame /friends version. You should be prompted with two separate messages telling you the version of FriendsRELOADED aswell as the Version of the Friends-BungeeAddon
 
-
+Keep in mind that you need all permissions on BungeeCord, it does not matter if you are op or have the perms on spigot!

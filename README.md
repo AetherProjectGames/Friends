@@ -13,6 +13,7 @@ It does not matter if you are OP or have all permissions on spigot! You will not
 | /friends deny (Name) | Denies the request from a certain player | Friends.Commands.Deny |
 | /friends deny | Denies the last new request | Friends.Commands.Deny |
 | /friends remove (Name) | Removes a player from your friends | Friends.Commands.Remove |
+| /friends removeall | Removes all players from your friendlist | Friends.Commands.RemoveAll |
 | /friends block (Name) (Note) | Blocks a player with a personal note | Friends.Commands.Block |
 | /friends unblock (Name) | Removes a player from your list of blocked players | Friends.Commands.Unblock |
 | /friends acceptall | Accepts all open requests | Friends.Commands.AcceptAll |
